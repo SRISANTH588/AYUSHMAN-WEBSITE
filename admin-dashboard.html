@@ -9,67 +9,40 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Poppins', sans-serif; background: #f4f8fc; display: flex; min-height: 100vh; }
 
-    /* SIDEBAR */
     .sidebar {
-      width: 240px;
-      background: linear-gradient(180deg, #0d2d5e, #1a4b8c);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 32px 0;
-      position: fixed;
-      height: 100vh;
+      width: 240px; background: linear-gradient(180deg, #0d2d5e, #1a4b8c);
+      color: white; display: flex; flex-direction: column;
+      padding: 32px 0; position: fixed; height: 100vh;
     }
     .sidebar-logo { text-align: center; padding: 0 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .sidebar-logo h3 { font-size: 1.1rem; font-weight: 700; }
     .sidebar-logo p { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
     .sidebar nav { margin-top: 24px; flex: 1; }
     .sidebar nav a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 28px;
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 28px; color: rgba(255,255,255,0.75);
+      text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      transition: background 0.2s, color 0.2s; cursor: pointer;
     }
     .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
     .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .btn-logout {
-      width: 100%;
-      padding: 10px;
-      background: #e63946;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
+    .btn-logout { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 
-    /* MAIN */
     .main { margin-left: 240px; flex: 1; padding: 36px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
     .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     .topbar h1 { font-size: 1.5rem; color: #1a2a3a; font-weight: 700; }
     .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
     .welcome-badge { background: #1a4b8c; color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
 
-    /* STATS */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
-    .stat-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 2px 12px rgba(26,75,140,0.08);
-    }
+    .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
     .stat-card .icon { font-size: 2rem; margin-bottom: 12px; }
     .stat-card h3 { font-size: 1.8rem; font-weight: 700; color: #1a4b8c; }
     .stat-card p { font-size: 0.82rem; color: #6b7c93; margin-top: 4px; }
 
-    /* TABLE */
     .section-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); margin-bottom: 24px; }
     .section-card h2 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 20px; font-weight: 700; }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
@@ -80,6 +53,18 @@
     .badge.confirmed { background: #d4edda; color: #155724; }
     .badge.pending { background: #fff3cd; color: #856404; }
     .badge.completed { background: #d1ecf1; color: #0c5460; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select {
+      padding: 11px 14px; border: 1.5px solid #dce8f5; border-radius: 10px;
+      font-family: 'Poppins', sans-serif; font-size: 0.88rem; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #2e7dd1; }
+    .btn-primary { padding: 12px 28px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .btn-danger { padding: 6px 14px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+    .success-msg { color: #2e7dd1; font-weight: 600; font-size: 0.88rem; margin-top: 12px; display: none; }
   </style>
 </head>
 <body>
@@ -90,13 +75,11 @@
       <p>Admin Panel</p>
     </div>
     <nav>
-      <a href="#" class="active">🏠 Dashboard</a>
-      <a href="#">📅 Appointments</a>
-      <a href="#">👨‍⚕️ Staff</a>
-      <a href="#">🧑 Patients</a>
-      <a href="#">💊 Services</a>
-      <a href="#">📊 Reports</a>
-      <a href="#">⚙️ Settings</a>
+      <a class="active" onclick="showSection('dashboard', this)">🏠 Dashboard</a>
+      <a onclick="showSection('appointments', this)">📅 Appointments</a>
+      <a onclick="showSection('staff', this)">👨⚕️ Staff</a>
+      <a onclick="showSection('patients', this)">🧑 Patients</a>
+      <a onclick="showSection('settings', this)">⚙️ Settings</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -104,53 +87,211 @@
   </div>
 
   <div class="main">
-    <div class="topbar">
-      <div>
-        <h1>Admin Dashboard</h1>
-        <p>Welcome back! Here's what's happening today.</p>
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dashboard">
+      <div class="topbar">
+        <div><h1>Admin Dashboard</h1><p>Welcome back, <span id="adminName"></span>!</p></div>
+        <div class="welcome-badge">🛡️ Admin</div>
       </div>
-      <div class="welcome-badge">🛡️ Admin</div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">📅</div><h3>24</h3><p>Today's Appointments</p></div>
+        <div class="stat-card"><div class="icon">🧑</div><h3 id="totalPatients">3</h3><p>Total Patients</p></div>
+        <div class="stat-card"><div class="icon">👨⚕️</div><h3 id="totalStaff">2</h3><p>Active Staff</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3>18</h3><p>Completed Today</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📅 Recent Appointments</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td>9:00 AM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td>10:30 AM</td><td><span class="badge pending">Pending</span></td></tr>
+            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>Dr. Durga Sowjanya</td><td>11:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="stats">
-      <div class="stat-card"><div class="icon">📅</div><h3>24</h3><p>Today's Appointments</p></div>
-      <div class="stat-card"><div class="icon">🧑</div><h3>142</h3><p>Total Patients</p></div>
-      <div class="stat-card"><div class="icon">👨‍⚕️</div><h3>5</h3><p>Active Staff</p></div>
-      <div class="stat-card"><div class="icon">✅</div><h3>18</h3><p>Completed Today</p></div>
+    <!-- APPOINTMENTS -->
+    <div class="section" id="sec-appointments">
+      <div class="topbar"><div><h1>Appointments</h1><p>Manage all appointments</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Appointment</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="apptPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Condition</label><input type="text" id="apptCondition" placeholder="Condition"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Doctor</label>
+            <select id="apptDoctor">
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Time</label><input type="time" id="apptTime"/></div>
+        </div>
+        <button class="btn-primary" onclick="addAppointment()">Add Appointment</button>
+        <p class="success-msg" id="apptSuccess">✅ Appointment added!</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 All Appointments</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="apptTable">
+            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td>9:00 AM</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td>10:30 AM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section-card">
-      <h2>📅 Recent Appointments</h2>
-      <table>
-        <thead>
-          <tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td>9:00 AM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-          <tr><td>Priya Sharma</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td>10:30 AM</td><td><span class="badge pending">Pending</span></td></tr>
-          <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>Dr. Durga Sowjanya</td><td>11:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
-          <tr><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td>Dr. D. Ramachandra</td><td>12:00 PM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-        </tbody>
-      </table>
+    <!-- STAFF -->
+    <div class="section" id="sec-staff">
+      <div class="topbar"><div><h1>Staff</h1><p>Manage staff members</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Staff</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Name</label><input type="text" id="staffName" placeholder="Full name"/></div>
+          <div class="form-group"><label>Role</label><input type="text" id="staffRole" placeholder="e.g. Physiotherapist"/></div>
+        </div>
+        <button class="btn-primary" onclick="addStaff()">Add Staff</button>
+        <p class="success-msg" id="staffSuccess">✅ Staff member added!</p>
+      </div>
+      <div class="section-card">
+        <h2>👨⚕️ Staff List</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="staffTable">
+            <tr><td>Dr. Durga Sowjanya</td><td>MPT Neuro, MIAP</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Dr. D. Ramachandra</td><td>Pain Management</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section-card">
-      <h2>👨‍⚕️ Staff Overview</h2>
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Role</th><th>Patients Today</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Dr. Durga Sowjanya</td><td>MPT Neuro, MIAP</td><td>12</td><td><span class="badge confirmed">Active</span></td></tr>
-          <tr><td>Dr. D. Ramachandra</td><td>Pain Management</td><td>10</td><td><span class="badge confirmed">Active</span></td></tr>
-          <tr><td>Anitha</td><td>Physiotherapy Assistant</td><td>6</td><td><span class="badge pending">On Leave</span></td></tr>
-        </tbody>
-      </table>
+    <!-- PATIENTS -->
+    <div class="section" id="sec-patients">
+      <div class="topbar"><div><h1>Patients</h1><p>Manage patient records</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Patient</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Name</label><input type="text" id="patName" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="patPhone" placeholder="Phone number"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Condition</label><input type="text" id="patCondition" placeholder="Condition"/></div>
+          <div class="form-group"><label>Assigned Doctor</label>
+            <select id="patDoctor">
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addPatient()">Add Patient</button>
+        <p class="success-msg" id="patSuccess">✅ Patient added!</p>
+      </div>
+      <div class="section-card">
+        <h2>🧑 Patient List</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Doctor</th><th>Action</th></tr></thead>
+          <tbody id="patTable">
+            <tr><td>Ravi Kumar</td><td>9876543210</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Priya Sharma</td><td>9123456780</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Suresh Babu</td><td>9000011122</td><td>Stroke Rehab</td><td>Dr. Durga Sowjanya</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="sec-settings">
+      <div class="topbar"><div><h1>Settings</h1><p>Manage clinic information</p></div></div>
+      <div class="section-card">
+        <h2>🏥 Clinic Info</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Clinic Name</label><input type="text" value="Ayushman PhysioFIT"/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" value="6302478412"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Opening Time</label><input type="time" value="09:00"/></div>
+          <div class="form-group"><label>Closing Time</label><input type="time" value="19:00"/></div>
+        </div>
+        <button class="btn-primary" onclick="document.getElementById('settingsSuccess').style.display='block'; setTimeout(()=>document.getElementById('settingsSuccess').style.display='none',3000)">Save Changes</button>
+        <p class="success-msg" id="settingsSuccess">✅ Settings saved!</p>
+      </div>
+    </div>
+
   </div>
 
   <script>
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
+    document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
+
+    function showSection(name, el) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('sec-' + name).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function deleteRow(btn) {
+      btn.closest('tr').remove();
+      updateCounts();
+    }
+
+    function updateCounts() {
+      document.getElementById('totalPatients').textContent = document.getElementById('patTable').rows.length;
+      document.getElementById('totalStaff').textContent = document.getElementById('staffTable').rows.length;
+    }
+
+    function addAppointment() {
+      const p = document.getElementById('apptPatient').value.trim();
+      const c = document.getElementById('apptCondition').value.trim();
+      const d = document.getElementById('apptDoctor').value;
+      const t = document.getElementById('apptTime').value;
+      if (!p || !c || !t) return alert('Please fill all fields.');
+      const row = `<tr><td>${p}</td><td>${c}</td><td>${d}</td><td>${t}</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+      document.getElementById('apptTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('apptPatient').value = '';
+      document.getElementById('apptCondition').value = '';
+      document.getElementById('apptTime').value = '';
+      const msg = document.getElementById('apptSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function addStaff() {
+      const n = document.getElementById('staffName').value.trim();
+      const r = document.getElementById('staffRole').value.trim();
+      if (!n || !r) return alert('Please fill all fields.');
+      const row = `<tr><td>${n}</td><td>${r}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+      document.getElementById('staffTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('staffName').value = '';
+      document.getElementById('staffRole').value = '';
+      updateCounts();
+      const msg = document.getElementById('staffSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function addPatient() {
+      const n = document.getElementById('patName').value.trim();
+      const ph = document.getElementById('patPhone').value.trim();
+      const c = document.getElementById('patCondition').value.trim();
+      const d = document.getElementById('patDoctor').value;
+      if (!n || !ph || !c) return alert('Please fill all fields.');
+      const row = `<tr><td>${n}</td><td>${ph}</td><td>${c}</td><td>${d}</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+      document.getElementById('patTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('patName').value = '';
+      document.getElementById('patPhone').value = '';
+      document.getElementById('patCondition').value = '';
+      updateCounts();
+      const msg = document.getElementById('patSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
     function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
   </script>
 </body>

@@ -95,11 +95,10 @@
   </div>
 
   <script>
-    // Credentials database
     const users = [
-      { username: 'admin', password: 'admin123', redirect: 'admin-dashboard.html' },
-      { username: 'staff', password: 'staff123', redirect: 'staff-dashboard.html' },
-      { username: 'patient', password: 'patient123', redirect: 'patient-dashboard.html' }
+      { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin', redirect: 'admin-dashboard.html' },
+      { username: 'staff', password: 'staff123', role: 'staff', name: 'Staff', redirect: 'staff-dashboard.html' },
+      { username: 'patient', password: 'patient123', role: 'patient', name: 'Patient', redirect: 'patient-dashboard.html' }
     ];
 
     function handleLogin(e) {
@@ -108,7 +107,9 @@
       const password = document.getElementById('password').value.trim();
       const user = users.find(u => u.username === username && u.password === password);
       if (user) {
-        sessionStorage.setItem('loggedUser', username);
+        sessionStorage.setItem('loggedUser', user.username);
+        sessionStorage.setItem('loggedName', user.name);
+        sessionStorage.setItem('loggedRole', user.role);
         window.location.href = user.redirect;
       } else {
         document.getElementById('errorMsg').style.display = 'block';

@@ -6,6 +6,9 @@
   <title>Ayushman PhysioFIT – Rehabilitation Centre</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
 </head>
 <body>
 
@@ -136,10 +139,10 @@
           <p>Mon – Sat: 9:00 AM – 7:00 PM</p>
         </div>
       </div>
-      <form class="contact-form">
-        <input type="text" placeholder="Your Name" required/>
-        <input type="tel" placeholder="Phone Number" required/>
-        <select>
+      <form class="contact-form" onsubmit="submitForm(event)">
+        <input type="text" id="fname" placeholder="Your Name" required/>
+        <input type="tel" id="fphone" placeholder="Phone Number" required/>
+        <select id="fcondition">
           <option value="">Select Condition</option>
           <option>Frozen Shoulder</option>
           <option>Knee & Foot Pain</option>
@@ -148,8 +151,9 @@
           <option>Sports Injuries</option>
           <option>Other</option>
         </select>
-        <textarea placeholder="Message (optional)" rows="3"></textarea>
+        <textarea id="fmsg" placeholder="Message (optional)" rows="3"></textarea>
         <button type="submit">Book Appointment</button>
+        <p id="formSuccess" style="display:none;color:#2e7dd1;font-weight:600;text-align:center;">✅ Appointment request sent! We'll call you shortly.</p>
       </form>
     </div>
   </section>
@@ -161,5 +165,16 @@
     <p style="margin-top:8px; opacity:0.6; font-size:0.8rem;">© 2026 Ayushman PhysioFIT. All rights reserved.</p>
   </footer>
 
+  <script>
+    function submitForm(e) {
+      e.preventDefault();
+      document.getElementById('formSuccess').style.display = 'block';
+      document.getElementById('fname').value = '';
+      document.getElementById('fphone').value = '';
+      document.getElementById('fcondition').value = '';
+      document.getElementById('fmsg').value = '';
+      setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 4000);
+    }
+  </script>
 </body>
 </html>

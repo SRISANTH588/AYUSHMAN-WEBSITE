@@ -9,14 +9,9 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Poppins', sans-serif; background: #f4f8fc; display: flex; min-height: 100vh; }
     .sidebar {
-      width: 240px;
-      background: linear-gradient(180deg, #5c1a5c, #8b2e8b);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 32px 0;
-      position: fixed;
-      height: 100vh;
+      width: 240px; background: linear-gradient(180deg, #5c1a5c, #8b2e8b);
+      color: white; display: flex; flex-direction: column;
+      padding: 32px 0; position: fixed; height: 100vh;
     }
     .sidebar-logo { text-align: center; padding: 0 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .sidebar-logo h3 { font-size: 1.1rem; font-weight: 700; }
@@ -26,21 +21,27 @@
       display: flex; align-items: center; gap: 12px;
       padding: 13px 28px; color: rgba(255,255,255,0.75);
       text-decoration: none; font-size: 0.88rem; font-weight: 500;
-      transition: background 0.2s, color 0.2s;
+      transition: background 0.2s; cursor: pointer;
     }
     .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
     .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.1); }
     .btn-logout { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+
     .main { margin-left: 240px; flex: 1; padding: 36px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
     .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     .topbar h1 { font-size: 1.5rem; color: #1a2a3a; font-weight: 700; }
     .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
     .welcome-badge { background: #8b2e8b; color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
     .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     .stat-card .icon { font-size: 2rem; margin-bottom: 12px; }
     .stat-card h3 { font-size: 1.8rem; font-weight: 700; color: #8b2e8b; }
     .stat-card p { font-size: 0.82rem; color: #6b7c93; margin-top: 4px; }
+
     .section-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; }
     .section-card h2 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 20px; font-weight: 700; }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
@@ -51,19 +52,25 @@
     .badge.confirmed { background: #d4edda; color: #155724; }
     .badge.pending { background: #fff3cd; color: #856404; }
     .badge.completed { background: #d1ecf1; color: #0c5460; }
-    .book-btn {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 12px 28px;
-      background: linear-gradient(135deg, #5c1a5c, #8b2e8b);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px; border: 1.5px solid #dce8f5; border-radius: 10px;
+      font-family: 'Poppins', sans-serif; font-size: 0.88rem; outline: none;
     }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #8b2e8b; }
+    .btn-primary { padding: 12px 28px; background: linear-gradient(135deg, #5c1a5c, #8b2e8b); color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .success-msg { color: #8b2e8b; font-weight: 600; font-size: 0.88rem; margin-top: 12px; display: none; }
+
+    .progress-bar-wrap { background: #f0f4f8; border-radius: 20px; height: 10px; margin-top: 8px; }
+    .progress-bar { background: linear-gradient(90deg, #5c1a5c, #8b2e8b); height: 10px; border-radius: 20px; }
+
+    .contact-card { display: flex; align-items: center; gap: 20px; background: #f9f0f9; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .contact-avatar { width: 56px; height: 56px; background: linear-gradient(135deg, #5c1a5c, #8b2e8b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; font-weight: 700; flex-shrink: 0; }
+    .contact-info h4 { font-size: 1rem; color: #1a2a3a; }
+    .contact-info p { font-size: 0.82rem; color: #6b7c93; margin-top: 2px; }
+    .contact-info a { color: #8b2e8b; font-weight: 600; text-decoration: none; font-size: 0.88rem; }
   </style>
 </head>
 <body>
@@ -74,11 +81,11 @@
       <p>Patient Portal</p>
     </div>
     <nav>
-      <a href="#" class="active">🏠 Dashboard</a>
-      <a href="#">📅 My Appointments</a>
-      <a href="#">📋 My Records</a>
-      <a href="#">💊 Treatment Plan</a>
-      <a href="#">📞 Contact Doctor</a>
+      <a class="active" onclick="showSection('dashboard', this)">🏠 Dashboard</a>
+      <a onclick="showSection('appointments', this)">📅 My Appointments</a>
+      <a onclick="showSection('records', this)">📋 My Records</a>
+      <a onclick="showSection('treatment', this)">💊 Treatment Plan</a>
+      <a onclick="showSection('contact', this)">📞 Contact Doctor</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -86,49 +93,200 @@
   </div>
 
   <div class="main">
-    <div class="topbar">
-      <div>
-        <h1>Patient Dashboard</h1>
-        <p>Welcome! Track your appointments and recovery progress.</p>
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dashboard">
+      <div class="topbar">
+        <div><h1>Patient Dashboard</h1><p>Welcome, <span id="patientName"></span>! Track your recovery.</p></div>
+        <div class="welcome-badge">🧑 Patient</div>
       </div>
-      <div class="welcome-badge">🧑 Patient</div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">📅</div><h3>1</h3><p>Upcoming Appointment</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3>6</h3><p>Sessions Completed</p></div>
+        <div class="stat-card"><div class="icon">💪</div><h3>75%</h3><p>Recovery Progress</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📅 Upcoming Appointment</h2>
+        <table>
+          <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="stats">
-      <div class="stat-card"><div class="icon">📅</div><h3>1</h3><p>Upcoming Appointment</p></div>
-      <div class="stat-card"><div class="icon">✅</div><h3>6</h3><p>Sessions Completed</p></div>
-      <div class="stat-card"><div class="icon">💪</div><h3>75%</h3><p>Recovery Progress</p></div>
+    <!-- APPOINTMENTS -->
+    <div class="section" id="sec-appointments">
+      <div class="topbar"><div><h1>My Appointments</h1><p>Book and view your appointments</p></div></div>
+      <div class="section-card">
+        <h2>➕ Book New Appointment</h2>
+        <div class="form-group">
+          <label>Preferred Doctor</label>
+          <select id="bookDoctor">
+            <option>Dr. Durga Sowjanya</option>
+            <option>Dr. D. Ramachandra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Condition</label>
+          <select id="bookCondition">
+            <option value="">Select Condition</option>
+            <option>Frozen Shoulder</option>
+            <option>Knee & Foot Pain</option>
+            <option>Spine Problems</option>
+            <option>Stroke Rehabilitation</option>
+            <option>Sports Injuries</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" id="bookDate"/>
+        </div>
+        <div class="form-group">
+          <label>Preferred Time</label>
+          <input type="time" id="bookTime"/>
+        </div>
+        <button class="btn-primary" onclick="bookAppointment()">Book Appointment</button>
+        <p class="success-msg" id="bookSuccess">✅ Appointment booked! We'll confirm shortly.</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 Appointment History</h2>
+        <table>
+          <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
+          <tbody id="apptHistory">
+            <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+            <tr><td>03 May 2026</td><td>9:00 AM</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
+            <tr><td>26 Apr 2026</td><td>11:00 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section-card">
-      <h2>📅 My Appointments</h2>
-      <table>
-        <thead>
-          <tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-          <tr><td>03 May 2026</td><td>9:00 AM</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
-          <tr><td>26 Apr 2026</td><td>11:00 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
-        </tbody>
-      </table>
+    <!-- RECORDS -->
+    <div class="section" id="sec-records">
+      <div class="topbar"><div><h1>My Records</h1><p>Your medical history</p></div></div>
+      <div class="section-card">
+        <h2>📋 Medical Records</h2>
+        <table>
+          <thead><tr><th>Date</th><th>Doctor</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>03 May 2026</td><td>Dr. Durga Sowjanya</td><td>Completed ultrasound therapy. Good progress on knee flexion.</td></tr>
+            <tr><td>26 Apr 2026</td><td>Dr. Durga Sowjanya</td><td>Started strengthening exercises. Pain reduced by 30%.</td></tr>
+            <tr><td>19 Apr 2026</td><td>Dr. D. Ramachandra</td><td>Initial assessment. Diagnosed with knee osteoarthritis.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section-card">
-      <h2>📋 Treatment Plan</h2>
-      <p style="color:#6b7c93; font-size:0.9rem; margin-bottom:16px;">Your current treatment plan by Dr. Durga Sowjanya</p>
-      <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
-        <li style="background:#f4f8fc; padding:12px 16px; border-radius:10px; font-size:0.88rem;">✅ Ultrasound Therapy — 3x per week</li>
-        <li style="background:#f4f8fc; padding:12px 16px; border-radius:10px; font-size:0.88rem;">✅ Strengthening Exercises — Daily</li>
-        <li style="background:#f4f8fc; padding:12px 16px; border-radius:10px; font-size:0.88rem;">⏳ Hydrotherapy — Starting next week</li>
-      </ul>
-      <br/>
-      <button class="book-btn" onclick="alert('Appointment booking coming soon!')">+ Book New Appointment</button>
+    <!-- TREATMENT -->
+    <div class="section" id="sec-treatment">
+      <div class="topbar"><div><h1>Treatment Plan</h1><p>Your personalized recovery plan</p></div></div>
+      <div class="section-card">
+        <h2>💊 Current Treatment Plan</h2>
+        <p style="color:#6b7c93; font-size:0.88rem; margin-bottom:20px;">Assigned by Dr. Durga Sowjanya</p>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+              <span>✅ Ultrasound Therapy — 3x per week</span><span style="color:#8b2e8b;">80%</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar" style="width:80%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+              <span>✅ Strengthening Exercises — Daily</span><span style="color:#8b2e8b;">70%</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar" style="width:70%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
+              <span>⏳ Hydrotherapy — Starting next week</span><span style="color:#8b2e8b;">0%</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- CONTACT -->
+    <div class="section" id="sec-contact">
+      <div class="topbar"><div><h1>Contact Doctor</h1><p>Reach out to your doctors</p></div></div>
+      <div class="section-card">
+        <h2>👨⚕️ Your Doctors</h2>
+        <div class="contact-card">
+          <div class="contact-avatar">DS</div>
+          <div class="contact-info">
+            <h4>Dr. Durga Sowjanya</h4>
+            <p>MPT Neuro, MIAP · Licensed Physio in Dubai & Abu Dhabi</p>
+            <a href="tel:6302478412">📞 6302478412</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-avatar">DR</div>
+          <div class="contact-info">
+            <h4>Dr. D. Ramachandra</h4>
+            <p>PT · Pain Management Specialist</p>
+            <a href="tel:7013698578">📞 7013698578</a>
+          </div>
+        </div>
+      </div>
+      <div class="section-card">
+        <h2>✉️ Send a Message</h2>
+        <div class="form-group">
+          <label>To</label>
+          <select>
+            <option>Dr. Durga Sowjanya</option>
+            <option>Dr. D. Ramachandra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="contactMsg" rows="4" placeholder="Type your message..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="sendMessage()">Send Message</button>
+        <p class="success-msg" id="msgSuccess">✅ Message sent! Doctor will respond shortly.</p>
+      </div>
+    </div>
+
   </div>
 
   <script>
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
+    document.getElementById('patientName').textContent = sessionStorage.getItem('loggedName') || 'Patient';
+
+    function showSection(name, el) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('sec-' + name).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function bookAppointment() {
+      const d = document.getElementById('bookDate').value;
+      const t = document.getElementById('bookTime').value;
+      const c = document.getElementById('bookCondition').value;
+      const doc = document.getElementById('bookDoctor').value;
+      if (!d || !t || !c) return alert('Please fill all fields.');
+      const row = `<tr><td>${d}</td><td>${t}</td><td>${doc}</td><td>${c}</td><td><span class="badge pending">Pending</span></td></tr>`;
+      document.getElementById('apptHistory').insertAdjacentHTML('afterbegin', row);
+      document.getElementById('bookDate').value = '';
+      document.getElementById('bookTime').value = '';
+      document.getElementById('bookCondition').value = '';
+      const msg = document.getElementById('bookSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function sendMessage() {
+      const m = document.getElementById('contactMsg').value.trim();
+      if (!m) return alert('Please type a message.');
+      document.getElementById('contactMsg').value = '';
+      const msg = document.getElementById('msgSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
     function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
   </script>
 </body>
