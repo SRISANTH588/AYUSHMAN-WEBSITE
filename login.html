@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d2d5e 0%, #1a4b8c 60%, #2e7dd1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-box {
+      background: white;
+      border-radius: 24px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    }
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo h2 { font-size: 1.5rem; font-weight: 700; color: #1a4b8c; }
+    .logo h2 .cross { color: #e63946; }
+    .logo h2 em { color: #2e7dd1; font-style: normal; }
+    .logo p { font-size: 0.82rem; color: #6b7c93; margin-top: 4px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #1a2a3a; margin-bottom: 7px; }
+    .form-group input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #dce8f5;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      color: #1a2a3a;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #2e7dd1; }
+    .forgot { text-align: right; margin-top: -10px; margin-bottom: 22px; }
+    .forgot a { font-size: 0.8rem; color: #2e7dd1; text-decoration: none; font-weight: 600; }
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #1a4b8c, #2e7dd1);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-login:hover { opacity: 0.9; transform: translateY(-2px); }
+    .error-msg { color: #e63946; font-size: 0.82rem; text-align: center; margin-bottom: 14px; display: none; }
+    .divider { text-align: center; margin: 20px 0; color: #aab4c0; font-size: 0.82rem; position: relative; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 44%; height: 1px; background: #dce8f5; }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .back-home { display: block; text-align: center; color: #1a4b8c; text-decoration: none; font-size: 0.88rem; font-weight: 600; }
+    .back-home:hover { color: #2e7dd1; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo">
+      <h2><span class="cross">✚</span> Ayushman <em>PhysioFIT</em></h2>
+      <p>Rehabilitation Centre · Vijayawada</p>
+    </div>
+
+    <p class="error-msg" id="errorMsg">❌ Invalid username or password.</p>
+
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Username / Phone</label>
+        <input type="text" id="userId" placeholder="Enter your username or phone" required/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required/>
+      </div>
+      <div class="forgot"><a href="#">Forgot Password?</a></div>
+      <button type="submit" class="btn-login">Login</button>
+    </form>
+
+    <div class="divider">or</div>
+    <a href="index.html" class="back-home">← Back to Home</a>
+  </div>
+
+  <script>
+    // Credentials database
+    const users = [
+      { username: 'admin', password: 'admin123', redirect: 'admin-dashboard.html' },
+      { username: 'staff', password: 'staff123', redirect: 'staff-dashboard.html' },
+      { username: 'patient', password: 'patient123', redirect: 'patient-dashboard.html' }
+    ];
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('userId').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        sessionStorage.setItem('loggedUser', username);
+        window.location.href = user.redirect;
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
