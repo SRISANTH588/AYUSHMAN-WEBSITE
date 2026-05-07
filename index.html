@@ -52,6 +52,58 @@
     </div>
   </section>
 
+  <!-- SERVICE SLIDER -->
+  <section class="service-slider-section">
+    <h2>Our Services</h2>
+    <p class="section-sub">Specialized physiotherapy treatments for pain relief & recovery</p>
+    <div class="slider-wrapper">
+      <button class="slider-btn prev" onclick="slideMove(-1)">&#8249;</button>
+      <div class="slider-track-outer">
+        <div class="slider-track" id="sliderTrack">
+
+          <div class="slide-card">
+            <div class="slide-img">🧠</div>
+            <div class="slide-label">NECK PAIN</div>
+            <div class="slide-telugu">మెడ నొప్పి</div>
+          </div>
+
+          <div class="slide-card">
+            <div class="slide-img">🦴</div>
+            <div class="slide-label">SHOULDER PAIN</div>
+            <div class="slide-telugu">భుజం నొప్పి</div>
+          </div>
+
+          <div class="slide-card">
+            <div class="slide-img">💪</div>
+            <div class="slide-label">ELBOW PAIN</div>
+            <div class="slide-telugu">మోచేతి నొప్పి</div>
+          </div>
+
+          <div class="slide-card">
+            <div class="slide-img">🔩</div>
+            <div class="slide-label">SPINE PAIN</div>
+            <div class="slide-telugu">వెన్ను నొప్పి</div>
+          </div>
+
+          <div class="slide-card">
+            <div class="slide-img">🦵</div>
+            <div class="slide-label">KNEE PAIN</div>
+            <div class="slide-telugu">మోకాలి నొప్పి</div>
+          </div>
+
+          <div class="slide-card">
+            <div class="slide-img">🦶</div>
+            <div class="slide-label">ANKLE PAIN</div>
+            <div class="slide-telugu">పాదాల నొప్పి</div>
+          </div>
+
+        </div>
+      </div>
+      <button class="slider-btn next" onclick="slideMove(1)">&#8250;</button>
+    </div>
+    <div class="slider-dots" id="sliderDots"></div>
+  </section>
+
   <!-- SERVICES -->
   <section class="services" id="services">
     <h2>Conditions We Treat</h2>
@@ -166,6 +218,35 @@
   </footer>
 
   <script>
+    // Slider
+    const track = document.getElementById('sliderTrack');
+    const dotsContainer = document.getElementById('sliderDots');
+    const cards = track.querySelectorAll('.slide-card');
+    let visibleCount = window.innerWidth <= 560 ? 1 : window.innerWidth <= 900 ? 2 : 3;
+    let current = 0;
+    const total = cards.length;
+    const maxIndex = total - visibleCount;
+
+    // Build dots
+    for (let i = 0; i <= maxIndex; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goTo(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function goTo(index) {
+      current = Math.max(0, Math.min(index, maxIndex));
+      const cardWidth = cards[0].offsetWidth + 24;
+      track.style.transform = `translateX(-${current * cardWidth}px)`;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function slideMove(dir) { goTo(current + dir); }
+
+    // Auto slide
+    setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
+
     function submitForm(e) {
       e.preventDefault();
       document.getElementById('formSuccess').style.display = 'block';
