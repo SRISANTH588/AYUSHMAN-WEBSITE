@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Treatment Plan – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="patient.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Patient Portal</p>
+    </div>
+    <nav>
+      <a href="index.html">🏠 Dashboard</a>
+      <a href="appointments.html">📅 My Appointments</a>
+      <a href="records.html">📋 My Records</a>
+      <a href="treatment.html" class="active">💊 Treatment Plan</a>
+      <a href="contact.html">📞 Contact Doctor</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">P</div>
+        <div>
+          <p class="user-name" id="userName">Patient</p>
+          <p class="user-role">Patient</p>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1>Treatment Plan</h1><p>Your personalized recovery plan</p></div>
+      <div class="welcome-badge">💊 Treatment</div>
+    </div>
+
+    <div class="section-card">
+      <h2>💊 Current Treatment Plan</h2>
+      <p style="color:#6b7c93; font-size:0.88rem; margin-bottom:24px;">Assigned by Dr. Durga Sowjanya · Started 19 Apr 2026</p>
+      <div class="progress-list">
+        <div class="progress-item">
+          <div class="progress-label"><span>✅ Ultrasound Therapy — 3x per week</span><span>80%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:80%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>✅ Strengthening Exercises — Daily</span><span>70%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:70%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>✅ Hot & Cold Therapy — After exercises</span><span>60%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:60%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>⏳ Hydrotherapy — Starting next week</span><span>0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2>📅 Treatment Schedule</h2>
+      <table>
+        <thead><tr><th>Day</th><th>Therapy</th><th>Duration</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td>Monday</td><td>Ultrasound Therapy + Exercises</td><td>45 mins</td><td>10:00 AM</td></tr>
+          <tr><td>Wednesday</td><td>Ultrasound Therapy + Hot/Cold</td><td>45 mins</td><td>10:00 AM</td></tr>
+          <tr><td>Friday</td><td>Strengthening Exercises</td><td>30 mins</td><td>10:00 AM</td></tr>
+          <tr><td>Daily</td><td>Home Exercises</td><td>20 mins</td><td>Morning</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <h2>🏠 Home Exercise Instructions</h2>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="exercise-card">
+          <h4>1. Quad Sets</h4>
+          <p>Tighten thigh muscle, hold 5 seconds, release. Repeat 10 times each leg.</p>
+        </div>
+        <div class="exercise-card">
+          <h4>2. Straight Leg Raises</h4>
+          <p>Lie flat, raise leg to 45°, hold 3 seconds. Repeat 10 times each leg.</p>
+        </div>
+        <div class="exercise-card">
+          <h4>3. Heel Slides</h4>
+          <p>Slide heel toward buttocks slowly, hold 5 seconds. Repeat 10 times.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="patient.js"></script>
+</body>
+</html>

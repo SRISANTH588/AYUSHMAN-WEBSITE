@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Records – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="patient.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Patient Portal</p>
+    </div>
+    <nav>
+      <a href="index.html">🏠 Dashboard</a>
+      <a href="appointments.html">📅 My Appointments</a>
+      <a href="records.html" class="active">📋 My Records</a>
+      <a href="treatment.html">💊 Treatment Plan</a>
+      <a href="contact.html">📞 Contact Doctor</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">P</div>
+        <div>
+          <p class="user-name" id="userName">Patient</p>
+          <p class="user-role">Patient</p>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1>My Records</h1><p>Your complete medical history</p></div>
+      <div class="welcome-badge">📋 Records</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card"><div class="icon">📄</div><h3>6</h3><p>Total Sessions</p></div>
+      <div class="stat-card"><div class="icon">👨‍⚕️</div><h3>2</h3><p>Doctors Consulted</p></div>
+      <div class="stat-card"><div class="icon">📅</div><h3>19 Apr</h3><p>First Visit</p></div>
+    </div>
+
+    <div class="section-card">
+      <h2>📋 Medical Records</h2>
+      <table>
+        <thead><tr><th>Date</th><th>Doctor</th><th>Condition</th><th>Notes</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>03 May 2026</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td>Completed ultrasound therapy. Good progress on knee flexion.</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td>26 Apr 2026</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td>Started strengthening exercises. Pain reduced by 30%.</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td>22 Apr 2026</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td>Pain management session. Prescribed anti-inflammatory exercises.</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td>19 Apr 2026</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td>Initial assessment. Diagnosed with knee osteoarthritis.</td><td><span class="badge completed">Completed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <h2>💊 Prescribed Medicines</h2>
+      <table>
+        <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Prescribed By</th></tr></thead>
+        <tbody>
+          <tr><td>Diclofenac Gel</td><td>Apply thin layer</td><td>Twice daily</td><td>Dr. D. Ramachandra</td></tr>
+          <tr><td>Calcium Supplement</td><td>500mg</td><td>Once daily</td><td>Dr. Durga Sowjanya</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="patient.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Doctor – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="patient.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Patient Portal</p>
+    </div>
+    <nav>
+      <a href="index.html">🏠 Dashboard</a>
+      <a href="appointments.html">📅 My Appointments</a>
+      <a href="records.html">📋 My Records</a>
+      <a href="treatment.html">💊 Treatment Plan</a>
+      <a href="contact.html" class="active">📞 Contact Doctor</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">P</div>
+        <div>
+          <p class="user-name" id="userName">Patient</p>
+          <p class="user-role">Patient</p>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1>Contact Doctor</h1><p>Reach out to your doctors anytime</p></div>
+      <div class="welcome-badge">📞 Contact</div>
+    </div>
+
+    <div class="section-card">
+      <h2>👨⚕️ Your Doctors</h2>
+      <div class="contact-card">
+        <div class="contact-avatar">DS</div>
+        <div class="contact-details">
+          <h4>Dr. Durga Sowjanya</h4>
+          <p>MPT Neuro, MIAP · Licensed Physio in Dubai & Abu Dhabi</p>
+          <div class="contact-btns">
+            <a href="tel:6302478412" class="btn-call">📞 Call</a>
+            <a href="https://wa.me/916302478412" target="_blank" class="btn-whatsapp">💬 WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-avatar">DR</div>
+        <div class="contact-details">
+          <h4>Dr. D. Ramachandra</h4>
+          <p>PT · Pain Management Specialist</p>
+          <div class="contact-btns">
+            <a href="tel:7013698578" class="btn-call">📞 Call</a>
+            <a href="https://wa.me/917013698578" target="_blank" class="btn-whatsapp">💬 WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2>✉️ Send a Message</h2>
+      <div class="form-group">
+        <label>To</label>
+        <select id="msgTo">
+          <option>Dr. Durga Sowjanya</option>
+          <option>Dr. D. Ramachandra</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="msgSubject" placeholder="e.g. Question about my treatment"/>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="msgText" rows="4" placeholder="Type your message here..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="sendMessage()">Send Message</button>
+      <p class="success-msg" id="msgSuccess">✅ Message sent! Doctor will respond shortly.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📍 Clinic Location</h2>
+      <p style="color:#6b7c93; font-size:0.9rem; line-height:1.8;">
+        D. No: 41-14-1/1, SowjiRaj Homes,<br/>
+        Shankar Matam Street, Krishnalanka,<br/>
+        Vijayawada, NTR Dist – 520013<br/><br/>
+        🕘 Mon – Sat: 9:00 AM – 7:00 PM
+      </p>
+      <br/>
+      <a href="https://maps.google.com/?q=Krishnalanka,Vijayawada" target="_blank" class="btn-primary" style="text-decoration:none; display:inline-block;">📍 Open in Google Maps</a>
+    </div>
+  </div>
+
+  <script src="patient.js"></script>
+  <script>
+    function sendMessage() {
+      const m = document.getElementById('msgText').value.trim();
+      const s = document.getElementById('msgSubject').value.trim();
+      if (!m || !s) return alert('Please fill all fields.');
+      document.getElementById('msgText').value = '';
+      document.getElementById('msgSubject').value = '';
+      const msg = document.getElementById('msgSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+  </script>
+</body>
+</html>

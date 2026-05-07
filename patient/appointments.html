@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appointments – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="patient.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Patient Portal</p>
+    </div>
+    <nav>
+      <a href="index.html">🏠 Dashboard</a>
+      <a href="appointments.html" class="active">📅 My Appointments</a>
+      <a href="records.html">📋 My Records</a>
+      <a href="treatment.html">💊 Treatment Plan</a>
+      <a href="contact.html">📞 Contact Doctor</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">P</div>
+        <div>
+          <p class="user-name" id="userName">Patient</p>
+          <p class="user-role">Patient</p>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1>My Appointments</h1><p>Book and manage your appointments</p></div>
+      <div class="welcome-badge">📅 Appointments</div>
+    </div>
+
+    <div class="section-card">
+      <h2>➕ Book New Appointment</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Preferred Doctor</label>
+          <select id="bookDoctor">
+            <option>Dr. Durga Sowjanya</option>
+            <option>Dr. D. Ramachandra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Condition</label>
+          <select id="bookCondition">
+            <option value="">Select Condition</option>
+            <option>Frozen Shoulder</option>
+            <option>Elbow Pain</option>
+            <option>Knee & Foot Pain</option>
+            <option>Spine Problems</option>
+            <option>Stroke Rehabilitation</option>
+            <option>Cerebral Palsy</option>
+            <option>Bell's Palsy</option>
+            <option>Parkinson's</option>
+            <option>Nerve Injuries</option>
+            <option>Sciatica</option>
+            <option>Sports Injuries</option>
+            <option>Muscle & Ligament Sprains</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" id="bookDate"/>
+        </div>
+        <div class="form-group">
+          <label>Preferred Time</label>
+          <input type="time" id="bookTime"/>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:4px;">
+        <label>Additional Notes</label>
+        <textarea id="bookNotes" rows="2" placeholder="Any additional information..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="bookAppointment()">Book Appointment</button>
+      <p class="success-msg" id="bookSuccess">✅ Appointment booked! We'll confirm shortly.</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📋 Appointment History</h2>
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
+        <tbody id="apptHistory">
+          <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+          <tr><td>03 May 2026</td><td>9:00 AM</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td>26 Apr 2026</td><td>11:00 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="patient.js"></script>
+  <script>
+    function bookAppointment() {
+      const d = document.getElementById('bookDate').value;
+      const t = document.getElementById('bookTime').value;
+      const c = document.getElementById('bookCondition').value;
+      const doc = document.getElementById('bookDoctor').value;
+      if (!d || !t || !c) return alert('Please fill all fields.');
+      const row = `<tr><td>${d}</td><td>${t}</td><td>${doc}</td><td>${c}</td><td><span class="badge pending">Pending</span></td></tr>`;
+      document.getElementById('apptHistory').insertAdjacentHTML('afterbegin', row);
+      document.getElementById('bookDate').value = '';
+      document.getElementById('bookTime').value = '';
+      document.getElementById('bookCondition').value = '';
+      document.getElementById('bookNotes').value = '';
+      const msg = document.getElementById('bookSuccess');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+  </script>
+</body>
+</html>
