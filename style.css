@@ -537,8 +537,8 @@ h2 {
 }
 
 .slide-img {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   background: linear-gradient(135deg, #1a4b8c, #2e7dd1);
   border-radius: 50%;
   display: flex;
@@ -548,6 +548,9 @@ h2 {
   margin: 0 auto 20px;
   border: 4px solid white;
   box-shadow: 0 4px 16px rgba(26,75,140,0.2);
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .slide-label {
