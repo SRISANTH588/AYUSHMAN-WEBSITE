@@ -62,37 +62,37 @@
         <div class="slider-track" id="sliderTrack">
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/neck.jpg" alt="Neck Pain"/></div>
+            <div class="slide-img"><img src="images/neck.png" alt="Neck Pain"/></div>
             <div class="slide-label">NECK PAIN</div>
             <div class="slide-telugu">మెడ నొప్పి</div>
           </div>
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/shoulder.jpg" alt="Shoulder Pain"/></div>
+            <div class="slide-img"><img src="images/shoulder.png" alt="Shoulder Pain"/></div>
             <div class="slide-label">SHOULDER PAIN</div>
             <div class="slide-telugu">భుజం నొప్పి</div>
           </div>
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/elbow.jpg" alt="Elbow Pain"/></div>
+            <div class="slide-img"><img src="images/elbow_pain.png" alt="Elbow Pain"/></div>
             <div class="slide-label">ELBOW PAIN</div>
             <div class="slide-telugu">మోచేతి నొప్పి</div>
           </div>
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/spine.jpg" alt="Spine Pain"/></div>
+            <div class="slide-img"><img src="images/spine_pain.png" alt="Spine Pain"/></div>
             <div class="slide-label">SPINE PAIN</div>
             <div class="slide-telugu">వెన్ను నొప్పి</div>
           </div>
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/knee.jpg" alt="Knee Pain"/></div>
+            <div class="slide-img"><img src="images/knee_pain.png" alt="Knee Pain"/></div>
             <div class="slide-label">KNEE PAIN</div>
             <div class="slide-telugu">మోకాలి నొప్పి</div>
           </div>
 
           <div class="slide-card">
-            <div class="slide-img"><img src="images/ankle.jpg" alt="Ankle Pain"/></div>
+            <div class="slide-img"><img src="images/ankle_pain.png" alt="Ankle Pain"/></div>
             <div class="slide-label">ANKLE PAIN</div>
             <div class="slide-telugu">పాదాల నొప్పి</div>
           </div>
@@ -222,12 +222,11 @@
     const track = document.getElementById('sliderTrack');
     const dotsContainer = document.getElementById('sliderDots');
     const cards = track.querySelectorAll('.slide-card');
-    let visibleCount = window.innerWidth <= 560 ? 1 : window.innerWidth <= 900 ? 2 : 3;
+    const visibleCount = 3;
     let current = 0;
-    const total = cards.length;
-    const maxIndex = total - visibleCount;
+    const maxIndex = 1; // only 2 slides: 0 and 1
 
-    // Build dots
+    // Build only 2 dots
     for (let i = 0; i <= maxIndex; i++) {
       const dot = document.createElement('div');
       dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -237,14 +236,13 @@
 
     function goTo(index) {
       current = Math.max(0, Math.min(index, maxIndex));
-      const cardWidth = cards[0].offsetWidth + 24;
-      track.style.transform = `translateX(-${current * cardWidth}px)`;
+      const trackWidth = track.offsetWidth + 24;
+      track.style.transform = `translateX(-${current * trackWidth}px)`;
       document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
     }
 
     function slideMove(dir) { goTo(current + dir); }
 
-    // Start at 0, auto slide after 3s
     goTo(0);
     setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
 
