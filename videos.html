@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Fitness Classes – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #1a4b8c;
+      --light: #2e7dd1;
+      --gray: #f4f8fc;
+      --text: #1a2a3a;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--gray);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      background: linear-gradient(135deg, #0d2d5e, #1a4b8c);
+      padding: 28px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-brand img { height: 40px; width: auto; object-fit: contain; }
+
+    .header-brand-text .name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-brand-text .sub {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slot-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .btn-back {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover { background: rgba(255,255,255,0.22); }
+
+    /* ── HERO STRIP ── */
+    .hero-strip {
+      background: linear-gradient(90deg, #1a4b8c, #2e7dd1);
+      padding: 32px 60px;
+      color: white;
+    }
+
+    .hero-strip h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
+    .hero-strip p  { font-size: 0.9rem; color: rgba(255,255,255,0.75); }
+
+    /* ── MAIN ── */
+    .main { padding: 48px 60px; max-width: 1200px; margin: 0 auto; }
+
+    /* Loading skeleton */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .skeleton-card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(26,75,140,0.07);
+    }
+
+    .skeleton-thumb {
+      height: 200px;
+      background: linear-gradient(90deg, #e8f0fb, #d0e4f7, #e8f0fb);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease infinite;
+    }
+
+    .skeleton-body { padding: 18px; }
+
+    .skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #e8f0fb, #d0e4f7, #e8f0fb);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+
+    /* Video grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(26,75,140,0.09);
+      border: 1.5px solid #dce8f5;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(26,75,140,0.18);
+    }
+
+    /* Native video player */
+    .video-thumb {
+      position: relative;
+      width: 100%;
+      background: #0d2d5e;
+      aspect-ratio: 16/9;
+    }
+
+    .video-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Thumbnail fallback with play overlay */
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(13,45,94,0.45);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .play-overlay:hover { background: rgba(13,45,94,0.25); }
+
+    .play-btn {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+
+    .play-overlay:hover .play-btn { transform: scale(1.1); }
+
+    .video-info { padding: 18px 20px 20px; }
+
+    .video-info h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .video-info p {
+      font-size: 0.8rem;
+      color: #6b7c93;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .video-slot-tag {
+      display: inline-block;
+      background: #e8f0fb;
+      color: var(--blue);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      grid-column: 1 / -1;
+    }
+
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 1.2rem; color: var(--blue); margin-bottom: 8px; }
+    .empty-state p  { font-size: 0.88rem; color: #6b7c93; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #6b7c93;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .page-header { padding: 20px 24px; }
+      .hero-strip   { padding: 24px; }
+      .main         { padding: 32px 24px; }
+      .video-grid, .skeleton-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    }
+
+    @media (max-width: 560px) {
+      .video-grid, .skeleton-grid { grid-template-columns: 1fr; }
+      .hero-strip h1 { font-size: 1.2rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="mobile.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-brand">
+      <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT"/>
+      <div class="header-brand-text">
+        <div class="name">Ayushman PhysioFIT</div>
+        <div class="sub">Online Fitness Classes</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="slot-badge" id="slotBadge">🏋️ Loading...</span>
+      <a href="index.html" class="btn-back">← Home</a>
+    </div>
+  </header>
+
+  <!-- HERO STRIP -->
+  <div class="hero-strip">
+    <h1 id="heroTitle">My Fitness Class Videos</h1>
+    <p id="heroSub">Loading your personalised video library...</p>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <p class="section-label" id="sectionLabel">Loading videos...</p>
+
+    <!-- Skeleton loader -->
+    <div class="skeleton-grid" id="skeletonGrid">
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line" style="width:70%;"></div>
+          <div class="skeleton-line" style="width:50%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line" style="width:80%;"></div>
+          <div class="skeleton-line" style="width:45%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line" style="width:60%;"></div>
+          <div class="skeleton-line" style="width:55%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video grid (hidden until loaded) -->
+    <div class="video-grid" id="videoGrid" style="display:none;"></div>
+  </main>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, query, where, getDocs, orderBy }
+      from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    // ── Guard: must be enrolled ──────────────────────────────────────────────
+    const enrollment = JSON.parse(localStorage.getItem('ayushman_enrollment') || '{}');
+
+    if (!enrollment.enrolled || !enrollment.slot) {
+      window.location.href = 'index.html';
+      throw new Error('Not enrolled');
+    }
+
+    const { slot, name } = enrollment;
+
+    // ── Update UI with user info ─────────────────────────────────────────────
+    document.getElementById('slotBadge').textContent  = '🏋️ ' + slot;
+    document.getElementById('heroTitle').textContent  = 'My Fitness Class Videos';
+    document.getElementById('heroSub').textContent    =
+      `${name ? name + ' · ' : ''}Slot: ${slot}`;
+
+    // ── Fetch videos for this slot ───────────────────────────────────────────
+    try {
+      const q    = query(
+        collection(db, 'videos'),
+        where('slotTag', '==', slot),
+        orderBy('createdAt', 'desc')
+      );
+      const snap = await getDocs(q);
+
+      document.getElementById('skeletonGrid').style.display = 'none';
+      document.getElementById('videoGrid').style.display    = 'grid';
+
+      if (snap.empty) {
+        document.getElementById('sectionLabel').textContent = '0 videos';
+        document.getElementById('videoGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🎬</div>
+            <h3>No videos yet</h3>
+            <p>Your instructor hasn't uploaded any videos for your slot yet.<br/>Check back soon!</p>
+          </div>`;
+        return;
+      }
+
+      const videos = [];
+      snap.forEach(d => videos.push({ id: d.id, ...d.data() }));
+
+      document.getElementById('sectionLabel').textContent =
+        `${videos.length} video${videos.length !== 1 ? 's' : ''} for your slot`;
+
+      const grid = document.getElementById('videoGrid');
+      videos.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+
+        // Determine if URL is a Cloudinary video (mp4/webm) or a thumbnail-only link
+        const isCloudinaryVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(v.url);
+
+        const thumbHtml = v.thumbnail
+          ? `<img class="thumb-img" src="${v.thumbnail}" alt="${v.title}" loading="lazy"/>`
+          : (isCloudinaryVideo
+              ? `<video preload="metadata" style="width:100%;height:100%;object-fit:cover;">
+                   <source src="${v.url}#t=0.5" type="video/mp4"/>
+                 </video>`
+              : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎬</div>`
+            );
+
+        card.innerHTML = `
+          <div class="video-thumb" id="thumb-${v.id}">
+            ${thumbHtml}
+            <div class="play-overlay" onclick="playVideo('${v.id}','${v.url}')">
+              <div class="play-btn">▶</div>
+            </div>
+          </div>
+          <div class="video-info">
+            <h3>${v.title || 'Untitled Video'}</h3>
+            ${v.description ? `<p>${v.description}</p>` : ''}
+            <span class="video-slot-tag">📅 ${v.slotTag}</span>
+          </div>`;
+
+        grid.appendChild(card);
+      });
+
+    } catch(e) {
+      document.getElementById('skeletonGrid').style.display = 'none';
+      document.getElementById('videoGrid').style.display    = 'grid';
+      document.getElementById('sectionLabel').textContent   = 'Error loading videos';
+      document.getElementById('videoGrid').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">⚠️</div>
+          <h3>Could not load videos</h3>
+          <p>Please check your connection and try again.</p>
+        </div>`;
+      console.error(e);
+    }
+
+    // ── Play: replace thumbnail with inline video player ────────────────────
+    window.playVideo = function(id, url) {
+      const thumb = document.getElementById('thumb-' + id);
+      if (!thumb) return;
+      thumb.innerHTML = `
+        <video controls autoplay style="width:100%;height:100%;object-fit:cover;background:#000;">
+          <source src="${url}" type="video/mp4"/>
+          Your browser does not support video playback.
+        </video>`;
+    };
+  </script>
+
+</body>
+</html>

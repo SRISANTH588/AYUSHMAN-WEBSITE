@@ -57,10 +57,11 @@
     .video-info p { font-size: 0.78rem; color: #6b7c93; margin-bottom: 12px; }
     .video-info a { display: inline-block; padding: 7px 16px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
   </style>
+  <link rel="stylesheet" href="mobile.css"/>
 </head>
 <body>
 
-  <div class="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><span></span><span></span><span></span></button><div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div><div class="sidebar">
     <div class="sidebar-logo">
       <h3>✚ Ayushman PhysioFIT</h3>
       <p>Sessions Management</p>
@@ -350,5 +351,5 @@
 
     function deleteRow(btn) { btn.closest('tr').remove(); }
   </script>
-</body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
 </html>

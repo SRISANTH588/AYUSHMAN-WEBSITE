@@ -56,10 +56,11 @@
 
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   </style>
+  <link rel="stylesheet" href="mobile.css"/>
 </head>
 <body>
 
-  <div class="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><span></span><span></span><span></span></button><div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div><div class="sidebar">
     <div class="sidebar-logo">
       <h3>✚ Ayushman PhysioFIT</h3>
       <p>Reports & Analytics</p>
@@ -290,5 +291,5 @@
       el.classList.add('active');
     }
   </script>
-</body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
 </html>

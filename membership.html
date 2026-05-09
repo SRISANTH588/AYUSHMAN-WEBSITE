@@ -57,10 +57,11 @@
     .plan-card ul { list-style: none; margin: 16px 0; text-align: left; display: flex; flex-direction: column; gap: 8px; }
     .plan-card ul li { font-size: 0.85rem; color: #1a2a3a; }
   </style>
+  <link rel="stylesheet" href="mobile.css"/>
 </head>
 <body>
 
-  <div class="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><span></span><span></span><span></span></button><div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div><div class="sidebar">
     <div class="sidebar-logo">
       <h3>✚ Ayushman PhysioFIT</h3>
       <p>Membership Control</p>
@@ -242,5 +243,5 @@
       window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(message), '_blank');
     }
   </script>
-</body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
 </html>

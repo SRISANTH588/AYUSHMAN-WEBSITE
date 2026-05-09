@@ -66,10 +66,11 @@
     .btn-danger { padding: 6px 14px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
     .success-msg { color: #2e7dd1; font-weight: 600; font-size: 0.88rem; margin-top: 12px; display: none; }
   </style>
+  <link rel="stylesheet" href="mobile.css"/>
 </head>
 <body>
 
-  <div class="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><span></span><span></span><span></span></button><div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div><div class="sidebar">
     <div class="sidebar-logo">
       <h3>✚ Ayushman PhysioFIT</h3>
       <p>Admin Panel</p>
@@ -86,13 +87,17 @@
       <a onclick="showSection('token', this)">🎫 Token / QR</a>
       <a onclick="showSection('membership', this)">📦 Membership</a>
       <a href="membership.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📄 Membership Page ↗</a>
-      <a onclick="showSection('videos', this)">🎥 Videos / PDF</a>
+      <a onclick="showSection('videos', this)">🎥 Upload Videos</a>
       <a href="sessions.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📺 Sessions Page ↗</a>
       <a onclick="showSection('reports', this)">📊 Reports</a>
       <a href="reports.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📈 Reports Page ↗</a>
       <a href="reports.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📈 Reports Page ↗</a>
       <a onclick="showSection('notifications', this)">🔔 Notifications</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
+      <a onclick="showSection('online_bookings', this)">🎫 Online Bookings</a>
+      <a onclick="showSection('online_appts', this)">📋 Online Appointments</a>
+      <a onclick="showSection('enrollments', this)">🏋️ Fitness Enrollments</a>
+      <a onclick="showSection('slots', this)">🕐 Manage Slots</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -317,33 +322,53 @@
       </div>
     </div>
 
-    <!-- VIDEOS / PDF -->
+    <!-- UPLOAD VIDEOS -->
     <div class="section" id="sec-videos">
-      <div class="topbar"><div><h1>Video / PDF Upload</h1><p>Manage exercise videos and documents</p></div></div>
+      <div class="topbar"><div><h1>Upload Videos</h1><p>Add Cloudinary videos tagged to fitness slots — visible to enrolled patients</p></div></div>
+
       <div class="section-card">
-        <h2>➕ Add Resource</h2>
+        <h2>➕ Upload New Video</h2>
         <div class="form-row">
-          <div class="form-group"><label>Title</label><input type="text" id="vidTitle" placeholder="e.g. Knee Exercise Guide"/></div>
-          <div class="form-group"><label>Type</label>
-            <select id="vidType"><option>Video (YouTube Link)</option><option>PDF Document</option></select>
+          <div class="form-group">
+            <label>Video Title</label>
+            <input type="text" id="vidTitle" placeholder="e.g. Knee Strengthening – Week 1"/>
+          </div>
+          <div class="form-group">
+            <label>Slot Tag</label>
+            <select id="vidSlotTag"><option value="">Loading slots...</option></select>
           </div>
         </div>
-        <div class="form-group"><label>URL / Link</label><input type="url" id="vidUrl" placeholder="https://..."/></div>
-        <div class="form-group"><label>Category</label>
-          <select id="vidCat"><option>Ortho-Sports</option><option>Neurology</option><option>Women-Pediatric</option><option>Cardio-Pulmonary</option><option>Post Surgery</option><option>General Fitness</option></select>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Cloudinary Video URL</label>
+          <input type="url" id="vidUrl" placeholder="https://res.cloudinary.com/your-cloud/video/upload/..."/>
         </div>
-        <button class="btn-primary" onclick="addVideo()">Add Resource</button>
-        <p class="success-msg" id="vidSuccess">✅ Resource added!</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Thumbnail URL <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
+            <input type="url" id="vidThumb" placeholder="https://res.cloudinary.com/.../thumbnail.jpg"/>
+          </div>
+          <div class="form-group">
+            <label>Description <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
+            <input type="text" id="vidDesc" placeholder="Brief description"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="uploadVideo()">📤 Save Video</button>
+        <p class="success-msg" id="vidSuccess">✅ Video saved to Firestore!</p>
       </div>
+
       <div class="section-card">
-        <h2>🎥 Resource Library</h2>
-        <table>
-          <thead><tr><th>Title</th><th>Type</th><th>Category</th><th>Link</th><th>Action</th></tr></thead>
-          <tbody id="vidTable">
-            <tr><td>Knee Strengthening</td><td>Video</td><td>Ortho-Sports</td><td><a href="#" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
-            <tr><td>Post Surgery Guide</td><td>PDF</td><td>Post Surgery</td><td><a href="#" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
-          </tbody>
-        </table>
+        <h2>🎥 Video Library</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;">
+          <select id="vidFilterSlot" onchange="filterVideos()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Slots</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>#</th><th>Title</th><th>Slot Tag</th><th>Description</th><th>Preview</th><th>Uploaded</th><th>Action</th></tr></thead>
+            <tbody id="vidTable"><tr><td colspan="7" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -468,9 +493,185 @@
       </div>
     </div>
 
+    <!-- ONLINE BOOKINGS -->
+    <div class="section" id="sec-online_bookings">
+      <div class="topbar">
+        <div><h1>Online Bookings</h1><p>All booking requests from the website — generate Booking ID &amp; Token</p></div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <span style="background:#fff3cd;color:#856404;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="pendingBadge">⏳ 0 Pending</span>
+          <span style="background:#d4edda;color:#155724;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="confirmedBadge">✅ 0 Confirmed</span>
+        </div>
+      </div>
+
+      <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="icon">📥</div><h3 id="obTotal">0</h3><p>Total Bookings</p></div>
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="obPending">0</h3><p>Pending</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="obConfirmed">0</h3><p>Confirmed</p></div>
+      </div>
+
+      <div class="section-card">
+        <h2>📋 All Booking Requests</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <select id="obFilter" onchange="filterBookings()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table id="obTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Condition</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Submitted</th>
+                <th>Booking ID</th>
+                <th>Token</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="obTableBody">
+              <tr><td colspan="11" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONLINE APPOINTMENTS -->
+    <div class="section" id="sec-online_appts">
+      <div class="topbar"><div><h1>Online Appointments</h1><p>Assign Booking ID & Token to submitted requests</p></div></div>
+      <div class="section-card">
+        <h2>📋 Pending Online Appointments</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Booking ID</th><th>Token</th><th>Status</th><th>Notify</th></tr></thead>
+          <tbody id="onlineApptTable"><tr><td colspan="9" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FITNESS ENROLLMENTS -->
+    <div class="section" id="sec-enrollments">
+      <div class="topbar">
+        <div><h1>Fitness Enrollments</h1><p>Approve enrollment requests &amp; send Razorpay payment links via WhatsApp</p></div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <span style="background:#fff3cd;color:#856404;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="enPendingBadge">⏳ 0 Pending</span>
+          <span style="background:#d4edda;color:#155724;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="enPaidBadge">💰 0 Paid</span>
+        </div>
+      </div>
+
+      <div class="stats" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="icon">📝</div><h3 id="enTotal">0</h3><p>Total Enrollments</p></div>
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="enPendingCount">0</h3><p>Pending</p></div>
+        <div class="stat-card"><div class="icon">💳</div><h3 id="enPaidCount">0</h3><p>Paid / Enrolled</p></div>
+        <div class="stat-card"><div class="icon">💰</div><h3 id="enRevenue">₹0</h3><p>Revenue Collected</p></div>
+      </div>
+
+      <div class="section-card">
+        <h2>🏋️ Enrollment Requests</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <select id="enFilter" onchange="filterEnrollments()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="enrolled">Paid / Enrolled</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Name</th><th>Phone</th><th>Age</th><th>Weight</th>
+                <th>Slot</th><th>Submitted</th><th>Amount (₹)</th><th>Status</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="enrollTable">
+              <tr><td colspan="10" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE SLOTS -->
+    <div class="section" id="sec-slots">
+      <div class="topbar"><div><h1>Manage Fitness Slots</h1><p>Add or remove slots shown in the enrollment form</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Slot</h2>
+        <div style="display:flex;gap:12px;align-items:flex-end;">
+          <div class="form-group" style="flex:1;margin:0;"><label>Slot Timing</label><input type="text" id="newSlot" placeholder="e.g. Mon/Wed/Fri – 7:00 AM"/></div>
+          <button class="btn-primary" onclick="addSlot()">Add Slot</button>
+        </div>
+        <p class="success-msg" id="slotSuccess">✅ Slot added!</p>
+      </div>
+      <div class="section-card">
+        <h2>🕐 Current Slots</h2>
+        <table>
+          <thead><tr><th>Slot Timing</th><th>Action</th></tr></thead>
+          <tbody id="slotsTable"><tr><td colspan="2" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="section" id="sec-settings">
-      <div class="topbar"><div><h1>Settings</h1><p>Manage clinic information</p></div></div>
+      <div class="topbar"><div><h1>Settings</h1><p>Manage clinic configuration</p></div></div>
+
+      <!-- Razorpay Live Key -->
+      <div class="section-card">
+        <h2>💳 Razorpay Live Key</h2>
+        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">This key is used on the payment page to open Razorpay checkout. Keep it secret.</p>
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Live Key (rzp_live_...)</label>
+            <input type="text" id="rzpKey" placeholder="rzp_live_XXXXXXXXXXXXXXXX" autocomplete="off"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveRzpKey()">💾 Save Razorpay Key</button>
+        <p class="success-msg" id="rzpKeySuccess">✅ Razorpay key saved!</p>
+      </div>
+
+      <!-- Fitness Class Price -->
+      <div class="section-card">
+        <h2>🏋️ Fitness Class Price</h2>
+        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">Default amount pre-filled when sending payment links to enrolled students.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price (₹)</label>
+            <input type="number" id="fitnessPrice" placeholder="e.g. 999" min="1"/>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="fitnessPriceDesc" placeholder="e.g. Monthly Fitness Class Fee"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveFitnessPrice()">💾 Save Price</button>
+        <p class="success-msg" id="fitnessPriceSuccess">✅ Price saved!</p>
+      </div>
+
+      <!-- Slot Management -->
+      <div class="section-card">
+        <h2>🕐 Fitness Class Slots</h2>
+        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">Slots shown in the enrollment form on the website.</p>
+        <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:8px;">
+          <div class="form-group" style="flex:1;margin:0;">
+            <label>New Slot Timing</label>
+            <input type="text" id="settingsNewSlot" placeholder="e.g. Mon/Wed/Fri – 7:00 AM"/>
+          </div>
+          <button class="btn-primary" onclick="settingsAddSlot()">➕ Add Slot</button>
+        </div>
+        <p class="success-msg" id="settingsSlotSuccess">✅ Slot added!</p>
+        <table style="margin-top:16px;">
+          <thead><tr><th>Slot Timing</th><th>Action</th></tr></thead>
+          <tbody id="settingsSlotsTable"><tr><td colspan="2" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- Clinic Info -->
       <div class="section-card">
         <h2>🏥 Clinic Info</h2>
         <div class="form-row">
@@ -481,7 +682,7 @@
           <div class="form-group"><label>Opening Time</label><input type="time" value="09:00"/></div>
           <div class="form-group"><label>Closing Time</label><input type="time" value="19:00"/></div>
         </div>
-        <button class="btn-primary" onclick="document.getElementById('settingsSuccess').style.display='block'; setTimeout(()=>document.getElementById('settingsSuccess').style.display='none',3000)">Save Changes</button>
+        <button class="btn-primary" onclick="document.getElementById('settingsSuccess').style.display='block';setTimeout(()=>document.getElementById('settingsSuccess').style.display='none',3000)">Save Changes</button>
         <p class="success-msg" id="settingsSuccess">✅ Settings saved!</p>
       </div>
     </div>
@@ -491,10 +692,16 @@
   <script type="module">
     import { auth, db } from './firebase.js';
     import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
-    import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy, updateDoc, doc, deleteDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
+
+    // Load default fitness price early so enrollment table can pre-fill it
+    getDoc(doc(db, 'settings', 'config')).then(snap => {
+      if (snap.exists() && snap.data().fitnessPrice)
+        window._defaultFitnessPrice = snap.data().fitnessPrice;
+    }).catch(() => {});
 
     // Load real-time data from Firestore
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), (snap) => {
@@ -570,6 +777,367 @@
         document.getElementById('searchResults').style.display = 'none';
       }
     });
+
+    // ── ONLINE BOOKINGS ───────────────────────────────────────────────────────
+    let _obDocs = [];   // cache for filter
+
+    function renderObTable(docs) {
+      const tbody = document.getElementById('obTableBody');
+      if (!tbody) return;
+      const filter = document.getElementById('obFilter')?.value || 'all';
+      const filtered = filter === 'all' ? docs : docs.filter(d => (d.status || 'pending') === filter);
+
+      tbody.innerHTML = '';
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#6b7c93;">No bookings found</td></tr>';
+        return;
+      }
+
+      filtered.forEach((d, i) => {
+        const submitted = d.createdAt?.toDate
+          ? d.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+          : '—';
+        const statusClass = d.status === 'confirmed' ? 'confirmed' : 'pending';
+        const hasToken = d.bookingId && d.token;
+
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr id="obrow-${d._id}">
+            <td style="font-weight:700;color:#1a4b8c;">${i + 1}</td>
+            <td>${d.name || ''}</td>
+            <td>${d.phone || ''}</td>
+            <td>${d.condition || ''}</td>
+            <td>${d.date || ''}</td>
+            <td>${d.time || ''}</td>
+            <td style="font-size:0.78rem;color:#6b7c93;">${submitted}</td>
+            <td><span style="font-weight:700;color:#1a4b8c;font-size:0.88rem;">${d.bookingId || '<span style="color:#aab4c0;">—</span>'}</span></td>
+            <td><span style="font-weight:700;color:#2e7dd1;font-size:0.88rem;">${d.token || '<span style="color:#aab4c0;">—</span>'}</span></td>
+            <td><span class="badge ${statusClass}">${d.status || 'pending'}</span></td>
+            <td>
+              ${hasToken
+                ? `<button style="padding:5px 10px;background:#25D366;color:white;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;" onclick="obNotifyWA('${d._id}')">💬 Notify</button>`
+                : `<button class="btn-primary" style="padding:5px 12px;font-size:0.75rem;" onclick="obGenerate('${d._id}')">🎫 Generate Token</button>`
+              }
+            </td>
+          </tr>`);
+      });
+    }
+
+    window.filterBookings = function() { renderObTable(_obDocs); };
+
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
+      _obDocs = [];
+      let pending = 0, confirmed = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        if (!a.date) return;   // skip walk-in entries without date
+        _obDocs.push({ _id: d.id, ...a });
+        if ((a.status || 'pending') === 'confirmed') confirmed++; else pending++;
+      });
+
+      // update stat cards
+      const total = _obDocs.length;
+      document.getElementById('obTotal')     && (document.getElementById('obTotal').textContent     = total);
+      document.getElementById('obPending')   && (document.getElementById('obPending').textContent   = pending);
+      document.getElementById('obConfirmed') && (document.getElementById('obConfirmed').textContent = confirmed);
+      document.getElementById('pendingBadge')   && (document.getElementById('pendingBadge').textContent   = `⏳ ${pending} Pending`);
+      document.getElementById('confirmedBadge') && (document.getElementById('confirmedBadge').textContent = `✅ ${confirmed} Confirmed`);
+
+      renderObTable(_obDocs);
+    });
+
+    // Generate Booking ID + Token, save to Firestore, notify via WhatsApp
+    window.obGenerate = async function(docId) {
+      // Count existing confirmed to get next sequential number
+      const existing = _obDocs.filter(d => d.bookingId).length;
+      const seq      = String(existing + 1).padStart(4, '0');
+      const year     = new Date().getFullYear();
+      const bookingId = `APF-${year}-${seq}`;
+      const token     = `#${String(existing + 1).padStart(3, '0')}`;
+
+      await updateDoc(doc(db, 'appointments', docId), {
+        bookingId, token, status: 'confirmed'
+      });
+
+      // WhatsApp notify
+      const entry = _obDocs.find(d => d._id === docId);
+      if (entry) obNotifyWAData(entry.phone, entry.name, entry.date, entry.time, bookingId, token);
+    };
+
+    window.obNotifyWA = function(docId) {
+      const entry = _obDocs.find(d => d._id === docId);
+      if (entry) obNotifyWAData(entry.phone, entry.name, entry.date, entry.time, entry.bookingId, entry.token);
+    };
+
+    function obNotifyWAData(phone, name, date, time, bookingId, token) {
+      const msg = `✅ *BOOKING CONFIRMED – Ayushman PhysioFIT*
+
+Dear ${name},
+
+Your appointment has been confirmed!
+
+📋 Booking ID: *${bookingId}*
+🎫 Token: *${token}*
+📅 Date: ${date}
+⏰ Time: ${time}
+
+🏥 Ayushman PhysioFIT Rehabilitation Centre
+📍 Krishnalanka, Vijayawada – 520013
+📞 6302478412 / 7013698578
+
+_Please arrive 10 mins early. We keep you moving..._`;
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    // ── ONLINE APPOINTMENTS (from index.html form) ───────────────────────────
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('onlineApptTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      let count = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        // Only show ones submitted from the public form (have date field)
+        if (!a.date) return;
+        count++;
+        const bookingId = a.bookingId || '';
+        const token     = a.token     || '';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${a.name||''}</td>
+            <td>${a.phone||''}</td>
+            <td>${a.condition||''}</td>
+            <td>${a.date||''}</td>
+            <td>${a.time||''}</td>
+            <td><input type="text" value="${bookingId}" placeholder="BK-001" style="width:80px;padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;" id="bid-${d.id}"/></td>
+            <td><input type="text" value="${token}" placeholder="T-01" style="width:60px;padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;" id="tok-${d.id}"/></td>
+            <td><span class="badge ${a.status === 'confirmed' ? 'confirmed' : 'pending'}">${a.status||'pending'}</span></td>
+            <td style="display:flex;gap:6px;">
+              <button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" onclick="assignAppt('${d.id}','${a.phone}','${a.name}','${a.date}','${a.time}')">✅ Assign</button>
+              <button style="padding:5px 10px;background:#25D366;color:white;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;" onclick="notifyApptWA('${a.phone}','${a.name}','${a.date}','${a.time}',document.getElementById('bid-${d.id}').value,document.getElementById('tok-${d.id}').value)">💬</button>
+            </td>
+          </tr>`);
+      });
+      if (count === 0) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#6b7c93;">No online appointments yet</td></tr>';
+    });
+
+    window.assignAppt = async function(docId, phone, name, date, time) {
+      const bookingId = document.getElementById('bid-' + docId).value.trim();
+      const token     = document.getElementById('tok-' + docId).value.trim();
+      if (!bookingId || !token) return alert('Enter both Booking ID and Token.');
+      await updateDoc(doc(db, 'appointments', docId), { bookingId, token, status: 'confirmed' });
+      notifyApptWA(phone, name, date, time, bookingId, token);
+    };
+
+    window.notifyApptWA = function(phone, name, date, time, bookingId, token) {
+      const msg = `✅ *APPOINTMENT CONFIRMED*
+
+Dear ${name},
+
+Your appointment has been confirmed!
+
+📋 Booking ID: ${bookingId}
+🎫 Token: ${token}
+📅 Date: ${date}
+⏰ Time: ${time}
+
+🏥 Ayushman PhysioFIT Rehabilitation Centre
+📞 6302478412 / 7013698578
+
+_We keep you moving..._`;
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    };
+
+    // ── FITNESS ENROLLMENTS ──────────────────────────────────────────────────
+    let _enDocs = [];
+
+    function renderEnrollTable(docs) {
+      const tbody = document.getElementById('enrollTable');
+      if (!tbody) return;
+      const filter = document.getElementById('enFilter')?.value || 'all';
+      const filtered = filter === 'all' ? docs : docs.filter(d => (d.status || 'pending') === filter);
+
+      tbody.innerHTML = '';
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#6b7c93;">No enrollments found</td></tr>';
+        return;
+      }
+
+      filtered.forEach((d, i) => {
+        const submitted = d.createdAt?.toDate
+          ? d.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+          : '—';
+        const isPaid = d.status === 'enrolled';
+        const statusHtml = isPaid
+          ? '<span class="badge confirmed">💰 Paid / Enrolled</span>'
+          : '<span class="badge pending">⏳ Pending</span>';
+
+        const actionHtml = isPaid
+          ? `<span style="font-size:0.78rem;color:#6b7c93;">Payment ID:<br/><code style="font-size:0.72rem;">${d.paymentId || '—'}</code></span>`
+          : `<div style="display:flex;gap:6px;align-items:center;">
+               <input type="number" id="en-amt-${d._id}" value="${window._defaultFitnessPrice || ''}" placeholder="₹ Amt" min="1"
+                 style="width:72px;padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;"/>
+               <button class="btn-primary" style="padding:6px 12px;font-size:0.75rem;white-space:nowrap;"
+                 onclick="enApprove('${d._id}','${d.phone}','${d.name}','${d.slot}')">✅ Approve &amp; Send Link</button>
+             </div>`;
+
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td style="font-weight:700;color:#1a4b8c;">${i + 1}</td>
+            <td>${d.name || ''}</td>
+            <td>${d.phone || ''}</td>
+            <td>${d.age || ''}</td>
+            <td>${d.weight ? d.weight + 'kg' : ''}</td>
+            <td>${d.slot || ''}</td>
+            <td style="font-size:0.78rem;color:#6b7c93;">${submitted}</td>
+            <td>${d.amountSent ? '<strong>₹' + d.amountSent + '</strong>' : '—'}</td>
+            <td>${statusHtml}</td>
+            <td>${actionHtml}</td>
+          </tr>`);
+      });
+    }
+
+    window.filterEnrollments = function() { renderEnrollTable(_enDocs); };
+
+    onSnapshot(query(collection(db, 'fitnessEnrollments'), orderBy('createdAt', 'desc')), snap => {
+      _enDocs = [];
+      let pending = 0, paid = 0, revenue = 0;
+      snap.forEach(d => {
+        const e = d.data();
+        _enDocs.push({ _id: d.id, ...e });
+        if (e.status === 'enrolled') {
+          paid++;
+          revenue += parseInt(e.amountSent || 0, 10);
+        } else {
+          pending++;
+        }
+      });
+
+      document.getElementById('enTotal')        && (document.getElementById('enTotal').textContent        = _enDocs.length);
+      document.getElementById('enPendingCount') && (document.getElementById('enPendingCount').textContent = pending);
+      document.getElementById('enPaidCount')    && (document.getElementById('enPaidCount').textContent    = paid);
+      document.getElementById('enRevenue')      && (document.getElementById('enRevenue').textContent      = '₹' + revenue.toLocaleString('en-IN'));
+      document.getElementById('enPendingBadge') && (document.getElementById('enPendingBadge').textContent = `⏳ ${pending} Pending`);
+      document.getElementById('enPaidBadge')    && (document.getElementById('enPaidBadge').textContent    = `💰 ${paid} Paid`);
+
+      renderEnrollTable(_enDocs);
+    });
+
+    window.enApprove = async function(docId, phone, name, slot) {
+      const amtInput = document.getElementById('en-amt-' + docId);
+      const amt = amtInput ? amtInput.value.trim() : '';
+      if (!amt) return alert('Enter the amount before approving.');
+
+      // Save approved amount to Firestore
+      await updateDoc(doc(db, 'fitnessEnrollments', docId), {
+        status: 'approved', amountSent: amt
+      });
+
+      // Build payment link
+      const base = window.location.origin + window.location.pathname.replace('admin-dashboard.html', '');
+      const link = `${base}payment.html?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&slot=${encodeURIComponent(slot)}&amount=${amt}`;
+
+      const msg =
+`💳 *PAYMENT LINK – Ayushman PhysioFIT*
+
+Dear ${name},
+
+Your enrollment in our *Online Fitness Class* has been approved! 🎉
+
+🏋️ Slot: ${slot}
+💰 Amount: ₹${amt}
+
+🔗 Complete your payment here:
+${link}
+
+_Ayushman PhysioFIT Rehabilitation Centre_
+📞 6302478412 / 7013698578`;
+
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    };
+
+    // ── MANAGE SLOTS ─────────────────────────────────────────────────────────
+    onSnapshot(collection(db, 'fitnessSlots'), snap => {
+      const tbody = document.getElementById('slotsTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#6b7c93;">No slots yet. Add one above.</td></tr>';
+        return;
+      }
+      snap.forEach(d => {
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${d.data().slot}</td><td><button class="btn-danger" onclick="deleteSlot('${d.id}')">Delete</button></td></tr>`);
+      });
+    });
+
+    window.addSlot = async function() {
+      const val = document.getElementById('newSlot').value.trim();
+      if (!val) return alert('Enter a slot timing.');
+      await addDoc(collection(db, 'fitnessSlots'), { slot: val, createdAt: serverTimestamp() });
+      document.getElementById('newSlot').value = '';
+      const msg = document.getElementById('slotSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    };
+
+    window.deleteSlot = async function(id) {
+      if (!confirm('Delete this slot?')) return;
+      await deleteDoc(doc(db, 'fitnessSlots', id));
+    };
+
+    // ── SETTINGS: load saved values on open ──────────────────────────────────
+    async function loadSettings() {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'config'));
+        if (snap.exists()) {
+          const d = snap.data();
+          if (d.razorpayKey)       document.getElementById('rzpKey').value          = d.razorpayKey;
+          if (d.fitnessPrice)      document.getElementById('fitnessPrice').value     = d.fitnessPrice;
+          if (d.fitnessPriceDesc)  document.getElementById('fitnessPriceDesc').value = d.fitnessPriceDesc;
+        }
+      } catch(e) { console.log('Settings load:', e.message); }
+    }
+    loadSettings();
+
+    // mirror slots into the Settings tab table too
+    onSnapshot(collection(db, 'fitnessSlots'), snap => {
+      const tbody = document.getElementById('settingsSlotsTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#6b7c93;">No slots yet.</td></tr>';
+        return;
+      }
+      snap.forEach(d => {
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${d.data().slot}</td><td><button class="btn-danger" onclick="deleteSlot('${d.id}')">Delete</button></td></tr>`);
+      });
+    });
+
+    window.saveRzpKey = async function() {
+      const key = document.getElementById('rzpKey').value.trim();
+      if (!key) return alert('Enter the Razorpay live key.');
+      await setDoc(doc(db, 'settings', 'config'), { razorpayKey: key }, { merge: true });
+      const m = document.getElementById('rzpKeySuccess');
+      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    };
+
+    window.saveFitnessPrice = async function() {
+      const price = document.getElementById('fitnessPrice').value.trim();
+      const desc  = document.getElementById('fitnessPriceDesc').value.trim();
+      if (!price) return alert('Enter a price.');
+      await setDoc(doc(db, 'settings', 'config'), { fitnessPrice: price, fitnessPriceDesc: desc }, { merge: true });
+      const m = document.getElementById('fitnessPriceSuccess');
+      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    };
+
+    window.settingsAddSlot = async function() {
+      const val = document.getElementById('settingsNewSlot').value.trim();
+      if (!val) return alert('Enter a slot timing.');
+      await addDoc(collection(db, 'fitnessSlots'), { slot: val, createdAt: serverTimestamp() });
+      document.getElementById('settingsNewSlot').value = '';
+      const m = document.getElementById('settingsSlotSuccess');
+      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    };
 
     function showSection(name, el) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -697,19 +1265,92 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function addVideo() {
-      const t = document.getElementById('vidTitle').value.trim();
-      const ty = document.getElementById('vidType').value;
-      const u = document.getElementById('vidUrl').value.trim();
-      const c = document.getElementById('vidCat').value;
-      if (!t || !u) return alert('Please fill all fields.');
-      const row = `<tr><td>${t}</td><td>${ty.includes('Video') ? 'Video' : 'PDF'}</td><td>${c}</td><td><a href="${u}" target="_blank" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
-      document.getElementById('vidTable').insertAdjacentHTML('beforeend', row);
-      document.getElementById('vidTitle').value = '';
-      document.getElementById('vidUrl').value = '';
-      const msg = document.getElementById('vidSuccess');
-      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    // ── UPLOAD VIDEOS ──────────────────────────────────────────────────────────
+    let _vidDocs = [];
+
+    // Populate slot dropdowns (upload form + filter)
+    onSnapshot(collection(db, 'fitnessSlots'), snap => {
+      const tagSel    = document.getElementById('vidSlotTag');
+      const filterSel = document.getElementById('vidFilterSlot');
+      if (!tagSel) return;
+
+      const slots = [];
+      snap.forEach(d => slots.push(d.data().slot));
+
+      tagSel.innerHTML = '<option value="">Select Slot Tag</option>'
+        + slots.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      filterSel.innerHTML = '<option value="all">All Slots</option>'
+        + slots.map(s => `<option value="${s}">${s}</option>`).join('');
+    });
+
+    function renderVidTable(docs) {
+      const tbody = document.getElementById('vidTable');
+      if (!tbody) return;
+      const filter = document.getElementById('vidFilterSlot')?.value || 'all';
+      const filtered = filter === 'all' ? docs : docs.filter(d => d.slotTag === filter);
+
+      tbody.innerHTML = '';
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7c93;">No videos found</td></tr>';
+        return;
+      }
+      filtered.forEach((d, i) => {
+        const uploaded = d.createdAt?.toDate
+          ? d.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+          : '—';
+        const thumb = d.thumbnail
+          ? `<img src="${d.thumbnail}" style="width:64px;height:40px;object-fit:cover;border-radius:6px;" />`
+          : `<a href="${d.url}" target="_blank" style="color:#2e7dd1;font-size:0.8rem;font-weight:600;">▶ Play</a>`;
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td style="font-weight:700;color:#1a4b8c;">${i + 1}</td>
+            <td style="font-weight:600;">${d.title || ''}</td>
+            <td><span style="background:#e8f0fb;color:#1a4b8c;padding:3px 10px;border-radius:12px;font-size:0.78rem;font-weight:600;">${d.slotTag || '—'}</span></td>
+            <td style="font-size:0.82rem;color:#6b7c93;">${d.description || '—'}</td>
+            <td>${thumb}</td>
+            <td style="font-size:0.78rem;color:#6b7c93;">${uploaded}</td>
+            <td><button class="btn-danger" onclick="deleteVideo('${d._id}')">Delete</button></td>
+          </tr>`);
+      });
     }
+
+    window.filterVideos = function() { renderVidTable(_vidDocs); };
+
+    onSnapshot(query(collection(db, 'videos'), orderBy('createdAt', 'desc')), snap => {
+      _vidDocs = [];
+      snap.forEach(d => _vidDocs.push({ _id: d.id, ...d.data() }));
+      renderVidTable(_vidDocs);
+    });
+
+    window.uploadVideo = async function() {
+      const title   = document.getElementById('vidTitle').value.trim();
+      const url     = document.getElementById('vidUrl').value.trim();
+      const slotTag = document.getElementById('vidSlotTag').value;
+      const thumb   = document.getElementById('vidThumb').value.trim();
+      const desc    = document.getElementById('vidDesc').value.trim();
+      if (!title || !url || !slotTag) return alert('Title, URL and Slot Tag are required.');
+
+      await addDoc(collection(db, 'videos'), {
+        title, url, slotTag,
+        thumbnail: thumb || null,
+        description: desc || null,
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById('vidTitle').value = '';
+      document.getElementById('vidUrl').value   = '';
+      document.getElementById('vidThumb').value = '';
+      document.getElementById('vidDesc').value  = '';
+      document.getElementById('vidSlotTag').value = '';
+      const m = document.getElementById('vidSuccess');
+      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    };
+
+    window.deleteVideo = async function(id) {
+      if (!confirm('Delete this video?')) return;
+      await deleteDoc(doc(db, 'videos', id));
+    };
 
     function sendNotif() {
       const to = document.getElementById('notifTo').value;
@@ -819,5 +1460,5 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       sessionStorage.clear(); window.location.href = 'login.html';
     }
   </script>
-</body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
 </html>

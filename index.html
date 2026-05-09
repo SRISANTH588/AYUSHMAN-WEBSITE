@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#1a4b8c"/>
   <meta name="description" content="Ayushman PhysioFIT Rehabilitation Centre Vijayawada"/>
@@ -10,9 +10,7 @@
   <title>Ayushman PhysioFIT – Rehabilitation Centre</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
-  <style>
-    html { scroll-behavior: smooth; }
-  </style>
+  <link rel="stylesheet" href="mobile.css"/>
 </head>
 <body>
 
@@ -26,7 +24,7 @@
   <div class="toast" id="toast"></div>
 
   <!-- NAVBAR -->
-  <nav class="navbar">
+  <nav class="navbar" id="navbar">
     <div class="nav-brand">
       <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="nav-logo"/>
       <div class="nav-brand-text">
@@ -34,90 +32,108 @@
         <span class="nav-sub">Rehabilitation Center</span>
       </div>
     </div>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="#home">Home</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#doctors">Doctors</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="#contact" class="btn-nav">Book Now</a></li>
-      <li><a href="login.html" class="btn-nav" style="background:#e63946;">Login</a></li>
+      <li><a href="doctors.html">Doctors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li id="navOnlineClasses" style="display:none;"><a href="videos.html">Online Classes</a></li>
     </ul>
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
+    <div class="nav-right">
+      <a href="login.html" class="btn-nav-login">Login</a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero" id="home">
-    <div class="hero-logo-bg"></div>
+
+    <!-- Orbs -->
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+    <div class="hero-orb orb-3"></div>
+
+    <!-- Watermark -->
+    <div class="hero-watermark"></div>
+
+    <!-- Floating badge -->
+    <div class="hero-badge-float">
+      <span class="badge-dot"></span>
+      Rehabilitation Centre &middot; Vijayawada
+    </div>
+
     <div class="hero-content">
-      <p class="tagline">Rehabilitation Centre · Vijayawada</p>
-      <h1>"Medicine Adds Days to Life,<br/>Physiotherapy Adds <span>Life to Days"</span></h1>
-      <p class="sub">State-of-the-art medical facilities serving Vijayawada & NTR District</p>
+      <p class="tagline">We Keep You Moving</p>
+      <h1>
+        Medicine Adds<br/>
+        <span class="hero-accent">Days to Life,</span><br/>
+        Physiotherapy Adds<br/>
+        <span class="hero-glow">Life to Days</span>
+      </h1>
+      <p class="hero-sub">State-of-the-art physiotherapy &amp; rehabilitation<br/>serving Vijayawada &amp; NTR District</p>
+
       <div class="hero-btns">
-        <a href="#contact" class="btn-primary">Book Appointment</a>
+        <a href="#online-classes" class="btn-primary">
+          <span>Book Appointment</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
         <a href="#services" class="btn-outline">Our Services</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="stat-num">10<span style="color:#7ec8f0;">+</span></span>
+          <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="hero-stat-sep"></div>
+        <div class="hero-stat">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Expert Doctors</span>
+        </div>
       </div>
     </div>
 
   </section>
 
-  <!-- FREE CAMP BANNER -->
-  <section class="camp-banner reveal">
-    <div class="camp-text">
-      🏥 <strong>FREE PHYSIO CAMP</strong> — MAY 11, 12 & 13 &nbsp;|&nbsp; Pre-Registration Mandatory
-    </div>
-    <div class="camp-phones">
-      <a href="tel:6302478412">📞 6302478412</a>
-      <a href="tel:7013698578">📞 7013698578</a>
-    </div>
-  </section>
-
   <!-- SERVICE SLIDER -->
-  <section class="service-slider-section reveal" >
+  <section class="service-slider-section reveal">
     <h2>Our Services</h2>
-    <p class="section-sub">Specialized physiotherapy treatments for pain relief & recovery</p>
+    <p class="section-sub">Specialized physiotherapy treatments for pain relief &amp; recovery</p>
     <div class="slider-wrapper">
       <button class="slider-btn prev" onclick="slideMove(-1)">&#8249;</button>
       <div class="slider-track-outer">
         <div class="slider-track" id="sliderTrack">
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/neck.png" alt="Neck Pain"/></div>
             <div class="slide-label">NECK PAIN</div>
             <div class="slide-telugu">మెడ నొప్పి</div>
           </div>
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/shoulder.png" alt="Shoulder Pain"/></div>
             <div class="slide-label">SHOULDER PAIN</div>
             <div class="slide-telugu">భుజం నొప్పి</div>
           </div>
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/elbow_pain.png" alt="Elbow Pain"/></div>
             <div class="slide-label">ELBOW PAIN</div>
             <div class="slide-telugu">మోచేతి నొప్పి</div>
           </div>
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/spine_pain.png" alt="Spine Pain"/></div>
             <div class="slide-label">SPINE PAIN</div>
             <div class="slide-telugu">వెన్ను నొప్పి</div>
           </div>
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/knee_pain.png" alt="Knee Pain"/></div>
             <div class="slide-label">KNEE PAIN</div>
             <div class="slide-telugu">మోకాలి నొప్పి</div>
           </div>
-
           <div class="slide-card">
             <div class="slide-img"><img src="images/ankle_pain.png" alt="Ankle Pain"/></div>
             <div class="slide-label">ANKLE PAIN</div>
             <div class="slide-telugu">పాదాల నొప్పి</div>
           </div>
-
         </div>
       </div>
       <button class="slider-btn next" onclick="slideMove(1)">&#8250;</button>
@@ -125,7 +141,7 @@
     <div class="slider-dots" id="sliderDots"></div>
   </section>
 
-  <!-- SERVICES -->
+  <!-- SERVICES GRID -->
   <section class="services reveal" id="services">
     <h2>Best Services For</h2>
     <p class="section-sub">Best services for your health &amp; recovery</p>
@@ -140,191 +156,222 @@
     </div>
   </section>
 
-  <!-- DOCTORS -->
-  <section class="doctors reveal" id="doctors">
-    <h2>Meet Our Doctors</h2>
-    <p class="section-sub">Experienced physiotherapists dedicated to your recovery</p>
-    <div class="doctors-grid">
-      <div class="doctor-card">
-        <div class="doctor-avatar">DS</div>
-        <h3>Dr. Durga Sowjanya</h3>
-        <p class="degree">MPT Neuro, MIAP</p>
-        <p class="badge-doc">Licensed Physio in Dubai & Abu Dhabi</p>
+  <!-- ONLINE CLASSES -->
+  <section class="online-classes reveal" id="online-classes">
+    <h2>Online Services</h2>
+    <p class="section-sub">Book an appointment or enroll in our fitness program — from anywhere</p>
+    <div class="oc-grid">
+
+      <div class="oc-card">
+        <div class="oc-card-header">
+          <span class="oc-icon">🗓️</span>
+          <div>
+            <h3>Online Appointment Booking</h3>
+            <p>Schedule your physio session with our specialists</p>
+          </div>
+        </div>
+        <form id="apptForm" class="oc-form" onsubmit="submitAppointment(event)">
+          <input type="text"  id="apptName"      placeholder="Full Name"     required/>
+          <input type="tel"   id="apptPhone"     placeholder="Phone Number"  required/>
+          <select id="apptCondition" required>
+            <option value="">Select Condition</option>
+            <option>Neck Pain</option>
+            <option>Shoulder Pain</option>
+            <option>Elbow Pain</option>
+            <option>Spine Pain</option>
+            <option>Knee Pain</option>
+            <option>Ankle Pain</option>
+            <option>Stroke Rehabilitation</option>
+            <option>Sports Injuries</option>
+            <option>Other</option>
+          </select>
+          <input type="date"  id="apptDate"  required/>
+          <input type="time"  id="apptTime"  required/>
+          <button type="submit" id="apptBtn">Book Appointment</button>
+        </form>
+        <p class="oc-success" id="apptSuccess">✅ Submitted! Admin will assign your Booking ID &amp; Token.</p>
       </div>
-      <div class="doctor-card">
-        <div class="doctor-avatar">DR</div>
-        <h3>Dr. D. Ramachandra</h3>
-        <p class="degree">PT — Pain Management</p>
-        <p class="badge-doc">Specialist in Pain Management</p>
+
+      <div class="oc-card">
+        <div class="oc-card-header">
+          <span class="oc-icon">🏋️</span>
+          <div>
+            <h3>Online Fitness Classes</h3>
+            <p>Join our expert-led physiotherapy fitness program</p>
+          </div>
+        </div>
+        <ul class="oc-info-list">
+          <li>💪 Guided by licensed physiotherapists</li>
+          <li>📱 Live sessions via video call</li>
+          <li>🎯 Personalized for your condition &amp; fitness level</li>
+          <li>📅 Flexible morning &amp; evening slots</li>
+        </ul>
+        <form id="enrollForm" class="oc-form" onsubmit="submitEnrollment(event)">
+          <input type="text"   id="enName"   placeholder="Full Name"    required/>
+          <input type="number" id="enAge"    placeholder="Age"          min="5"  max="100" required/>
+          <input type="tel"    id="enPhone"  placeholder="Phone Number" required/>
+          <input type="number" id="enWeight" placeholder="Weight (kg)"  min="10" max="300" required/>
+          <select id="enSlot" required>
+            <option value="">Loading slots...</option>
+          </select>
+          <button type="submit" id="enrollBtn">Enroll Now</button>
+        </form>
+        <p class="oc-success" id="enrollSuccess">✅ Enrolled! Admin will confirm &amp; send payment link.</p>
       </div>
+
     </div>
   </section>
 
-  <!-- WHY US -->
-  <section class="why-us reveal">
-    <h2>Why Choose Us?</h2>
-    <div class="why-grid">
-      <div class="why-card">
-        <span>🏆</span>
-        <h4>Expert Doctors</h4>
-        <p>Internationally licensed physiotherapists with years of experience</p>
-      </div>
-      <div class="why-card">
-        <span>🔬</span>
-        <h4>State-of-the-Art Facilities</h4>
-        <p>Modern equipment and advanced rehabilitation techniques</p>
-      </div>
-      <div class="why-card">
-        <span>❤️</span>
-        <h4>Patient-Centered Care</h4>
-        <p>Personalized treatment plans tailored to each patient's needs</p>
-      </div>
-      <div class="why-card">
-        <span>📍</span>
-        <h4>Conveniently Located</h4>
-        <p>Easily accessible in Krishnalanka, Vijayawada</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- CONTACT -->
-  <section class="contact reveal" id="contact">
-    <h2>Get In Touch</h2>
-    <p class="section-sub">Book your appointment or visit us today</p>
-    <div class="contact-grid">
-      <div class="contact-info">
-        <div class="info-item">
-          <span>📍</span>
-          <p>D. No: 41-14-1/1, SowjiRaj Homes,<br/>Shankar Matam Street, Krishnalanka,<br/>Vijayawada, NTR Dist – 520013</p>
-        </div>
-        <div class="info-item">
-          <span>📞</span>
-          <p><a href="tel:6302478412">6302478412</a> &nbsp;/&nbsp; <a href="tel:7013698578">7013698578</a></p>
-        </div>
-        <div class="info-item">
-          <span>🕘</span>
-          <p>Mon – Sat: 9:00 AM – 7:00 PM</p>
-        </div>
-      </div>
-      <form class="contact-form" onsubmit="submitForm(event)">
-        <input type="text" id="fname" placeholder="Your Name" required/>
-        <input type="tel" id="fphone" placeholder="Phone Number" required/>
-        <select id="fcondition">
-          <option value="">Select Condition</option>
-          <option>Frozen Shoulder</option>
-          <option>Knee & Foot Pain</option>
-          <option>Spine Problems</option>
-          <option>Stroke Rehabilitation</option>
-          <option>Sports Injuries</option>
-          <option>Other</option>
-        </select>
-        <textarea id="fmsg" placeholder="Message (optional)" rows="3"></textarea>
-        <button type="submit">Book Appointment</button>
-        <p id="formSuccess" style="display:none;color:#2e7dd1;font-weight:600;text-align:center;">✅ Appointment request sent! We'll call you shortly.</p>
-      </form>
-    </div>
-  </section>
+
+
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <p>✚ <strong>Ayushman PhysioFIT</strong> Rehabilitation Centre</p>
-    <p>With the support of Family, Doctors & Foundations (IMPACT, ARDO)</p>
-    <p style="margin-top:8px; opacity:0.6; font-size:0.8rem;">© 2026 Ayushman PhysioFIT. All rights reserved.</p>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="footer-logo"/>
+        <div>
+          <div class="footer-name">Ayushman <span>PhysioFIT</span></div>
+          <div class="footer-tagline">Rehabilitation Centre · Vijayawada</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <strong>Quick Links</strong>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#doctors">Doctors</a>
+        <a href="#online-classes">Online Classes</a>
+        <a href="#contact">Contact</a>
+        <a href="login.html">Patient Login</a>
+      </div>
+      <div class="footer-contact">
+        <strong>Contact Us</strong>
+        <p>📍 D. No: 41-14-1/1, SowjiRaj Homes,<br/>Krishnalanka, Vijayawada – 520013</p>
+        <p>📞 <a href="tel:6302478412">6302478412</a> / <a href="tel:7013698578">7013698578</a></p>
+        <p>🕘 Mon – Sat: 9:00 AM – 7:00 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Ayushman PhysioFIT Rehabilitation Centre. All rights reserved.
+    </div>
   </footer>
 
-  <script>
-    // SERVICE WORKER + PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(reg => {
-        console.log('SW registered');
-      }).catch(err => console.log('SW error:', err));
-    }
+  <!-- FIREBASE -->
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, addDoc, getDocs, serverTimestamp }
+      from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
-    // PUSH NOTIFICATIONS
-    async function requestNotificationPermission() {
-      if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          showToast('✅ Notifications enabled!');
-          localStorage.setItem('notifEnabled', 'true');
+    async function loadSlots() {
+      const sel = document.getElementById('enSlot');
+      try {
+        const snap = await getDocs(collection(db, 'fitnessSlots'));
+        sel.innerHTML = '<option value="">Select Slot Timing</option>';
+        if (snap.empty) {
+          sel.innerHTML += '<option disabled>No slots available yet</option>';
+        } else {
+          snap.forEach(d => {
+            const o = document.createElement('option');
+            o.value = o.textContent = d.data().slot;
+            sel.appendChild(o);
+          });
         }
-      }
+      } catch { sel.innerHTML = '<option value="">Could not load slots</option>'; }
     }
+    loadSlots();
 
-    function sendLocalNotification(title, body, url = '/') {
-      if (Notification.permission === 'granted') {
-        const n = new Notification(title, {
-          body,
-          icon: 'images/logo.png',
-          badge: 'images/logo.png'
+    window.submitAppointment = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('apptBtn');
+      btn.disabled = true; btn.textContent = 'Submitting...';
+      try {
+        await addDoc(collection(db, 'appointments'), {
+          name:      document.getElementById('apptName').value.trim(),
+          phone:     document.getElementById('apptPhone').value.trim(),
+          condition: document.getElementById('apptCondition').value,
+          date:      document.getElementById('apptDate').value,
+          time:      document.getElementById('apptTime').value,
+          status: 'pending', createdAt: serverTimestamp()
         });
-        n.onclick = () => window.open(url);
-        setTimeout(() => n.close(), 5000);
-      }
-    }
+        document.getElementById('apptForm').reset();
+        document.getElementById('apptSuccess').style.display = 'block';
+        setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 5000);
+      } catch { alert('Submission failed. Please try again.'); }
+      btn.disabled = false; btn.textContent = 'Book Appointment';
+    };
 
-    // Ask for notification permission after 3 seconds
-    setTimeout(() => {
-      if (Notification.permission === 'default') requestNotificationPermission();
-    }, 3000);
+    window.submitEnrollment = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('enrollBtn');
+      btn.disabled = true; btn.textContent = 'Enrolling...';
+      try {
+        await addDoc(collection(db, 'fitnessEnrollments'), {
+          name:   document.getElementById('enName').value.trim(),
+          age:    document.getElementById('enAge').value,
+          phone:  document.getElementById('enPhone').value.trim(),
+          weight: document.getElementById('enWeight').value,
+          slot:   document.getElementById('enSlot').value,
+          status: 'pending', createdAt: serverTimestamp()
+        });
+        document.getElementById('enrollForm').reset();
+        document.getElementById('enrollSuccess').style.display = 'block';
+        setTimeout(() => document.getElementById('enrollSuccess').style.display = 'none', 5000);
+      } catch { alert('Enrollment failed. Please try again.'); }
+      btn.disabled = false; btn.textContent = 'Enroll Now';
+    };
+  </script>
 
-    // PAGE LOADER
+  <!-- CORE JS -->
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+
     window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('pageLoader').classList.add('hidden');
-      }, 800);
+      setTimeout(() => document.getElementById('pageLoader').classList.add('hidden'), 800);
     });
 
-    // NAVBAR SCROLL EFFECT
     window.addEventListener('scroll', () => {
-      const nav = document.querySelector('.navbar');
-      nav.classList.toggle('scrolled', window.scrollY > 50);
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // HAMBURGER MENU
     function toggleMenu() {
-      const h = document.getElementById('hamburger');
-      const nav = document.querySelector('.nav-links');
-      h.classList.toggle('open');
-      nav.classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('navLinks').classList.toggle('open');
     }
-    // Close menu on link click
-    document.querySelectorAll('.nav-links a').forEach(a => {
+    document.querySelectorAll('.nav-links a').forEach(a =>
       a.addEventListener('click', () => {
         document.getElementById('hamburger').classList.remove('open');
-        document.querySelector('.nav-links').classList.remove('open');
-      });
-    });
+        document.getElementById('navLinks').classList.remove('open');
+      })
+    );
 
-    // SCROLL REVEAL
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // TOAST FUNCTION
     function showToast(msg) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
+      t.textContent = msg; t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // LAZY LOAD IMAGES
     document.querySelectorAll('img').forEach(img => {
       img.addEventListener('load', () => img.classList.add('loaded'));
       if (img.complete) img.classList.add('loaded');
     });
 
-    // Slider
+    (function() {
+      const e = JSON.parse(localStorage.getItem('ayushman_enrollment') || '{}');
+      if (e.enrolled && e.slot) {
+        document.getElementById('navOnlineClasses').style.display = 'list-item';
+      }
+    })();
+
     const track = document.getElementById('sliderTrack');
     const dotsContainer = document.getElementById('sliderDots');
-    const cards = track.querySelectorAll('.slide-card');
-    const visibleCount = 3;
-    let current = 0;
-    const maxIndex = 1; // only 2 slides: 0 and 1
+    let current = 0, maxIndex = 1;
 
-    // Build only 2 dots
     for (let i = 0; i <= maxIndex; i++) {
       const dot = document.createElement('div');
       dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -334,26 +381,13 @@
 
     function goTo(index) {
       current = Math.max(0, Math.min(index, maxIndex));
-      const trackWidth = track.offsetWidth + 24;
-      track.style.transform = `translateX(-${current * trackWidth}px)`;
+      track.style.transform = `translateX(-${current * (track.offsetWidth + 24)}px)`;
       document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
     }
-
     function slideMove(dir) { goTo(current + dir); }
-
     goTo(0);
     setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
-
-    function submitForm(e) {
-      e.preventDefault();
-      document.getElementById('formSuccess').style.display = 'block';
-      showToast('✅ Appointment request sent! We\'ll call you shortly.');
-      document.getElementById('fname').value = '';
-      document.getElementById('fphone').value = '';
-      document.getElementById('fcondition').value = '';
-      document.getElementById('fmsg').value = '';
-      setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 4000);
-    }
   </script>
+
 </body>
 </html>

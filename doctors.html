@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Doctors – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="mobile.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="nav-logo"/>
+      <div class="nav-brand-text">
+        <span class="nav-name">Ayushman <span class="physiofit">PhysioFIT</span></span>
+        <span class="nav-sub">Rehabilitation Center</span>
+      </div>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html" class="nav-active">Doctors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="login.html" class="btn-nav-login">Login</a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <h1>Meet Our Doctors</h1>
+    <p>Experienced physiotherapists dedicated to your recovery</p>
+  </div>
+
+  <!-- DOCTORS -->
+  <section class="doctors-section" style="padding-top:60px;">
+    <div class="doctors-row">
+
+      <div class="doc-card">
+        <div class="doc-photo-wrap"><div class="doc-photo-placeholder">DS</div></div>
+        <div class="doc-info">
+          <h3>Dr. Durga Sowjanya</h3>
+          <p class="doc-degree">MPT Neuro &nbsp;·&nbsp; MIAP</p>
+          <p class="doc-spec">Neurological Physiotherapy &amp; Rehabilitation</p>
+          <span class="doc-badge">Licensed Physio — Dubai &amp; Abu Dhabi</span>
+        </div>
+      </div>
+
+      <div class="doc-card">
+        <div class="doc-photo-wrap"><div class="doc-photo-placeholder">DR</div></div>
+        <div class="doc-info">
+          <h3>Dr. D. Ramachandra</h3>
+          <p class="doc-degree">BPT &nbsp;·&nbsp; Pain Management</p>
+          <p class="doc-spec">Chronic Pain &amp; Musculoskeletal Disorders</p>
+          <span class="doc-badge">Specialist in Pain Management</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="footer-logo"/>
+        <div>
+          <div class="footer-name">Ayushman <span>PhysioFIT</span></div>
+          <div class="footer-tagline">Rehabilitation Centre · Vijayawada</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <strong>Quick Links</strong>
+        <a href="index.html">Home</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html">Patient Login</a>
+      </div>
+      <div class="footer-contact">
+        <strong>Contact Us</strong>
+        <p>📍 D. No: 41-14-1/1, SowjiRaj Homes,<br/>Krishnalanka, Vijayawada – 520013</p>
+        <p>📞 <a href="tel:6302478412">6302478412</a> / <a href="tel:7013698578">7013698578</a></p>
+        <p>🕘 Mon – Sat: 9:00 AM – 7:00 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Ayushman PhysioFIT Rehabilitation Centre. All rights reserved.</div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    function toggleMenu() {
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
