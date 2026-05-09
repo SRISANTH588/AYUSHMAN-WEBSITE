@@ -501,7 +501,7 @@
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('patientName').textContent = sessionStorage.getItem('loggedName') || 'Patient';
 
-    function showSection(name, el) {
+    window.showSection = function(name, el) { if(window.innerWidth<=900){var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');if(s)s.classList.remove('open');if(t)t.classList.remove('open');if(o)o.classList.remove('show');}
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
       document.getElementById('sec-' + name).classList.add('active');
@@ -533,7 +533,7 @@
       } catch(e) { alert('Booking failed: ' + e.message); }
     }
 
-    function sendMessage() {
+    window.sendMessage = function() {
       const m = document.getElementById('contactMsg').value.trim();
       if (!m) return alert('Please type a message.');
       document.getElementById('contactMsg').value = '';
@@ -542,7 +542,7 @@
       setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function makePayment() {
+    window.makePayment = function() {
       const s = document.getElementById('payService').value;
       const a = document.getElementById('payAmt').value.trim();
       const m = document.getElementById('payMode').value;
@@ -555,7 +555,7 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function saveProfile() {
+    window.saveProfile = function() {
       const msg = document.getElementById('profSuccess');
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
@@ -608,11 +608,11 @@ _Sent from Ayushman PhysioFIT Patient Portal_`;
       s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 4000);
     }
 
-    async function logout() {
+    window.logout = async function() {
       try { await signOut(auth); } catch(e) {}
       sessionStorage.clear();
       window.location.href = 'login.html';
     }
   </script>
-<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body>
 </html>

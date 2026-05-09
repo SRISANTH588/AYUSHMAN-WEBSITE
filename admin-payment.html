@@ -380,7 +380,7 @@
     let selectedPlanAmt = '';
     let rzCount = 100;
 
-    function selectMode(mode) {
+    window.selectMode = function(mode) {
       selectedMode = mode;
       ['upi','card','netbanking'].forEach(m => {
         document.getElementById(m+'-fields').style.display = m === mode ? 'block' : 'none';
@@ -389,7 +389,7 @@
       });
     }
 
-    function processPayment() {
+    window.processPayment = function() {
       const n = document.getElementById('rzName').value.trim();
       const a = document.getElementById('rzAmount').value.trim();
       const s = document.getElementById('rzService').value;
@@ -409,7 +409,7 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function selectPlan(name, amt) {
+    window.selectPlan = function(name, amt) {
       selectedPlanName = name;
       selectedPlanAmt = amt;
       ['basic','standard','premium'].forEach(p => {
@@ -421,7 +421,7 @@
       document.getElementById('memPayForm').style.display = 'block';
     }
 
-    function payMembership() {
+    window.payMembership = function() {
       const n = document.getElementById('memPayName').value.trim();
       const ph = document.getElementById('memPayPhone').value.trim();
       const m = document.getElementById('memPayMode').value;
@@ -436,7 +436,7 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function downloadPDF(elementId) {
+    window.downloadPDF = function(elementId) {
       const el = document.getElementById(elementId);
       const originalDisplay = el.style.display;
       el.style.display = 'block';
@@ -455,20 +455,20 @@
             .total { text-align:right; font-size:1.2rem; font-weight:700; color:#1a4b8c; margin-top:16px; padding-top:16px; border-top:2px solid #dce8f5; }
           </style>
           <link rel="stylesheet" href="mobile.css"/>
-</head><body>${printContents}<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body></html>`);
+</head><body>${printContents}<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body></html>`);
       win.document.close();
       win.focus();
       setTimeout(() => { win.print(); win.close(); }, 500);
     }
 
-    function showSection(name, el) {
+    window.showSection = function(name, el) { if(window.innerWidth<=900){var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');if(s)s.classList.remove('open');if(t)t.classList.remove('open');if(o)o.classList.remove('show');}
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
       document.getElementById('sec-' + name).classList.add('active');
       el.classList.add('active');
     }
 
-    function recordPayment() {
+    window.recordPayment = function() {
       const p = document.getElementById('rPatient').value.trim();
       const a = document.getElementById('rAmount').value.trim();
       const m = document.getElementById('rMode').value;
@@ -497,9 +497,9 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function remindWA(phone, message) {
+    window.remindWA = function(phone, message) {
       window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(message), '_blank');
     }
   </script>
-<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body>
 </html>

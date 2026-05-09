@@ -736,7 +736,7 @@
       });
     });
 
-    function globalSearchFn() {
+    window.globalSearchFn = function() {
       const q = document.getElementById('globalSearch').value.toLowerCase().trim();
       const results = document.getElementById('searchResults');
       if (!q) { results.style.display = 'none'; return; }
@@ -1139,19 +1139,19 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
     };
 
-    function showSection(name, el) {
+    window.showSection = function(name, el) { if(window.innerWidth<=900){var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');if(s)s.classList.remove('open');if(t)t.classList.remove('open');if(o)o.classList.remove('show');}
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
       document.getElementById('sec-' + name).classList.add('active');
       el.classList.add('active');
     }
 
-    function deleteRow(btn) {
+    window.deleteRow = function(btn) {
       btn.closest('tr').remove();
       updateCounts();
     }
 
-    function updateCounts() {
+    window.updateCounts = function() {
       document.getElementById('totalPatients').textContent = document.getElementById('patTable').rows.length;
       document.getElementById('totalStaff').textContent = document.getElementById('staffTable').rows.length;
     }
@@ -1220,7 +1220,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       } catch(e) { alert('Error: ' + e.message); }
     }
 
-    function addPayment() {
+    window.addPayment = function() {
       const p = document.getElementById('payPatient').value.trim();
       const a = document.getElementById('payAmount').value.trim();
       const m = document.getElementById('payMode').value;
@@ -1236,7 +1236,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
     }
 
     let tokenCount = 2;
-    function generateToken() {
+    window.generateToken = function() {
       const p = document.getElementById('tokenPatient').value.trim();
       const d = document.getElementById('tokenDoctor').value;
       if (!p) return alert('Enter patient name.');
@@ -1250,7 +1250,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       document.getElementById('tokenPatient').value = '';
     }
 
-    function addMembership() {
+    window.addMembership = function() {
       const p = document.getElementById('memPatient').value.trim();
       const pl = document.getElementById('memPlan').value;
       const s = document.getElementById('memStart').value;
@@ -1352,7 +1352,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       await deleteDoc(doc(db, 'videos', id));
     };
 
-    function sendNotif() {
+    window.sendNotif = function() {
       const to = document.getElementById('notifTo').value;
       const type = document.getElementById('notifType').value;
       const msg = document.getElementById('notifMsg').value.trim();
@@ -1364,13 +1364,13 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 3000);
     }
 
-    function sendWhatsApp() {
+    window.sendWhatsApp = function() {
       const msg = document.getElementById('notifMsg').value.trim();
       if (!msg) return alert('Enter a message.');
       window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    function adminAssignHV() {
+    window.adminAssignHV = function() {
       const name = document.getElementById('hvAdminName').value.trim();
       const phone = document.getElementById('hvAdminPhone').value.trim();
       const condition = document.getElementById('hvAdminCondition').value.trim();
@@ -1411,7 +1411,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000);
     }
 
-    function notifyPatientAdmin(phone, name, date, time, doctor) {
+    window.notifyPatientAdmin = function(phone, name, date, time, doctor) {
       const msg = `✅ *HOME VISIT CONFIRMED*
 
 Dear ${name},
@@ -1429,7 +1429,7 @@ _We keep you moving..._`;
       window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    function notifyStaffAdmin(name, date, time, doctor, address) {
+    window.notifyStaffAdmin = function(name, date, time, doctor, address) {
       const msg = `🏠 *HOME VISIT ASSIGNMENT*
 
 Dear Staff,
@@ -1446,7 +1446,7 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    function adminNotifyStaff() {
+    window.adminNotifyStaff = function() {
       const name = document.getElementById('hvAdminName').value.trim();
       const date = document.getElementById('hvAdminDate').value;
       const time = document.getElementById('hvAdminTime').value;
@@ -1455,10 +1455,10 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       notifyStaffAdmin(name, date, time, doctor, address);
     }
 
-    async function logout() {
+    window.logout = async function() {
       try { await signOut(auth); } catch(e) {}
       sessionStorage.clear(); window.location.href = 'login.html';
     }
   </script>
-<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}document.querySelectorAll(".sidebar nav a").forEach(function(a){a.addEventListener("click",function(){if(window.innerWidth<=900){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.remove("open");t.classList.remove("open");o.classList.remove("show");}});});</script></body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body>
 </html>
