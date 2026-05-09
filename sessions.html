@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sessions – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #f4f8fc; display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: linear-gradient(180deg, #0d2d5e, #1a4b8c); color: white; display: flex; flex-direction: column; padding: 32px 0; position: fixed; height: 100vh; }
+    .sidebar-logo { text-align: center; padding: 0 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo h3 { font-size: 1.1rem; font-weight: 700; }
+    .sidebar-logo p { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
+    .sidebar nav { margin-top: 24px; flex: 1; }
+    .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 13px 28px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s; cursor: pointer; }
+    .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
+    .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn-back { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .main { margin-left: 240px; flex: 1; padding: 36px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .topbar h1 { font-size: 1.5rem; color: #1a2a3a; font-weight: 700; }
+    .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
+    .stat-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .stat-card h3 { font-size: 1.8rem; font-weight: 700; color: #1a4b8c; }
+    .stat-card p { font-size: 0.82rem; color: #6b7c93; margin-top: 4px; }
+    .section-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); margin-bottom: 24px; }
+    .section-card h2 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 20px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #f4f8fc; color: #6b7c93; font-weight: 600; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-bottom: 1px solid #f0f4f8; color: #1a2a3a; }
+    tr:last-child td { border-bottom: none; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge.online { background: #d1ecf1; color: #0c5460; }
+    .badge.offline { background: #d4edda; color: #155724; }
+    .badge.completed { background: #e2e3e5; color: #383d41; }
+    .badge.upcoming { background: #fff3cd; color: #856404; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select, .form-group textarea { padding: 11px 14px; border: 1.5px solid #dce8f5; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.88rem; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: #2e7dd1; }
+    .btn-primary { padding: 12px 28px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .btn-danger { padding: 6px 14px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+    .btn-join { padding: 6px 14px; background: #1a4b8c; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .success-msg { color: #2e7dd1; font-weight: 600; font-size: 0.88rem; margin-top: 12px; display: none; }
+
+    .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .video-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
+    .video-thumb { background: linear-gradient(135deg, #1a4b8c, #2e7dd1); height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .video-info { padding: 16px; }
+    .video-info h4 { font-size: 0.9rem; color: #1a2a3a; margin-bottom: 4px; }
+    .video-info p { font-size: 0.78rem; color: #6b7c93; margin-bottom: 12px; }
+    .video-info a { display: inline-block; padding: 7px 16px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Sessions Management</p>
+    </div>
+    <nav>
+      <a class="active" onclick="showSection('overview', this)">📊 Overview</a>
+      <a onclick="showSection('schedule', this)">➕ Schedule Session</a>
+      <a onclick="showSection('online', this)">💻 Online Sessions</a>
+      <a onclick="showSection('offline', this)">🏥 Offline Sessions</a>
+      <a onclick="showSection('videos', this)">🎥 Video Library</a>
+      <a onclick="showSection('attendance', this)">✅ Attendance</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-back" onclick="window.location.href='admin-dashboard.html'">← Back to Admin</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="sec-overview">
+      <div class="topbar"><div><h1>Sessions Overview</h1><p>Online & offline session management</p></div></div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">💻</div><h3>8</h3><p>Online Sessions This Month</p></div>
+        <div class="stat-card"><div class="icon">🏥</div><h3>42</h3><p>Offline Sessions This Month</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3>5</h3><p>Upcoming This Week</p></div>
+        <div class="stat-card"><div class="icon">👥</div><h3>67</h3><p>Total Attendees</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📅 Upcoming Sessions</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Knee Rehab Exercise</td><td><span class="badge online">Online</span></td><td>12 May 2026</td><td>10:00 AM</td><td>Dr. Durga Sowjanya</td><td><span class="badge upcoming">Upcoming</span></td></tr>
+            <tr><td>Posture Correction</td><td><span class="badge online">Online</span></td><td>14 May 2026</td><td>11:00 AM</td><td>Dr. D. Ramachandra</td><td><span class="badge upcoming">Upcoming</span></td></tr>
+            <tr><td>Ultrasound Therapy</td><td><span class="badge offline">Offline</span></td><td>10 May 2026</td><td>9:00 AM</td><td>Dr. Durga Sowjanya</td><td><span class="badge upcoming">Upcoming</span></td></tr>
+            <tr><td>Spine Mobility Class</td><td><span class="badge offline">Offline</span></td><td>11 May 2026</td><td>10:30 AM</td><td>Dr. D. Ramachandra</td><td><span class="badge upcoming">Upcoming</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCHEDULE SESSION -->
+    <div class="section" id="sec-schedule">
+      <div class="topbar"><div><h1>Schedule Session</h1><p>Create a new online or offline session</p></div></div>
+      <div class="section-card">
+        <h2>➕ New Session</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Session Title</label><input type="text" id="sTitle" placeholder="e.g. Knee Rehab Exercise"/></div>
+          <div class="form-group"><label>Type</label>
+            <select id="sType" onchange="toggleLink()">
+              <option>Online</option>
+              <option>Offline</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Doctor</label>
+            <select id="sDoctor">
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Category</label>
+            <select id="sCat">
+              <option>Ortho-Sports</option>
+              <option>Neurology</option>
+              <option>Women-Pediatric</option>
+              <option>Cardio-Pulmonary</option>
+              <option>Post Surgery</option>
+              <option>General Fitness</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Date</label><input type="date" id="sDate"/></div>
+          <div class="form-group"><label>Time</label><input type="time" id="sTime"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Max Participants</label><input type="number" id="sMax" placeholder="e.g. 20"/></div>
+          <div class="form-group" id="linkGroup"><label>Meeting Link (Online)</label><input type="url" id="sLink" placeholder="https://meet.google.com/..."/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;"><label>Description</label><textarea id="sDesc" rows="3" placeholder="Session description..."></textarea></div>
+        <button class="btn-primary" onclick="scheduleSession()">Schedule Session</button>
+        <p class="success-msg" id="sSuccess">✅ Session scheduled successfully!</p>
+      </div>
+    </div>
+
+    <!-- ONLINE SESSIONS -->
+    <div class="section" id="sec-online">
+      <div class="topbar"><div><h1>Online Sessions</h1><p>Virtual physiotherapy classes</p></div></div>
+      <div class="section-card">
+        <h2>💻 Scheduled Online Sessions</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Doctor</th><th>Participants</th><th>Link</th><th>Action</th></tr></thead>
+          <tbody id="onlineTable">
+            <tr><td>Knee Rehab Exercise</td><td>12 May 2026</td><td>10:00 AM</td><td>Dr. Durga Sowjanya</td><td>12/20</td><td><a href="#" class="btn-join">Join</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Posture Correction</td><td>14 May 2026</td><td>11:00 AM</td><td>Dr. D. Ramachandra</td><td>8/15</td><td><a href="#" class="btn-join">Join</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Breathing Exercises</td><td>16 May 2026</td><td>9:00 AM</td><td>Dr. Durga Sowjanya</td><td>5/10</td><td><a href="#" class="btn-join">Join</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OFFLINE SESSIONS -->
+    <div class="section" id="sec-offline">
+      <div class="topbar"><div><h1>Offline Sessions</h1><p>In-clinic physiotherapy sessions</p></div></div>
+      <div class="section-card">
+        <h2>🏥 Scheduled Offline Sessions</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Doctor</th><th>Room</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="offlineTable">
+            <tr><td>Ultrasound Therapy</td><td>10 May 2026</td><td>9:00 AM</td><td>Dr. Durga Sowjanya</td><td>Room 1</td><td><span class="badge upcoming">Upcoming</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Spine Mobility Class</td><td>11 May 2026</td><td>10:30 AM</td><td>Dr. D. Ramachandra</td><td>Room 2</td><td><span class="badge upcoming">Upcoming</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Strengthening Exercises</td><td>03 May 2026</td><td>9:00 AM</td><td>Dr. Durga Sowjanya</td><td>Room 1</td><td><span class="badge completed">Completed</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIDEO LIBRARY -->
+    <div class="section" id="sec-videos">
+      <div class="topbar"><div><h1>Video Library</h1><p>Exercise videos & PDF resources</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Video / PDF</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Title</label><input type="text" id="vTitle" placeholder="e.g. Knee Strengthening Guide"/></div>
+          <div class="form-group"><label>Type</label>
+            <select id="vType"><option>YouTube Video</option><option>PDF Document</option><option>Google Drive</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Category</label>
+            <select id="vCat"><option>Ortho-Sports</option><option>Neurology</option><option>Women-Pediatric</option><option>Cardio-Pulmonary</option><option>Post Surgery</option><option>General Fitness</option></select>
+          </div>
+          <div class="form-group"><label>URL</label><input type="url" id="vUrl" placeholder="https://..."/></div>
+        </div>
+        <button class="btn-primary" onclick="addVideo()">Add Resource</button>
+        <p class="success-msg" id="vSuccess">✅ Resource added!</p>
+      </div>
+      <div class="video-grid" id="videoGrid">
+        <div class="video-card">
+          <div class="video-thumb">🦵</div>
+          <div class="video-info">
+            <h4>Knee Strengthening Guide</h4>
+            <p>Ortho-Sports · YouTube Video</p>
+            <a href="#" target="_blank">▶ Watch</a>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">🧠</div>
+          <div class="video-info">
+            <h4>Stroke Rehab Exercises</h4>
+            <p>Neurology · YouTube Video</p>
+            <a href="#" target="_blank">▶ Watch</a>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">📄</div>
+          <div class="video-info">
+            <h4>Post Surgery Recovery Guide</h4>
+            <p>Post Surgery · PDF Document</p>
+            <a href="#" target="_blank">📥 Download</a>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">🫁</div>
+          <div class="video-info">
+            <h4>Breathing Exercises</h4>
+            <p>Cardio-Pulmonary · YouTube Video</p>
+            <a href="#" target="_blank">▶ Watch</a>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">🤸</div>
+          <div class="video-info">
+            <h4>General Fitness Routine</h4>
+            <p>General Fitness · YouTube Video</p>
+            <a href="#" target="_blank">▶ Watch</a>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">🧘</div>
+          <div class="video-info">
+            <h4>Women's Posture Guide</h4>
+            <p>Women-Pediatric · PDF Document</p>
+            <a href="#" target="_blank">📥 Download</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div class="section" id="sec-attendance">
+      <div class="topbar"><div><h1>Attendance</h1><p>Track session attendance</p></div></div>
+      <div class="section-card">
+        <h2>✅ Mark Attendance</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Session</label>
+            <select id="attSession">
+              <option>Knee Rehab Exercise – 12 May</option>
+              <option>Posture Correction – 14 May</option>
+              <option>Ultrasound Therapy – 10 May</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Patient Name</label><input type="text" id="attPatient" placeholder="Patient name"/></div>
+        </div>
+        <button class="btn-primary" onclick="markAttendance()">Mark Present</button>
+        <p class="success-msg" id="attSuccess">✅ Attendance marked!</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 Attendance Records</h2>
+        <table>
+          <thead><tr><th>Session</th><th>Patient</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="attTable">
+            <tr><td>Knee Rehab Exercise</td><td>Ravi Kumar</td><td>05 May 2026</td><td><span class="badge offline">Present</span></td></tr>
+            <tr><td>Posture Correction</td><td>Priya Sharma</td><td>04 May 2026</td><td><span class="badge offline">Present</span></td></tr>
+            <tr><td>Ultrasound Therapy</td><td>Suresh Babu</td><td>03 May 2026</td><td><span class="badge offline">Present</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function showSection(name, el) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('sec-' + name).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function toggleLink() {
+      const isOnline = document.getElementById('sType').value === 'Online';
+      document.getElementById('linkGroup').style.display = isOnline ? 'flex' : 'none';
+    }
+
+    function scheduleSession() {
+      const t = document.getElementById('sTitle').value.trim();
+      const ty = document.getElementById('sType').value;
+      const d = document.getElementById('sDoctor').value;
+      const dt = document.getElementById('sDate').value;
+      const ti = document.getElementById('sTime').value;
+      const l = document.getElementById('sLink').value.trim();
+      if (!t || !dt || !ti) return alert('Please fill all required fields.');
+      const link = ty === 'Online' && l ? `<a href="${l}" target="_blank" class="btn-join">Join</a>` : '—';
+      const onlineRow = `<tr><td>${t}</td><td>${dt}</td><td>${ti}</td><td>${d}</td><td>0/20</td><td>${link}</td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+      const offlineRow = `<tr><td>${t}</td><td>${dt}</td><td>${ti}</td><td>${d}</td><td>Room 1</td><td><span class="badge upcoming">Upcoming</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+      if (ty === 'Online') document.getElementById('onlineTable').insertAdjacentHTML('beforeend', onlineRow);
+      else document.getElementById('offlineTable').insertAdjacentHTML('beforeend', offlineRow);
+      document.getElementById('sTitle').value = '';
+      document.getElementById('sDate').value = '';
+      document.getElementById('sTime').value = '';
+      document.getElementById('sLink').value = '';
+      const msg = document.getElementById('sSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function addVideo() {
+      const t = document.getElementById('vTitle').value.trim();
+      const ty = document.getElementById('vType').value;
+      const c = document.getElementById('vCat').value;
+      const u = document.getElementById('vUrl').value.trim();
+      if (!t || !u) return alert('Please fill all fields.');
+      const icon = ty.includes('PDF') ? '📄' : '🎥';
+      const label = ty.includes('PDF') ? '📥 Download' : '▶ Watch';
+      const card = `<div class="video-card"><div class="video-thumb">${icon}</div><div class="video-info"><h4>${t}</h4><p>${c} · ${ty}</p><a href="${u}" target="_blank">${label}</a></div></div>`;
+      document.getElementById('videoGrid').insertAdjacentHTML('beforeend', card);
+      document.getElementById('vTitle').value = '';
+      document.getElementById('vUrl').value = '';
+      const msg = document.getElementById('vSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function markAttendance() {
+      const s = document.getElementById('attSession').value;
+      const p = document.getElementById('attPatient').value.trim();
+      if (!p) return alert('Enter patient name.');
+      const today = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+      const row = `<tr><td>${s.split('–')[0].trim()}</td><td>${p}</td><td>${today}</td><td><span class="badge offline">Present</span></td></tr>`;
+      document.getElementById('attTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('attPatient').value = '';
+      const msg = document.getElementById('attSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function deleteRow(btn) { btn.closest('tr').remove(); }
+  </script>
+</body>
+</html>

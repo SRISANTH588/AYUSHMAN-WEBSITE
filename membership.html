@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Membership – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #f4f8fc; display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: linear-gradient(180deg, #0d2d5e, #1a4b8c); color: white; display: flex; flex-direction: column; padding: 32px 0; position: fixed; height: 100vh; }
+    .sidebar-logo { text-align: center; padding: 0 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo h3 { font-size: 1.1rem; font-weight: 700; }
+    .sidebar-logo p { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
+    .sidebar nav { margin-top: 24px; flex: 1; }
+    .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 13px 28px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s; cursor: pointer; }
+    .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
+    .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn-back { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .main { margin-left: 240px; flex: 1; padding: 36px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .topbar h1 { font-size: 1.5rem; color: #1a2a3a; font-weight: 700; }
+    .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
+    .stat-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .stat-card h3 { font-size: 1.8rem; font-weight: 700; color: #1a4b8c; }
+    .stat-card p { font-size: 0.82rem; color: #6b7c93; margin-top: 4px; }
+    .section-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); margin-bottom: 24px; }
+    .section-card h2 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 20px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #f4f8fc; color: #6b7c93; font-weight: 600; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-bottom: 1px solid #f0f4f8; color: #1a2a3a; }
+    tr:last-child td { border-bottom: none; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge.active { background: #d4edda; color: #155724; }
+    .badge.expired { background: #f8d7da; color: #721c24; }
+    .badge.expiring { background: #fff3cd; color: #856404; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select { padding: 11px 14px; border: 1.5px solid #dce8f5; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.88rem; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: #2e7dd1; }
+    .btn-primary { padding: 12px 28px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .btn-danger { padding: 6px 14px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+    .success-msg { color: #2e7dd1; font-weight: 600; font-size: 0.88rem; margin-top: 12px; display: none; }
+
+    .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+    .plan-card { border-radius: 16px; padding: 28px; text-align: center; border: 2px solid #dce8f5; position: relative; }
+    .plan-card.popular { border-color: #1a4b8c; }
+    .plan-card .popular-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #1a4b8c; color: white; padding: 4px 16px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .plan-card h3 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 8px; }
+    .plan-card .price { font-size: 2rem; font-weight: 800; color: #1a4b8c; }
+    .plan-card .price span { font-size: 0.9rem; font-weight: 400; color: #6b7c93; }
+    .plan-card ul { list-style: none; margin: 16px 0; text-align: left; display: flex; flex-direction: column; gap: 8px; }
+    .plan-card ul li { font-size: 0.85rem; color: #1a2a3a; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Membership Control</p>
+    </div>
+    <nav>
+      <a class="active" onclick="showSection('overview', this)">📊 Overview</a>
+      <a onclick="showSection('assign', this)">➕ Assign Plan</a>
+      <a onclick="showSection('members', this)">👥 All Members</a>
+      <a onclick="showSection('plans', this)">📦 Plans</a>
+      <a onclick="showSection('expiring', this)">⏰ Expiring Soon</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-back" onclick="window.location.href='admin-dashboard.html'">← Back to Admin</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="sec-overview">
+      <div class="topbar"><div><h1>Membership Overview</h1><p>Manage all patient memberships</p></div></div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">📦</div><h3>12</h3><p>Active Members</p></div>
+        <div class="stat-card"><div class="icon">⏰</div><h3>3</h3><p>Expiring This Week</p></div>
+        <div class="stat-card"><div class="icon">🔴</div><h3>2</h3><p>Expired</p></div>
+        <div class="stat-card"><div class="icon">💰</div><h3>₹28,400</h3><p>Membership Revenue</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📋 Recent Memberships</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Plan</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Ravi Kumar</td><td>Standard</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge active">Active</span></td></tr>
+            <tr><td>Priya Sharma</td><td>Basic</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge active">Active</span></td></tr>
+            <tr><td>Suresh Babu</td><td>Premium</td><td>01 Apr 2026</td><td>30 Apr 2026</td><td><span class="badge expired">Expired</span></td></tr>
+            <tr><td>Lakshmi Devi</td><td>Standard</td><td>25 Apr 2026</td><td>24 May 2026</td><td><span class="badge expiring">Expiring Soon</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ASSIGN PLAN -->
+    <div class="section" id="sec-assign">
+      <div class="topbar"><div><h1>Assign Membership</h1><p>Add a plan to a patient</p></div></div>
+      <div class="section-card">
+        <h2>➕ New Membership</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="aName" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="aPhone" placeholder="Phone number"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Plan</label>
+            <select id="aPlan">
+              <option>Basic – ₹999/month</option>
+              <option>Standard – ₹1,999/month</option>
+              <option>Premium – ₹3,499/month</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Start Date</label><input type="date" id="aStart"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>End Date</label><input type="date" id="aEnd"/></div>
+          <div class="form-group"><label>Payment Mode</label>
+            <select id="aMode"><option>Cash</option><option>UPI</option><option>Card</option><option>Online</option></select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="assignMembership()">Assign Membership</button>
+        <p class="success-msg" id="aSuccess">✅ Membership assigned successfully!</p>
+      </div>
+    </div>
+
+    <!-- ALL MEMBERS -->
+    <div class="section" id="sec-members">
+      <div class="topbar"><div><h1>All Members</h1><p>Complete membership list</p></div></div>
+      <div class="section-card">
+        <h2>👥 Member List</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Phone</th><th>Plan</th><th>Start</th><th>End</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="memberTable">
+            <tr><td>Ravi Kumar</td><td>9876543210</td><td>Standard</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge active">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Priya Sharma</td><td>9123456780</td><td>Basic</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge active">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Suresh Babu</td><td>9000011122</td><td>Premium</td><td>01 Apr 2026</td><td>30 Apr 2026</td><td><span class="badge expired">Expired</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td>Lakshmi Devi</td><td>9988776655</td><td>Standard</td><td>25 Apr 2026</td><td>24 May 2026</td><td><span class="badge expiring">Expiring Soon</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PLANS -->
+    <div class="section" id="sec-plans">
+      <div class="topbar"><div><h1>Membership Plans</h1><p>Available plans for patients</p></div></div>
+      <div class="plan-cards">
+        <div class="plan-card">
+          <h3>Basic</h3>
+          <div class="price">₹999<span>/month</span></div>
+          <ul>
+            <li>✅ 5 Appointments</li>
+            <li>✅ 1 Online Session</li>
+            <li>✅ Exercise Videos Access</li>
+            <li>❌ Home Visit</li>
+            <li>❌ Priority Token</li>
+          </ul>
+          <button class="btn-primary" style="width:100%;">Select Plan</button>
+        </div>
+        <div class="plan-card popular">
+          <div class="popular-tag">⭐ Most Popular</div>
+          <h3>Standard</h3>
+          <div class="price">₹1,999<span>/month</span></div>
+          <ul>
+            <li>✅ Unlimited Appointments</li>
+            <li>✅ 2 Online Sessions</li>
+            <li>✅ Exercise Videos Access</li>
+            <li>✅ Priority Token</li>
+            <li>❌ Home Visit</li>
+          </ul>
+          <button class="btn-primary" style="width:100%;">Select Plan</button>
+        </div>
+        <div class="plan-card">
+          <h3>Premium</h3>
+          <div class="price">₹3,499<span>/month</span></div>
+          <ul>
+            <li>✅ Unlimited Appointments</li>
+            <li>✅ 4 Online Sessions</li>
+            <li>✅ Exercise Videos Access</li>
+            <li>✅ Priority Token</li>
+            <li>✅ 1 Home Visit/month</li>
+          </ul>
+          <button class="btn-primary" style="width:100%;">Select Plan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPIRING SOON -->
+    <div class="section" id="sec-expiring">
+      <div class="topbar"><div><h1>Expiring Soon</h1><p>Memberships expiring within 7 days</p></div></div>
+      <div class="section-card">
+        <h2>⏰ Expiring This Week</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Phone</th><th>Plan</th><th>Expires On</th><th>Remind</th></tr></thead>
+          <tbody>
+            <tr><td>Lakshmi Devi</td><td>9988776655</td><td>Standard</td><td>24 May 2026</td><td><button style="padding:6px 14px;background:#25D366;color:white;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;" onclick="remindWA('9988776655','Your Ayushman PhysioFIT membership expires on 24 May 2026. Renew now!')">💬 WhatsApp</button></td></tr>
+            <tr><td>Mohan Rao</td><td>9876501234</td><td>Basic</td><td>22 May 2026</td><td><button style="padding:6px 14px;background:#25D366;color:white;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;" onclick="remindWA('9876501234','Your Ayushman PhysioFIT membership expires on 22 May 2026. Renew now!')">💬 WhatsApp</button></td></tr>
+            <tr><td>Anita Reddy</td><td>9000099001</td><td>Premium</td><td>21 May 2026</td><td><button style="padding:6px 14px;background:#25D366;color:white;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;" onclick="remindWA('9000099001','Your Ayushman PhysioFIT membership expires on 21 May 2026. Renew now!')">💬 WhatsApp</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function showSection(name, el) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('sec-' + name).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function assignMembership() {
+      const n = document.getElementById('aName').value.trim();
+      const ph = document.getElementById('aPhone').value.trim();
+      const pl = document.getElementById('aPlan').value;
+      const s = document.getElementById('aStart').value;
+      const e = document.getElementById('aEnd').value;
+      if (!n || !ph || !s || !e) return alert('Please fill all fields.');
+      const row = `<tr><td>${n}</td><td>${ph}</td><td>${pl.split('–')[0].trim()}</td><td>${s}</td><td>${e}</td><td><span class="badge active">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+      document.getElementById('memberTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('aName').value = '';
+      document.getElementById('aPhone').value = '';
+      document.getElementById('aStart').value = '';
+      document.getElementById('aEnd').value = '';
+      const msg = document.getElementById('aSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function deleteRow(btn) { btn.closest('tr').remove(); }
+
+    function remindWA(phone, message) {
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(message), '_blank');
+    }
+  </script>
+</body>
+</html>

@@ -82,10 +82,17 @@
     </div>
     <nav>
       <a class="active" onclick="showSection('dashboard', this)">🏠 Dashboard</a>
-      <a onclick="showSection('appointments', this)">📅 My Appointments</a>
-      <a onclick="showSection('records', this)">📋 My Records</a>
+      <a onclick="showSection('appointments', this)">📅 Book Appointment</a>
+      <a onclick="showSection('payment', this)">💳 Online Payment</a>
+      <a onclick="showSection('membership', this)">📦 Membership</a>
+      <a onclick="showSection('sessions', this)">🎥 Video / Classes</a>
+      <a onclick="showSection('records', this)">📊 Booking History</a>
+      <a onclick="showSection('notifications', this)">🔔 Notifications</a>
+      <a onclick="showSection('profile', this)">👤 My Profile</a>
       <a onclick="showSection('treatment', this)">💊 Treatment Plan</a>
       <a onclick="showSection('contact', this)">📞 Contact Doctor</a>
+      <a onclick="showSection('token', this)">🎫 My Token</a>
+      <a onclick="showSection('homevisit', this)">🏠 Home Visit</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -246,12 +253,250 @@
         </div>
         <button class="btn-primary" onclick="sendMessage()">Send Message</button>
         <p class="success-msg" id="msgSuccess">✅ Message sent! Doctor will respond shortly.</p>
+        <div style="margin-top:16px;"><button style="padding:12px 24px;background:#25D366;color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="window.open('https://wa.me/916302478412?text=Hello+Doctor','_blank')">💬 WhatsApp Doctor</button></div>
+      </div>
+    </div>
+
+    <!-- ONLINE PAYMENT -->
+    <div class="section" id="sec-payment">
+      <div class="topbar"><div><h1>Online Payment</h1><p>Pay for sessions & membership</p></div></div>
+      <div class="section-card">
+        <h2>💳 Make Payment</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Service</label>
+            <select id="payService"><option>Physiotherapy Session</option><option>Membership Fee</option><option>Online Session</option><option>Consultation</option></select>
+          </div>
+          <div class="form-group"><label>Amount (₹)</label><input type="number" id="payAmt" placeholder="Amount"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Payment Mode</label>
+            <select id="payMode"><option>UPI</option><option>Card</option><option>Net Banking</option><option>Cash</option></select>
+          </div>
+          <div class="form-group"><label>UPI / Card No.</label><input type="text" id="payRef" placeholder="UPI ID or last 4 digits"/></div>
+        </div>
+        <button style="padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="makePayment()">Pay Now</button>
+        <p class="success-msg" id="paySuccess">✅ Payment successful! Receipt generated.</p>
+      </div>
+      <div class="section-card">
+        <h2>🧾 Payment History</h2>
+        <table>
+          <thead><tr><th>Service</th><th>Amount</th><th>Mode</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="payHistTable">
+            <tr><td>Physio Session</td><td>₹500</td><td>UPI</td><td>03 May 2026</td><td><span class="badge confirmed">Paid</span></td></tr>
+            <tr><td>Membership Fee</td><td>₹1,999</td><td>Card</td><td>01 May 2026</td><td><span class="badge confirmed">Paid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="section" id="sec-notifications">
+      <div class="topbar"><div><h1>Notifications</h1><p>Your alerts & reminders</p></div></div>
+      <div class="section-card">
+        <h2>🔔 Recent Notifications</h2>
+        <div style="display:flex;flex-direction:column;gap:12px;" id="notifList">
+          <div style="background:#f0f7ff;border-left:4px solid #2e7dd1;border-radius:10px;padding:16px;">
+            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">📅 Appointment Reminder</div>
+            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Your appointment with Dr. Durga Sowjanya is tomorrow at 10:30 AM.</div>
+            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">Today, 9:00 AM</div>
+          </div>
+          <div style="background:#f0fff4;border-left:4px solid #2e8b57;border-radius:10px;padding:16px;">
+            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">📦 Membership Active</div>
+            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Your Standard membership is active until 31 May 2026.</div>
+            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">01 May 2026</div>
+          </div>
+          <div style="background:#fff8f0;border-left:4px solid #e63946;border-radius:10px;padding:16px;">
+            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">🏥 FREE PHYSIO CAMP</div>
+            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Join our FREE Physio Camp on May 11, 12 & 13. Pre-registration mandatory!</div>
+            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">Yesterday</div>
+          </div>
+          <div style="background:#f9f0f9;border-left:4px solid #8b2e8b;border-radius:10px;padding:16px;">
+            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">💳 Payment Received</div>
+            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">₹500 payment received for Physiotherapy Session on 03 May 2026.</div>
+            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">03 May 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section" id="sec-profile">
+      <div class="topbar"><div><h1>My Profile</h1><p>Manage your personal information</p></div></div>
+      <div class="section-card">
+        <h2>👤 Personal Information</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Full Name</label><input type="text" id="profName" value="Ravi Kumar"/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="profPhone" value="9876543210"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Email</label><input type="email" id="profEmail" placeholder="your@email.com"/></div>
+          <div class="form-group"><label>Date of Birth</label><input type="date" id="profDob"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Gender</label>
+            <select id="profGender"><option>Male</option><option>Female</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Blood Group</label>
+            <select id="profBlood"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;"><label>Address</label><input type="text" id="profAddr" placeholder="Your address"/></div>
+        <button style="padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="saveProfile()">Save Profile</button>
+        <p class="success-msg" id="profSuccess">✅ Profile updated successfully!</p>
+      </div>
+      <div class="section-card">
+        <h2>🔒 Change Password</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Current Password</label><input type="password" placeholder="Current password"/></div>
+          <div class="form-group"><label>New Password</label><input type="password" placeholder="New password"/></div>
+        </div>
+        <button style="padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="alert('Password updated!')">Update Password</button>
+      </div>
+    </div>
+
+    <!-- TOKEN -->
+    <div class="section" id="sec-token">
+      <div class="topbar"><div><h1>My Token</h1><p>Your current visit token</p></div></div>
+      <div class="section-card" style="text-align:center;">
+        <h2>🎫 Today's Token</h2>
+        <div style="font-size:5rem;font-weight:800;color:#8b2e8b;margin:20px 0;">#007</div>
+        <p style="color:#6b7c93;font-size:0.9rem;">Dr. Durga Sowjanya &nbsp;|&nbsp; 10:30 AM</p>
+        <div style="margin:24px auto;width:130px;height:130px;background:#f9f0f9;border:2px dashed #8b2e8b;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#8b2e8b;font-size:0.75rem;font-weight:600;">QR Code<br/>(scan at desk)</div>
+        <button style="margin-top:16px;padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="window.print()">🖨️ Print Token</button>
+      </div>
+      <div class="section-card">
+        <h2>📋 Token History</h2>
+        <table><thead><tr><th>Token</th><th>Date</th><th>Doctor</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>#007</td><td>Today</td><td>Dr. Durga Sowjanya</td><td><span class="badge confirmed">Waiting</span></td></tr>
+          <tr><td>#003</td><td>03 May 2026</td><td>Dr. D. Ramachandra</td><td><span class="badge completed">Completed</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- MEMBERSHIP -->
+    <div class="section" id="sec-membership">
+      <div class="topbar"><div><h1>My Membership</h1><p>Your current plan & benefits</p></div></div>
+      <div class="section-card">
+        <h2>📦 Active Plan</h2>
+        <div style="background:linear-gradient(135deg,#5c1a5c,#8b2e8b);border-radius:16px;padding:28px;color:white;margin-bottom:20px;">
+          <div style="font-size:1.4rem;font-weight:800;">Standard Plan</div>
+          <div style="font-size:2rem;font-weight:700;margin:8px 0;">₹1,999<span style="font-size:1rem;font-weight:400;">/month</span></div>
+          <div style="opacity:0.85;font-size:0.88rem;">Valid: 01 May 2026 – 31 May 2026</div>
+          <div style="margin-top:16px;background:rgba(255,255,255,0.2);border-radius:20px;height:10px;"><div style="background:white;width:35%;height:10px;border-radius:20px;"></div></div>
+          <div style="font-size:0.78rem;margin-top:6px;opacity:0.8;">11 days used of 31</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:0.88rem;">✅ Unlimited Appointments</li>
+          <li style="font-size:0.88rem;">✅ 2 Online Sessions/month</li>
+          <li style="font-size:0.88rem;">✅ Access to Exercise Videos</li>
+          <li style="font-size:0.88rem;">✅ Priority Token</li>
+        </ul>
+      </div>
+      <div class="section-card">
+        <h2>📊 Available Plans</h2>
+        <table><thead><tr><th>Plan</th><th>Price</th><th>Benefits</th></tr></thead>
+        <tbody>
+          <tr><td>Basic</td><td>₹999/mo</td><td>5 Appointments, 1 Online Session</td></tr>
+          <tr><td><strong>Standard ✓</strong></td><td>₹1,999/mo</td><td>Unlimited Appointments, 2 Online Sessions</td></tr>
+          <tr><td>Premium</td><td>₹3,499/mo</td><td>All features + Home Visit</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- SESSIONS -->
+    <div class="section" id="sec-sessions">
+      <div class="topbar"><div><h1>Sessions</h1><p>Online & offline class schedule</p></div></div>
+      <div class="section-card">
+        <h2>💻 Upcoming Online Sessions</h2>
+        <table><thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Doctor</th><th>Join</th></tr></thead>
+        <tbody>
+          <tr><td>Knee Rehab Exercise</td><td>12 May 2026</td><td>10:00 AM</td><td>Dr. Durga Sowjanya</td><td><a href="#" style="background:#8b2e8b;color:white;padding:5px 14px;border-radius:8px;text-decoration:none;font-size:0.8rem;font-weight:600;">Join</a></td></tr>
+          <tr><td>Posture Correction</td><td>14 May 2026</td><td>11:00 AM</td><td>Dr. D. Ramachandra</td><td><a href="#" style="background:#8b2e8b;color:white;padding:5px 14px;border-radius:8px;text-decoration:none;font-size:0.8rem;font-weight:600;">Join</a></td></tr>
+        </tbody></table>
+      </div>
+      <div class="section-card">
+        <h2>🏥 Offline Sessions</h2>
+        <table><thead><tr><th>Session</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Ultrasound Therapy</td><td>10 May 2026</td><td>10:30 AM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+          <tr><td>Strengthening Exercises</td><td>03 May 2026</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+        </tbody></table>
+      </div>
+      <div class="section-card">
+        <h2>🎥 Exercise Video Library</h2>
+        <table><thead><tr><th>Title</th><th>Category</th><th>Watch</th></tr></thead>
+        <tbody>
+          <tr><td>Knee Strengthening Guide</td><td>Ortho-Sports</td><td><a href="#" style="color:#8b2e8b;font-weight:600;">▶ Watch</a></td></tr>
+          <tr><td>Post Surgery Recovery</td><td>Post Surgery</td><td><a href="#" style="color:#8b2e8b;font-weight:600;">▶ Watch</a></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- HOME VISIT -->
+    <div class="section" id="sec-homevisit">
+      <div class="topbar"><div><h1>Book Home Visit</h1><p>Request a physiotherapist at your home</p></div></div>
+      <div class="section-card">
+        <h2>🏠 Request Home Visit</h2>
+        <div style="background:linear-gradient(135deg,#5c1a5c,#8b2e8b);border-radius:16px;padding:24px;color:white;margin-bottom:24px;">
+          <div style="font-size:1rem;font-weight:700;margin-bottom:8px;">💬 How it works</div>
+          <div style="font-size:0.85rem;opacity:0.9;line-height:1.8;">
+            1️⃣ Fill the form below<br/>
+            2️⃣ Click "Request via WhatsApp" — message sent to clinic<br/>
+            3️⃣ Staff will confirm your slot & send WhatsApp confirmation<br/>
+            4️⃣ Physiotherapist visits your home at confirmed time
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Your Name</label><input type="text" id="hvName" placeholder="Full name"/></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="hvPhone" placeholder="Your WhatsApp number"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Condition / Problem</label><input type="text" id="hvCondition" placeholder="e.g. Knee Pain"/></div>
+          <div class="form-group"><label>Preferred Date</label><input type="date" id="hvDate"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Preferred Time</label>
+            <select id="hvTime">
+              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+              <option>12:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+              <option>4:00 PM</option><option>5:00 PM</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Doctor Preference</label>
+            <select id="hvDoctor">
+              <option>Any Available</option>
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;"><label>Full Address</label>
+          <textarea id="hvAddress" rows="3" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;resize:none;" placeholder="House No, Street, Area, City..."></textarea>
+        </div>
+        <button style="width:100%;padding:14px;background:#25D366;color:white;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="requestHomeVisit()">
+          💬 Request Home Visit via WhatsApp
+        </button>
+        <p class="success-msg" id="hvSuccess" style="display:none;margin-top:12px;">✅ Request sent! Staff will confirm your slot shortly.</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 My Home Visit Requests</h2>
+        <table>
+          <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Address</th><th>Status</th></tr></thead>
+          <tbody id="hvHistoryTable">
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No requests yet</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
   </div>
 
-  <script>
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
+    import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('patientName').textContent = sessionStorage.getItem('loggedName') || 'Patient';
 
@@ -262,20 +507,29 @@
       el.classList.add('active');
     }
 
-    function bookAppointment() {
+    async function bookAppointment() {
       const d = document.getElementById('bookDate').value;
       const t = document.getElementById('bookTime').value;
       const c = document.getElementById('bookCondition').value;
-      const doc = document.getElementById('bookDoctor').value;
+      const doctor = document.getElementById('bookDoctor').value;
       if (!d || !t || !c) return alert('Please fill all fields.');
-      const row = `<tr><td>${d}</td><td>${t}</td><td>${doc}</td><td>${c}</td><td><span class="badge pending">Pending</span></td></tr>`;
-      document.getElementById('apptHistory').insertAdjacentHTML('afterbegin', row);
-      document.getElementById('bookDate').value = '';
-      document.getElementById('bookTime').value = '';
-      document.getElementById('bookCondition').value = '';
-      const msg = document.getElementById('bookSuccess');
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
+      const uid = sessionStorage.getItem('loggedUid');
+      const patientName = sessionStorage.getItem('loggedName');
+      try {
+        await addDoc(collection(db, 'appointments'), {
+          patientName, patientUid: uid || 'guest',
+          doctor, condition: c, date: d, time: t,
+          status: 'Pending', createdAt: serverTimestamp()
+        });
+        const row = `<tr><td>${d}</td><td>${t}</td><td>${doctor}</td><td>${c}</td><td><span class="badge pending">Pending</span></td></tr>`;
+        document.getElementById('apptHistory').insertAdjacentHTML('afterbegin', row);
+        document.getElementById('bookDate').value = '';
+        document.getElementById('bookTime').value = '';
+        document.getElementById('bookCondition').value = '';
+        const msg = document.getElementById('bookSuccess');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+      } catch(e) { alert('Booking failed: ' + e.message); }
     }
 
     function sendMessage() {
@@ -287,7 +541,77 @@
       setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+    function makePayment() {
+      const s = document.getElementById('payService').value;
+      const a = document.getElementById('payAmt').value.trim();
+      const m = document.getElementById('payMode').value;
+      if (!a) return alert('Enter amount.');
+      const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      const row = `<tr><td>${s}</td><td>\u20b9${a}</td><td>${m}</td><td>${today}</td><td><span class="badge confirmed">Paid</span></td></tr>`;
+      document.getElementById('payHistTable').insertAdjacentHTML('afterbegin', row);
+      document.getElementById('payAmt').value = '';
+      const msg = document.getElementById('paySuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function saveProfile() {
+      const msg = document.getElementById('profSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    async function requestHomeVisit() {
+      const name = document.getElementById('hvName').value.trim() || sessionStorage.getItem('loggedName');
+      const phone = document.getElementById('hvPhone').value.trim();
+      const condition = document.getElementById('hvCondition').value.trim();
+      const date = document.getElementById('hvDate').value;
+      const time = document.getElementById('hvTime').value;
+      const doctor = document.getElementById('hvDoctor').value;
+      const address = document.getElementById('hvAddress').value.trim();
+      if (!phone || !condition || !date || !address) return alert('Please fill all fields.');
+
+      // Save to Firestore
+      try {
+        await addDoc(collection(db, 'homevisits'), {
+          patientName: name, phone, condition, date, time,
+          doctor, address, status: 'Pending',
+          createdAt: serverTimestamp()
+        });
+      } catch(e) { console.log('Firestore:', e.message); }
+
+      // Send WhatsApp to clinic
+      const clinicPhone = '916302478412';
+      const msg = `🏠 *HOME VISIT REQUEST*
+
+👤 Patient: ${name}
+📞 Phone: ${phone}
+🩺 Condition: ${condition}
+📅 Date: ${date}
+⏰ Time: ${time}
+👨‍⚕️ Doctor: ${doctor}
+📍 Address: ${address}
+
+_Sent from Ayushman PhysioFIT Patient Portal_`;
+      window.open('https://wa.me/' + clinicPhone + '?text=' + encodeURIComponent(msg), '_blank');
+
+      // Add to history table
+      const tbody = document.getElementById('hvHistoryTable');
+      if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+      tbody.insertAdjacentHTML('afterbegin',
+        `<tr><td>${date}</td><td>${time}</td><td>${doctor}</td><td>${address.substring(0,30)}...</td><td><span class="badge pending">⏳ Pending</span></td></tr>`);
+
+      document.getElementById('hvAddress').value = '';
+      document.getElementById('hvPhone').value = '';
+      document.getElementById('hvCondition').value = '';
+      document.getElementById('hvDate').value = '';
+      const s = document.getElementById('hvSuccess');
+      s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 4000);
+    }
+
+    async function logout() {
+      try { await signOut(auth); } catch(e) {}
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    }
   </script>
 </body>
 </html>

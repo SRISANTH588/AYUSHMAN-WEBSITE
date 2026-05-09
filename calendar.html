@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calendar – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #f4f8fc; display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: linear-gradient(180deg, #0d2d5e, #1a4b8c); color: white; display: flex; flex-direction: column; padding: 32px 0; position: fixed; height: 100vh; }
+    .sidebar-logo { text-align: center; padding: 0 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo h3 { font-size: 1.1rem; font-weight: 700; }
+    .sidebar-logo p { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
+    .sidebar nav { margin-top: 24px; flex: 1; }
+    .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 13px 28px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s; cursor: pointer; }
+    .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
+    .sidebar-footer { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn-back { width: 100%; padding: 10px; background: #e63946; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .main { margin-left: 240px; flex: 1; padding: 36px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .topbar h1 { font-size: 1.5rem; color: #1a2a3a; font-weight: 700; }
+    .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
+    .section-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); margin-bottom: 24px; }
+    .section-card h2 { font-size: 1.1rem; color: #1a2a3a; margin-bottom: 20px; font-weight: 700; }
+    .btn-primary { padding: 10px 24px; background: linear-gradient(135deg, #1a4b8c, #2e7dd1); color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+
+    /* CALENDAR */
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .cal-header h2 { font-size: 1.2rem; color: #1a2a3a; font-weight: 700; }
+    .cal-nav { display: flex; gap: 8px; }
+    .cal-nav button { padding: 8px 16px; border: 1.5px solid #dce8f5; background: white; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; cursor: pointer; color: #1a4b8c; font-weight: 600; transition: all 0.2s; }
+    .cal-nav button:hover { background: #1a4b8c; color: white; border-color: #1a4b8c; }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-name { text-align: center; font-size: 0.78rem; font-weight: 700; color: #6b7c93; padding: 8px 0; text-transform: uppercase; }
+    .cal-day {
+      min-height: 90px; border-radius: 10px; padding: 8px;
+      border: 1.5px solid #f0f4f8; background: white;
+      cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .cal-day:hover { border-color: #2e7dd1; background: #f0f7ff; }
+    .cal-day.today { border-color: #1a4b8c; background: #f0f7ff; }
+    .cal-day.today .day-num { background: #1a4b8c; color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+    .cal-day.other-month { background: #fafafa; opacity: 0.5; }
+    .cal-day.selected { border-color: #e63946; background: #fff5f5; }
+    .day-num { font-size: 0.85rem; font-weight: 700; color: #1a2a3a; margin-bottom: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+    .cal-event { font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; margin-bottom: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-event.appt { background: #d1ecf1; color: #0c5460; }
+    .cal-event.homevisit { background: #d4edda; color: #155724; }
+    .cal-event.session { background: #fff3cd; color: #856404; }
+
+    /* APPOINTMENT DETAIL PANEL */
+    .detail-panel { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
+    .detail-panel h3 { font-size: 1rem; color: #1a2a3a; font-weight: 700; margin-bottom: 16px; }
+    .appt-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; background: #f4f8fc; margin-bottom: 10px; border-left: 4px solid #1a4b8c; }
+    .appt-item .time { font-size: 0.78rem; font-weight: 700; color: #1a4b8c; min-width: 60px; }
+    .appt-item .info h4 { font-size: 0.85rem; font-weight: 700; color: #1a2a3a; }
+    .appt-item .info p { font-size: 0.75rem; color: #6b7c93; }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .badge.confirmed { background: #d4edda; color: #155724; }
+    .badge.pending { background: #fff3cd; color: #856404; }
+    .badge.completed { background: #d1ecf1; color: #0c5460; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+
+    /* ADD APPOINTMENT FORM */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select { padding: 10px 14px; border: 1.5px solid #dce8f5; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: #2e7dd1; }
+    .success-msg { color: #2e7dd1; font-weight: 600; font-size: 0.85rem; margin-top: 10px; display: none; }
+
+    @media (max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; }
+      .main { margin-left: 0; padding: 20px 16px; }
+      .sidebar { display: none; }
+      .cal-day { min-height: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h3>✚ Ayushman PhysioFIT</h3>
+      <p>Appointment Calendar</p>
+    </div>
+    <nav>
+      <a href="admin-dashboard.html">🏠 Dashboard</a>
+      <a href="calendar.html" class="active">🗓️ Calendar</a>
+      <a href="payment.html">💳 Payments</a>
+      <a href="sessions.html">🎥 Sessions</a>
+      <a href="reports.html">📊 Reports</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-back" onclick="window.location.href='admin-dashboard.html'">← Back to Admin</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1>🗓️ Appointment Calendar</h1><p>View & manage all appointments</p></div>
+      <button class="btn-primary" onclick="document.getElementById('addApptForm').scrollIntoView({behavior:'smooth'})">➕ Add Appointment</button>
+    </div>
+
+    <div class="two-col">
+      <!-- CALENDAR -->
+      <div>
+        <div class="section-card">
+          <div class="cal-header">
+            <h2 id="calTitle"></h2>
+            <div class="cal-nav">
+              <button onclick="changeMonth(-1)">‹ Prev</button>
+              <button onclick="goToday()">Today</button>
+              <button onclick="changeMonth(1)">Next ›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <!-- ADD APPOINTMENT -->
+        <div class="section-card" id="addApptForm">
+          <h2>➕ Add Appointment</h2>
+          <div class="form-row">
+            <div class="form-group"><label>Patient Name</label><input type="text" id="newPatient" placeholder="Patient name"/></div>
+            <div class="form-group"><label>Doctor</label>
+              <select id="newDoctor">
+                <option>Dr. Durga Sowjanya</option>
+                <option>Dr. D. Ramachandra</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="date" id="newDate"/></div>
+            <div class="form-group"><label>Time</label><input type="time" id="newTime"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Condition</label><input type="text" id="newCondition" placeholder="Condition"/></div>
+            <div class="form-group"><label>Type</label>
+              <select id="newType">
+                <option value="appt">Appointment</option>
+                <option value="homevisit">Home Visit</option>
+                <option value="session">Online Session</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addAppointment()">Add to Calendar</button>
+          <p class="success-msg" id="addSuccess">✅ Appointment added to calendar!</p>
+        </div>
+      </div>
+
+      <!-- DETAIL PANEL -->
+      <div>
+        <div class="detail-panel">
+          <h3>📅 <span id="selectedDateLabel">Today's</span> Appointments</h3>
+          <div id="apptList">
+            <div class="appt-item">
+              <div class="time">9:00 AM</div>
+              <div class="info"><h4>Ravi Kumar</h4><p>Knee Pain · Dr. Durga Sowjanya</p></div>
+              <span class="badge completed">Done</span>
+            </div>
+            <div class="appt-item">
+              <div class="time">10:30 AM</div>
+              <div class="info"><h4>Priya Sharma</h4><p>Spine Problem · Dr. D. Ramachandra</p></div>
+              <span class="badge confirmed">Confirmed</span>
+            </div>
+            <div class="appt-item">
+              <div class="time">11:00 AM</div>
+              <div class="info"><h4>Suresh Babu</h4><p>Stroke Rehab · Dr. Durga Sowjanya</p></div>
+              <span class="badge pending">Pending</span>
+            </div>
+            <div class="appt-item">
+              <div class="time">12:00 PM</div>
+              <div class="info"><h4>Lakshmi Devi</h4><p>Frozen Shoulder · Dr. D. Ramachandra</p></div>
+              <span class="badge pending">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEGEND -->
+        <div class="detail-panel" style="margin-top:16px;">
+          <h3>🎨 Legend</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:3px;background:#d1ecf1;"></div><span style="font-size:0.85rem;">Appointment</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:3px;background:#d4edda;"></div><span style="font-size:0.85rem;">Home Visit</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:3px;background:#fff3cd;"></div><span style="font-size:0.85rem;">Online Session</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:3px;background:#1a4b8c;border-radius:50%;"></div><span style="font-size:0.85rem;">Today</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentDate = new Date();
+    let selectedDate = new Date();
+    const appointments = [
+      { date: formatDate(new Date()), time: '9:00 AM', patient: 'Ravi Kumar', condition: 'Knee Pain', doctor: 'Dr. Durga Sowjanya', type: 'appt' },
+      { date: formatDate(new Date()), time: '10:30 AM', patient: 'Priya Sharma', condition: 'Spine Problem', doctor: 'Dr. D. Ramachandra', type: 'appt' },
+      { date: formatDate(new Date()), time: '11:00 AM', patient: 'Suresh Babu', condition: 'Stroke Rehab', doctor: 'Dr. Durga Sowjanya', type: 'appt' },
+    ];
+
+    function formatDate(d) {
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calTitle').textContent = months[month] + ' ' + year;
+
+      const grid = document.getElementById('calGrid');
+      grid.innerHTML = '';
+
+      // Day names
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'cal-day-name';
+        el.textContent = d;
+        grid.appendChild(el);
+      });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const daysInPrev = new Date(year, month, 0).getDate();
+      const today = formatDate(new Date());
+
+      // Prev month days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const el = document.createElement('div');
+        el.className = 'cal-day other-month';
+        el.innerHTML = `<div class="day-num">${daysInPrev - i}</div>`;
+        grid.appendChild(el);
+      }
+
+      // Current month days
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const el = document.createElement('div');
+        el.className = 'cal-day' + (dateStr === today ? ' today' : '') + (dateStr === formatDate(selectedDate) ? ' selected' : '');
+        el.innerHTML = `<div class="day-num">${d}</div>`;
+
+        // Add events
+        appointments.filter(a => a.date === dateStr).slice(0,3).forEach(a => {
+          const ev = document.createElement('div');
+          ev.className = 'cal-event ' + a.type;
+          ev.textContent = a.patient;
+          el.appendChild(ev);
+        });
+
+        el.onclick = () => selectDay(dateStr, d);
+        grid.appendChild(el);
+      }
+
+      // Next month days
+      const totalCells = firstDay + daysInMonth;
+      const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+      for (let d = 1; d <= remaining; d++) {
+        const el = document.createElement('div');
+        el.className = 'cal-day other-month';
+        el.innerHTML = `<div class="day-num">${d}</div>`;
+        grid.appendChild(el);
+      }
+    }
+
+    function selectDay(dateStr, day) {
+      selectedDate = new Date(dateStr);
+      document.getElementById('selectedDateLabel').textContent = dateStr;
+      document.getElementById('newDate').value = dateStr;
+      renderCalendar();
+      renderApptList(dateStr);
+    }
+
+    function renderApptList(dateStr) {
+      const list = document.getElementById('apptList');
+      const dayAppts = appointments.filter(a => a.date === dateStr);
+      if (dayAppts.length === 0) {
+        list.innerHTML = '<p style="color:#6b7c93;font-size:0.85rem;text-align:center;padding:20px;">No appointments on this day</p>';
+        return;
+      }
+      list.innerHTML = dayAppts.map(a => `
+        <div class="appt-item">
+          <div class="time">${a.time}</div>
+          <div class="info"><h4>${a.patient}</h4><p>${a.condition} · ${a.doctor}</p></div>
+          <span class="badge confirmed">Confirmed</span>
+        </div>`).join('');
+    }
+
+    function changeMonth(dir) {
+      currentDate.setMonth(currentDate.getMonth() + dir);
+      renderCalendar();
+    }
+
+    function goToday() {
+      currentDate = new Date();
+      selectedDate = new Date();
+      renderCalendar();
+      renderApptList(formatDate(new Date()));
+    }
+
+    function addAppointment() {
+      const patient = document.getElementById('newPatient').value.trim();
+      const doctor = document.getElementById('newDoctor').value;
+      const date = document.getElementById('newDate').value;
+      const time = document.getElementById('newTime').value;
+      const condition = document.getElementById('newCondition').value.trim();
+      const type = document.getElementById('newType').value;
+      if (!patient || !date || !time || !condition) return alert('Please fill all fields.');
+      appointments.push({ date, time, patient, condition, doctor, type });
+      renderCalendar();
+      renderApptList(date);
+      document.getElementById('newPatient').value = '';
+      document.getElementById('newCondition').value = '';
+      document.getElementById('newTime').value = '';
+      const msg = document.getElementById('addSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    // Init
+    renderCalendar();
+    renderApptList(formatDate(new Date()));
+  </script>
+</body>
+</html>

@@ -80,6 +80,19 @@
       <a onclick="showSection('staff', this)">👨⚕️ Staff</a>
       <a onclick="showSection('patients', this)">🧑 Patients</a>
       <a onclick="showSection('settings', this)">⚙️ Settings</a>
+      <a href="calendar.html">🗓️ Calendar ↗</a>
+      <a onclick="showSection('payments', this)">💳 Payments</a>
+      <a href="payment.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">🧾 Payment Page ↗</a>
+      <a onclick="showSection('token', this)">🎫 Token / QR</a>
+      <a onclick="showSection('membership', this)">📦 Membership</a>
+      <a href="membership.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📄 Membership Page ↗</a>
+      <a onclick="showSection('videos', this)">🎥 Videos / PDF</a>
+      <a href="sessions.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📺 Sessions Page ↗</a>
+      <a onclick="showSection('reports', this)">📊 Reports</a>
+      <a href="reports.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📈 Reports Page ↗</a>
+      <a href="reports.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📈 Reports Page ↗</a>
+      <a onclick="showSection('notifications', this)">🔔 Notifications</a>
+      <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -93,6 +106,13 @@
       <div class="topbar">
         <div><h1>Admin Dashboard</h1><p>Welcome back, <span id="adminName"></span>!</p></div>
         <div class="welcome-badge">🛡️ Admin</div>
+      </div>
+
+      <!-- GLOBAL SEARCH -->
+      <div style="margin-bottom:24px;position:relative;">
+        <input type="text" id="globalSearch" onkeyup="globalSearchFn()" placeholder="🔍 Search patients, appointments, staff..." style="width:100%;padding:13px 20px 13px 44px;border:1.5px solid #dce8f5;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;box-shadow:0 2px 8px rgba(26,75,140,0.06);"/>
+        <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.1rem;">🔍</span>
+        <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(26,75,140,0.15);z-index:100;max-height:300px;overflow-y:auto;margin-top:4px;"></div>
       </div>
       <div class="stats">
         <div class="stat-card"><div class="icon">📅</div><h3>24</h3><p>Today's Appointments</p></div>
@@ -204,6 +224,250 @@
       </div>
     </div>
 
+    <!-- PAYMENTS -->
+    <div class="section" id="sec-payments">
+      <div class="topbar"><div><h1>Payment Tracking</h1><p>Manage all payments & dues</p></div></div>
+      <div class="section-card">
+        <h2>➕ Record Payment</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="payPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Amount (₹)</label><input type="number" id="payAmount" placeholder="Amount"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Mode</label>
+            <select id="payMode"><option>Cash</option><option>UPI</option><option>Card</option><option>Online</option></select>
+          </div>
+          <div class="form-group"><label>Date</label><input type="date" id="payDate"/></div>
+        </div>
+        <button class="btn-primary" onclick="addPayment()">Record Payment</button>
+        <p class="success-msg" id="paySuccess">✅ Payment recorded!</p>
+      </div>
+      <div class="section-card">
+        <h2>💳 Payment History</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Amount</th><th>Mode</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="payTable">
+            <tr><td>Ravi Kumar</td><td>₹500</td><td>UPI</td><td>03 May 2026</td><td><span class="badge confirmed">Paid</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Priya Sharma</td><td>₹800</td><td>Cash</td><td>02 May 2026</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TOKEN / QR -->
+    <div class="section" id="sec-token">
+      <div class="topbar"><div><h1>Token / QR System</h1><p>Generate tokens for walk-in patients</p></div></div>
+      <div class="section-card">
+        <h2>🎫 Generate Token</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="tokenPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Doctor</label>
+            <select id="tokenDoctor"><option>Dr. Durga Sowjanya</option><option>Dr. D. Ramachandra</option></select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="generateToken()">Generate Token</button>
+      </div>
+      <div class="section-card" id="tokenDisplay" style="display:none;">
+        <h2>🎟️ Token Generated</h2>
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:4rem; font-weight:800; color:#1a4b8c;" id="tokenNumber"></div>
+          <p id="tokenInfo" style="color:#6b7c93; margin-top:8px;"></p>
+          <div id="qrBox" style="margin:20px auto; width:120px; height:120px; background:#f0f4f8; border:2px dashed #2e7dd1; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:0.75rem; color:#6b7c93;">QR Code<br/>(scan)</div>
+          <button class="btn-primary" onclick="window.print()">🖨️ Print Token</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <h2>📋 Today's Token Queue</h2>
+        <table>
+          <thead><tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Status</th></tr></thead>
+          <tbody id="tokenTable">
+            <tr><td>#001</td><td>Ravi Kumar</td><td>Dr. Durga Sowjanya</td><td><span class="badge completed">Called</span></td></tr>
+            <tr><td>#002</td><td>Priya Sharma</td><td>Dr. D. Ramachandra</td><td><span class="badge confirmed">Waiting</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEMBERSHIP -->
+    <div class="section" id="sec-membership">
+      <div class="topbar"><div><h1>Membership Control</h1><p>Manage patient memberships</p></div></div>
+      <div class="section-card">
+        <h2>➕ Assign Membership</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="memPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Plan</label>
+            <select id="memPlan"><option>Basic – ₹999/month</option><option>Standard – ₹1999/month</option><option>Premium – ₹3499/month</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Start Date</label><input type="date" id="memStart"/></div>
+          <div class="form-group"><label>End Date</label><input type="date" id="memEnd"/></div>
+        </div>
+        <button class="btn-primary" onclick="addMembership()">Assign Membership</button>
+        <p class="success-msg" id="memSuccess">✅ Membership assigned!</p>
+      </div>
+      <div class="section-card">
+        <h2>📦 Active Memberships</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Plan</th><th>Start</th><th>End</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="memTable">
+            <tr><td>Ravi Kumar</td><td>Standard</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIDEOS / PDF -->
+    <div class="section" id="sec-videos">
+      <div class="topbar"><div><h1>Video / PDF Upload</h1><p>Manage exercise videos and documents</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add Resource</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Title</label><input type="text" id="vidTitle" placeholder="e.g. Knee Exercise Guide"/></div>
+          <div class="form-group"><label>Type</label>
+            <select id="vidType"><option>Video (YouTube Link)</option><option>PDF Document</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>URL / Link</label><input type="url" id="vidUrl" placeholder="https://..."/></div>
+        <div class="form-group"><label>Category</label>
+          <select id="vidCat"><option>Ortho-Sports</option><option>Neurology</option><option>Women-Pediatric</option><option>Cardio-Pulmonary</option><option>Post Surgery</option><option>General Fitness</option></select>
+        </div>
+        <button class="btn-primary" onclick="addVideo()">Add Resource</button>
+        <p class="success-msg" id="vidSuccess">✅ Resource added!</p>
+      </div>
+      <div class="section-card">
+        <h2>🎥 Resource Library</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Type</th><th>Category</th><th>Link</th><th>Action</th></tr></thead>
+          <tbody id="vidTable">
+            <tr><td>Knee Strengthening</td><td>Video</td><td>Ortho-Sports</td><td><a href="#" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td>Post Surgery Guide</td><td>PDF</td><td>Post Surgery</td><td><a href="#" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="section" id="sec-reports">
+      <div class="topbar"><div><h1>Reports & Records</h1><p>Analytics and summaries</p></div></div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">💰</div><h3>₹12,400</h3><p>Revenue This Month</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3>142</h3><p>Appointments This Month</p></div>
+        <div class="stat-card"><div class="icon">🧑</div><h3>38</h3><p>New Patients This Month</p></div>
+        <div class="stat-card"><div class="icon">📦</div><h3>12</h3><p>Active Memberships</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📊 Monthly Summary</h2>
+        <table>
+          <thead><tr><th>Month</th><th>Patients</th><th>Appointments</th><th>Revenue</th></tr></thead>
+          <tbody>
+            <tr><td>May 2026</td><td>38</td><td>142</td><td>₹12,400</td></tr>
+            <tr><td>Apr 2026</td><td>31</td><td>118</td><td>₹9,800</td></tr>
+            <tr><td>Mar 2026</td><td>27</td><td>104</td><td>₹8,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <h2>📋 Condition-wise Breakdown</h2>
+        <table>
+          <thead><tr><th>Condition</th><th>Patients</th><th>% Share</th></tr></thead>
+          <tbody>
+            <tr><td>Knee & Foot Pain</td><td>14</td><td>37%</td></tr>
+            <tr><td>Spine Problems</td><td>9</td><td>24%</td></tr>
+            <tr><td>Stroke Rehab</td><td>7</td><td>18%</td></tr>
+            <tr><td>Frozen Shoulder</td><td>5</td><td>13%</td></tr>
+            <tr><td>Others</td><td>3</td><td>8%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="section" id="sec-notifications">
+      <div class="topbar"><div><h1>Notifications</h1><p>Send alerts & WhatsApp messages</p></div></div>
+      <div class="section-card">
+        <h2>📢 Send Notification</h2>
+        <div class="form-row">
+          <div class="form-group"><label>To</label>
+            <select id="notifTo"><option>All Patients</option><option>Ravi Kumar</option><option>Priya Sharma</option><option>Suresh Babu</option></select>
+          </div>
+          <div class="form-group"><label>Type</label>
+            <select id="notifType"><option>Appointment Reminder</option><option>Payment Due</option><option>Membership Expiry</option><option>General</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Message</label><textarea id="notifMsg" rows="3" style="padding:11px 14px; border:1.5px solid #dce8f5; border-radius:10px; font-family:Poppins,sans-serif; font-size:0.88rem; outline:none; width:100%;" placeholder="Type your message..."></textarea></div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn-primary" onclick="sendNotif()">📤 Send Notification</button>
+          <button style="padding:12px 28px; background:#25D366; color:white; border:none; border-radius:10px; font-family:Poppins,sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer;" onclick="sendWhatsApp()">💬 Send via WhatsApp</button>
+        </div>
+        <p class="success-msg" id="notifSuccess">✅ Notification sent!</p>
+      </div>
+      <div class="section-card">
+        <h2>🔔 Recent Notifications</h2>
+        <table>
+          <thead><tr><th>To</th><th>Type</th><th>Message</th><th>Sent</th></tr></thead>
+          <tbody id="notifTable">
+            <tr><td>Ravi Kumar</td><td>Reminder</td><td>Your appointment is tomorrow at 10:30 AM</td><td>Today</td></tr>
+            <tr><td>All Patients</td><td>General</td><td>FREE PHYSIO CAMP – May 11, 12 & 13!</td><td>Yesterday</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HOME VISITS -->
+    <div class="section" id="sec-homevisit">
+      <div class="topbar"><div><h1>Home Visit Management</h1><p>All home visit requests & assignments</p></div></div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">🏠</div><h3 id="hvTotal">0</h3><p>Total Requests</p></div>
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="hvPending">0</h3><p>Pending</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="hvConfirmed">0</h3><p>Confirmed</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="hvDone">0</h3><p>Completed</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📥 All Home Visit Requests</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Doctor</th><th>Address</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="hvAdminTable">
+            <tr><td colspan="9" style="text-align:center;color:#6b7c93;">No requests yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <h2>➕ Add / Assign Home Visit</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="hvAdminName" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Phone (WhatsApp)</label><input type="tel" id="hvAdminPhone" placeholder="WhatsApp number"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Condition</label><input type="text" id="hvAdminCondition" placeholder="Condition"/></div>
+          <div class="form-group"><label>Date</label><input type="date" id="hvAdminDate"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Time</label>
+            <select id="hvAdminTime">
+              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+              <option>12:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+              <option>4:00 PM</option><option>5:00 PM</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Assigned Doctor</label>
+            <select id="hvAdminDoctor">
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;"><label>Patient Address</label>
+          <textarea id="hvAdminAddress" rows="2" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;resize:none;" placeholder="Full address"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="adminAssignHV()">Assign & Notify Patient</button>
+          <button style="padding:12px 24px;background:#25D366;color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="adminNotifyStaff()">Notify Staff via WhatsApp</button>
+        </div>
+        <p class="success-msg" id="hvAdminSuccess">✅ Assigned & WhatsApp sent!</p>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="section" id="sec-settings">
       <div class="topbar"><div><h1>Settings</h1><p>Manage clinic information</p></div></div>
@@ -224,9 +488,88 @@
 
   </div>
 
-  <script>
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
+    import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
+
+    // Load real-time data from Firestore
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), (snap) => {
+      const tbody = document.getElementById('apptTable');
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const a = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${a.patientName||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge pending">${a.status||'Pending'}</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`);
+      });
+      document.getElementById('totalPatients') && (document.getElementById('totalPatients').textContent = snap.size);
+    });
+
+    onSnapshot(collection(db, 'staff'), (snap) => {
+      const tbody = document.getElementById('staffTable');
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const s = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${s.name||''}</td><td>${s.role||''}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`);
+      });
+      document.getElementById('totalStaff') && (document.getElementById('totalStaff').textContent = snap.size);
+    });
+
+    onSnapshot(collection(db, 'patients'), (snap) => {
+      const tbody = document.getElementById('patTable');
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const p = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${p.name||''}</td><td>${p.phone||''}</td><td>${p.condition||''}</td><td>${p.doctor||''}</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`);
+      });
+    });
+
+    function globalSearchFn() {
+      const q = document.getElementById('globalSearch').value.toLowerCase().trim();
+      const results = document.getElementById('searchResults');
+      if (!q) { results.style.display = 'none'; return; }
+
+      // Search all tables
+      const allRows = document.querySelectorAll('tbody tr');
+      const matches = [];
+      allRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(q)) {
+          const cells = row.querySelectorAll('td');
+          if (cells.length > 0) {
+            matches.push({
+              name: cells[0].textContent.trim(),
+              detail: cells[1] ? cells[1].textContent.trim() : '',
+              extra: cells[2] ? cells[2].textContent.trim() : ''
+            });
+          }
+        }
+      });
+
+      if (matches.length === 0) {
+        results.innerHTML = '<div style="padding:16px;text-align:center;color:#6b7c93;font-size:0.85rem;">No results found</div>';
+      } else {
+        results.innerHTML = matches.slice(0,8).map(m =>
+          `<div onclick="document.getElementById('globalSearch').value='';document.getElementById('searchResults').style.display='none';" style="padding:12px 16px;border-bottom:1px solid #f0f4f8;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
+            <div style="font-weight:600;font-size:0.88rem;color:#1a2a3a;">${m.name}</div>
+            <div style="font-size:0.78rem;color:#6b7c93;">${m.detail} ${m.extra ? '· ' + m.extra : ''}</div>
+          </div>`
+        ).join('');
+      }
+      results.style.display = 'block';
+    }
+
+    // Close search on outside click
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#globalSearch') && !e.target.closest('#searchResults')) {
+        document.getElementById('searchResults').style.display = 'none';
+      }
+    });
 
     function showSection(name, el) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -245,54 +588,236 @@
       document.getElementById('totalStaff').textContent = document.getElementById('staffTable').rows.length;
     }
 
-    function addAppointment() {
+    async function addAppointment() {
       const p = document.getElementById('apptPatient').value.trim();
       const c = document.getElementById('apptCondition').value.trim();
       const d = document.getElementById('apptDoctor').value;
       const t = document.getElementById('apptTime').value;
       if (!p || !c || !t) return alert('Please fill all fields.');
-      const row = `<tr><td>${p}</td><td>${c}</td><td>${d}</td><td>${t}</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
-      document.getElementById('apptTable').insertAdjacentHTML('beforeend', row);
-      document.getElementById('apptPatient').value = '';
-      document.getElementById('apptCondition').value = '';
-      document.getElementById('apptTime').value = '';
-      const msg = document.getElementById('apptSuccess');
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
+      try {
+        await addDoc(collection(db, 'appointments'), {
+          patientName: p, condition: c, doctor: d, time: t,
+          status: 'Pending', createdAt: serverTimestamp()
+        });
+        const row = `<tr><td>${p}</td><td>${c}</td><td>${d}</td><td>${t}</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+        document.getElementById('apptTable').insertAdjacentHTML('beforeend', row);
+        document.getElementById('apptPatient').value = '';
+        document.getElementById('apptCondition').value = '';
+        document.getElementById('apptTime').value = '';
+        const msg = document.getElementById('apptSuccess');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+      } catch(e) { alert('Error: ' + e.message); }
     }
 
-    function addStaff() {
+    async function addStaff() {
       const n = document.getElementById('staffName').value.trim();
       const r = document.getElementById('staffRole').value.trim();
       if (!n || !r) return alert('Please fill all fields.');
-      const row = `<tr><td>${n}</td><td>${r}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
-      document.getElementById('staffTable').insertAdjacentHTML('beforeend', row);
-      document.getElementById('staffName').value = '';
-      document.getElementById('staffRole').value = '';
-      updateCounts();
-      const msg = document.getElementById('staffSuccess');
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
+      try {
+        await addDoc(collection(db, 'staff'), {
+          name: n, role: r, status: 'Active', createdAt: serverTimestamp()
+        });
+        const row = `<tr><td>${n}</td><td>${r}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+        document.getElementById('staffTable').insertAdjacentHTML('beforeend', row);
+        document.getElementById('staffName').value = '';
+        document.getElementById('staffRole').value = '';
+        updateCounts();
+        const msg = document.getElementById('staffSuccess');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+      } catch(e) { alert('Error: ' + e.message); }
     }
 
-    function addPatient() {
+    async function addPatient() {
       const n = document.getElementById('patName').value.trim();
       const ph = document.getElementById('patPhone').value.trim();
       const c = document.getElementById('patCondition').value.trim();
       const d = document.getElementById('patDoctor').value;
       if (!n || !ph || !c) return alert('Please fill all fields.');
-      const row = `<tr><td>${n}</td><td>${ph}</td><td>${c}</td><td>${d}</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
-      document.getElementById('patTable').insertAdjacentHTML('beforeend', row);
-      document.getElementById('patName').value = '';
-      document.getElementById('patPhone').value = '';
-      document.getElementById('patCondition').value = '';
-      updateCounts();
-      const msg = document.getElementById('patSuccess');
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
+      try {
+        await addDoc(collection(db, 'patients'), {
+          name: n, phone: ph, condition: c, doctor: d,
+          createdAt: serverTimestamp()
+        });
+        const row = `<tr><td>${n}</td><td>${ph}</td><td>${c}</td><td>${d}</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+        document.getElementById('patTable').insertAdjacentHTML('beforeend', row);
+        document.getElementById('patName').value = '';
+        document.getElementById('patPhone').value = '';
+        document.getElementById('patCondition').value = '';
+        updateCounts();
+        const msg = document.getElementById('patSuccess');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+      } catch(e) { alert('Error: ' + e.message); }
     }
 
-    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+    function addPayment() {
+      const p = document.getElementById('payPatient').value.trim();
+      const a = document.getElementById('payAmount').value.trim();
+      const m = document.getElementById('payMode').value;
+      const d = document.getElementById('payDate').value;
+      if (!p || !a || !d) return alert('Please fill all fields.');
+      const row = `<tr><td>${p}</td><td>\u20b9${a}</td><td>${m}</td><td>${d}</td><td><span class="badge confirmed">Paid</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+      document.getElementById('payTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('payPatient').value = '';
+      document.getElementById('payAmount').value = '';
+      document.getElementById('payDate').value = '';
+      const msg = document.getElementById('paySuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    let tokenCount = 2;
+    function generateToken() {
+      const p = document.getElementById('tokenPatient').value.trim();
+      const d = document.getElementById('tokenDoctor').value;
+      if (!p) return alert('Enter patient name.');
+      tokenCount++;
+      const num = '#' + String(tokenCount).padStart(3, '0');
+      document.getElementById('tokenNumber').textContent = num;
+      document.getElementById('tokenInfo').textContent = p + ' — ' + d;
+      document.getElementById('tokenDisplay').style.display = 'block';
+      const row = `<tr><td>${num}</td><td>${p}</td><td>${d}</td><td><span class="badge pending">Waiting</span></td></tr>`;
+      document.getElementById('tokenTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('tokenPatient').value = '';
+    }
+
+    function addMembership() {
+      const p = document.getElementById('memPatient').value.trim();
+      const pl = document.getElementById('memPlan').value;
+      const s = document.getElementById('memStart').value;
+      const e = document.getElementById('memEnd').value;
+      if (!p || !s || !e) return alert('Please fill all fields.');
+      const row = `<tr><td>${p}</td><td>${pl}</td><td>${s}</td><td>${e}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+      document.getElementById('memTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('memPatient').value = '';
+      document.getElementById('memStart').value = '';
+      document.getElementById('memEnd').value = '';
+      const msg = document.getElementById('memSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function addVideo() {
+      const t = document.getElementById('vidTitle').value.trim();
+      const ty = document.getElementById('vidType').value;
+      const u = document.getElementById('vidUrl').value.trim();
+      const c = document.getElementById('vidCat').value;
+      if (!t || !u) return alert('Please fill all fields.');
+      const row = `<tr><td>${t}</td><td>${ty.includes('Video') ? 'Video' : 'PDF'}</td><td>${c}</td><td><a href="${u}" target="_blank" style="color:#2e7dd1;">View</a></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
+      document.getElementById('vidTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('vidTitle').value = '';
+      document.getElementById('vidUrl').value = '';
+      const msg = document.getElementById('vidSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function sendNotif() {
+      const to = document.getElementById('notifTo').value;
+      const type = document.getElementById('notifType').value;
+      const msg = document.getElementById('notifMsg').value.trim();
+      if (!msg) return alert('Enter a message.');
+      const row = `<tr><td>${to}</td><td>${type}</td><td>${msg}</td><td>Just now</td></tr>`;
+      document.getElementById('notifTable').insertAdjacentHTML('afterbegin', row);
+      document.getElementById('notifMsg').value = '';
+      const s = document.getElementById('notifSuccess');
+      s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 3000);
+    }
+
+    function sendWhatsApp() {
+      const msg = document.getElementById('notifMsg').value.trim();
+      if (!msg) return alert('Enter a message.');
+      window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function adminAssignHV() {
+      const name = document.getElementById('hvAdminName').value.trim();
+      const phone = document.getElementById('hvAdminPhone').value.trim();
+      const condition = document.getElementById('hvAdminCondition').value.trim();
+      const date = document.getElementById('hvAdminDate').value;
+      const time = document.getElementById('hvAdminTime').value;
+      const doctor = document.getElementById('hvAdminDoctor').value;
+      const address = document.getElementById('hvAdminAddress').value.trim();
+      if (!name || !phone || !condition || !date) return alert('Please fill all fields.');
+
+      // Add to table
+      const tbody = document.getElementById('hvAdminTable');
+      if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+      tbody.insertAdjacentHTML('afterbegin',
+        `<tr>
+          <td>${name}</td><td>${phone}</td><td>${condition}</td>
+          <td>${date}</td><td>${time}</td><td>${doctor}</td>
+          <td>${address.substring(0,20)}...</td>
+          <td><span class="badge confirmed">Confirmed</span></td>
+          <td>
+            <button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" onclick="notifyPatientAdmin('${phone}','${name}','${date}','${time}','${doctor}')">💬 Patient</button>
+            <button style="padding:5px 10px;background:#25D366;color:white;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;margin-left:4px;" onclick="notifyStaffAdmin('${name}','${date}','${time}','${doctor}','${address}')">💬 Staff</button>
+          </td>
+        </tr>`);
+
+      // Update stats
+      document.getElementById('hvTotal').textContent = tbody.rows.length;
+      document.getElementById('hvConfirmed').textContent = tbody.rows.length;
+
+      // Auto notify patient
+      notifyPatientAdmin(phone, name, date, time, doctor);
+
+      document.getElementById('hvAdminName').value = '';
+      document.getElementById('hvAdminPhone').value = '';
+      document.getElementById('hvAdminCondition').value = '';
+      document.getElementById('hvAdminDate').value = '';
+      document.getElementById('hvAdminAddress').value = '';
+      const msg = document.getElementById('hvAdminSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000);
+    }
+
+    function notifyPatientAdmin(phone, name, date, time, doctor) {
+      const msg = `✅ *HOME VISIT CONFIRMED*
+
+Dear ${name},
+
+Your home visit has been confirmed!
+
+📅 Date: ${date}
+⏰ Time: ${time}
+👨⚕️ Doctor: ${doctor}
+
+🏥 Ayushman PhysioFIT Rehabilitation Centre
+📞 6302478412 / 7013698578
+
+_We keep you moving..._`;
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function notifyStaffAdmin(name, date, time, doctor, address) {
+      const msg = `🏠 *HOME VISIT ASSIGNMENT*
+
+Dear Staff,
+
+Please note the following home visit:
+
+👤 Patient: ${name}
+📅 Date: ${date}
+⏰ Time: ${time}
+👨⚕️ Doctor: ${doctor}
+📍 Address: ${address}
+
+_Assigned by Admin — Ayushman PhysioFIT_`;
+      window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function adminNotifyStaff() {
+      const name = document.getElementById('hvAdminName').value.trim();
+      const date = document.getElementById('hvAdminDate').value;
+      const time = document.getElementById('hvAdminTime').value;
+      const doctor = document.getElementById('hvAdminDoctor').value;
+      const address = document.getElementById('hvAdminAddress').value.trim();
+      notifyStaffAdmin(name, date, time, doctor, address);
+    }
+
+    async function logout() {
+      try { await signOut(auth); } catch(e) {}
+      sessionStorage.clear(); window.location.href = 'login.html';
+    }
   </script>
 </body>
 </html>

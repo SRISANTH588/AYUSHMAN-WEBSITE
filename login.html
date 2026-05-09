@@ -92,29 +92,114 @@
 
     <div class="divider">or</div>
     <a href="index.html" class="back-home">← Back to Home</a>
+    <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:#6b7c93;">New patient? <a href="#" onclick="showRegister()" style="color:#2e7dd1;font-weight:600;">Register here</a></div>
+
+    <div id="registerForm" style="display:none;margin-top:24px;border-top:1px solid #dce8f5;padding-top:24px;">
+      <h3 style="font-size:1rem;color:#1a2a3a;margin-bottom:16px;font-weight:700;">📝 New Patient Registration</h3>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Full Name</label><input type="text" id="regName" placeholder="Your full name" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Phone Number</label><input type="tel" id="regPhone" placeholder="Phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Password</label><input type="password" id="regPass" placeholder="Create password" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Condition</label>
+        <select id="regCondition" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;">
+          <option value="">Select Condition</option>
+          <option>Frozen Shoulder</option><option>Knee & Foot Pain</option>
+          <option>Spine Problems</option><option>Stroke Rehabilitation</option>
+          <option>Sports Injuries</option><option>Other</option>
+        </select>
+      </div>
+      <button onclick="registerPatient()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">✅ Register</button>
+      <p id="regSuccess" style="display:none;color:#2e7dd1;font-weight:600;font-size:0.85rem;text-align:center;margin-top:12px;">✅ Registered! You can now login.</p>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:#6b7c93;">New patient? <a href="#" onclick="showRegister()" style="color:#2e7dd1;font-weight:600;">Register here</a></div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none;margin-top:24px;border-top:1px solid #dce8f5;padding-top:24px;">
+      <h3 style="font-size:1rem;color:#1a2a3a;margin-bottom:16px;font-weight:700;">📝 New Patient Registration</h3>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Full Name</label><input type="text" id="regName" placeholder="Your full name" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Phone Number</label><input type="tel" id="regPhone" placeholder="Phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Password</label><input type="password" id="regPass" placeholder="Create password" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+      <div style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:#1a2a3a;margin-bottom:7px;">Condition</label>
+        <select id="regCondition" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;">
+          <option value="">Select Condition</option>
+          <option>Frozen Shoulder</option><option>Knee & Foot Pain</option>
+          <option>Spine Problems</option><option>Stroke Rehabilitation</option>
+          <option>Sports Injuries</option><option>Other</option>
+        </select>
+      </div>
+      <button onclick="registerPatient()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">✅ Register</button>
+      <p id="regSuccess" style="display:none;color:#2e7dd1;font-weight:600;font-size:0.85rem;text-align:center;margin-top:12px;">✅ Registered! You can now login.</p>
+    </div>
   </div>
 
-  <script>
-    const users = [
-      { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin', redirect: 'admin-dashboard.html' },
-      { username: 'staff', password: 'staff123', role: 'staff', name: 'Staff', redirect: 'staff-dashboard.html' },
-      { username: 'patient', password: 'patient123', role: 'patient', name: 'Patient', redirect: 'patient/index.html' }
-    ];
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
+    import { doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
-    function handleLogin(e) {
+    function showRegister() {
+      const f = document.getElementById('registerForm');
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function registerPatient() {
+      const n = document.getElementById('regName').value.trim();
+      const p = document.getElementById('regPhone').value.trim();
+      const pw = document.getElementById('regPass').value.trim();
+      const c = document.getElementById('regCondition').value;
+      if (!n || !p || !pw) return alert('Please fill all fields.');
+      const email = p + '@ayushman.patient';
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, pw);
+        await setDoc(doc(db, 'patients', cred.user.uid), {
+          name: n, phone: p, condition: c, role: 'patient',
+          createdAt: new Date().toISOString()
+        });
+        sessionStorage.setItem('loggedUser', p);
+        sessionStorage.setItem('loggedName', n);
+        sessionStorage.setItem('loggedRole', 'patient');
+        sessionStorage.setItem('loggedUid', cred.user.uid);
+        document.getElementById('regSuccess').style.display = 'block';
+        setTimeout(() => window.location.href = 'patient-dashboard.html', 1500);
+      } catch(e) {
+        alert('Registration failed: ' + e.message);
+      }
+    }
+
+    async function handleLogin(e) {
       e.preventDefault();
       const username = document.getElementById('userId').value.trim();
       const password = document.getElementById('password').value.trim();
-      const user = users.find(u => u.username === username && u.password === password);
-      if (user) {
-        sessionStorage.setItem('loggedUser', user.username);
-        sessionStorage.setItem('loggedName', user.name);
-        sessionStorage.setItem('loggedRole', user.role);
-        window.location.href = user.redirect;
-      } else {
+      const localUsers = [
+        { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin', redirect: 'admin-dashboard.html' },
+        { username: 'staff', password: 'staff123', role: 'staff', name: 'Staff', redirect: 'staff-dashboard.html' }
+      ];
+      const local = localUsers.find(u => u.username === username && u.password === password);
+      if (local) {
+        sessionStorage.setItem('loggedUser', local.username);
+        sessionStorage.setItem('loggedName', local.name);
+        sessionStorage.setItem('loggedRole', local.role);
+        window.location.href = local.redirect;
+        return;
+      }
+      const email = username + '@ayushman.patient';
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const snap = await getDoc(doc(db, 'patients', cred.user.uid));
+        const data = snap.exists() ? snap.data() : {};
+        sessionStorage.setItem('loggedUser', username);
+        sessionStorage.setItem('loggedName', data.name || username);
+        sessionStorage.setItem('loggedRole', 'patient');
+        sessionStorage.setItem('loggedUid', cred.user.uid);
+        window.location.href = 'patient-dashboard.html';
+      } catch(e) {
         document.getElementById('errorMsg').style.display = 'block';
       }
     }
+
+    window.showRegister = showRegister;
+    window.registerPatient = registerPatient;
+    window.handleLogin = handleLogin;
   </script>
 </body>
 </html>

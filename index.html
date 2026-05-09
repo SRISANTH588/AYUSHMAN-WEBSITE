@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#1a4b8c"/>
+  <meta name="description" content="Ayushman PhysioFIT Rehabilitation Centre Vijayawada"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="images/logo.png"/>
   <title>Ayushman PhysioFIT – Rehabilitation Centre</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
@@ -11,6 +15,15 @@
   </style>
 </head>
 <body>
+
+  <!-- PAGE LOADER -->
+  <div id="pageLoader">
+    <div class="loader-logo">✚ Ayushman PhysioFIT</div>
+    <div class="loader-bar"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
 
   <!-- NAVBAR -->
   <nav class="navbar">
@@ -29,6 +42,9 @@
       <li><a href="#contact" class="btn-nav">Book Now</a></li>
       <li><a href="login.html" class="btn-nav" style="background:#e63946;">Login</a></li>
     </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -47,7 +63,7 @@
   </section>
 
   <!-- FREE CAMP BANNER -->
-  <section class="camp-banner">
+  <section class="camp-banner reveal">
     <div class="camp-text">
       🏥 <strong>FREE PHYSIO CAMP</strong> — MAY 11, 12 & 13 &nbsp;|&nbsp; Pre-Registration Mandatory
     </div>
@@ -58,7 +74,7 @@
   </section>
 
   <!-- SERVICE SLIDER -->
-  <section class="service-slider-section">
+  <section class="service-slider-section reveal" >
     <h2>Our Services</h2>
     <p class="section-sub">Specialized physiotherapy treatments for pain relief & recovery</p>
     <div class="slider-wrapper">
@@ -110,22 +126,22 @@
   </section>
 
   <!-- SERVICES -->
-  <section class="services" id="services">
+  <section class="services reveal" id="services">
     <h2>Best Services For</h2>
-    <p class="section-sub">Best services for your health & recovery</p>
-    <div class="svc-num-grid">
-      <div class="svc-num-card"><img src="images/ortho_sports_physio_rehab.png" alt="Ortho-Sports Physio Rehab"/></div>
-      <div class="svc-num-card"><img src="images/neurology_conditions.png" alt="Neurology Conditions"/></div>
-      <div class="svc-num-card"><img src="images/women_pediatric_problems.png" alt="Women-Pediatric Problems"/></div>
-      <div class="svc-num-card"><img src="images/cardio_pulmonary_rehab.png" alt="Cardio-Pulmonary Rehab"/></div>
-      <div class="svc-num-card"><img src="images/post_surgery_physio_rehab.png" alt="Post Surgery Physio-Rehab"/></div>
-      <div class="svc-num-card"><img src="images/muscle_ligament_sprains.png" alt="Muscle / Ligament Sprains"/></div>
-      <div class="svc-num-card"><img src="images/general_fitness.png" alt="General Fitness"/></div>
+    <p class="section-sub">Best services for your health &amp; recovery</p>
+    <div class="svc-cards-grid">
+      <div class="svc-card-item"><img src="images/image1.png" alt="Ortho-Sports Physio Rehab"/></div>
+      <div class="svc-card-item"><img src="images/neurology_conditions.png" alt="Neurology Conditions"/></div>
+      <div class="svc-card-item"><img src="images/image3.png" alt="Women-Pediatric Problems"/></div>
+      <div class="svc-card-item"><img src="images/image4.png" alt="Cardio-Pulmonary Rehab"/></div>
+      <div class="svc-card-item"><img src="images/image5.png" alt="Post Surgery Physio-Rehab"/></div>
+      <div class="svc-card-item"><img src="images/ligament.png" alt="Muscle / Ligament Sprains"/></div>
+      <div class="svc-card-item"><img src="images/image7.png" alt="General Fitness"/></div>
     </div>
   </section>
 
   <!-- DOCTORS -->
-  <section class="doctors" id="doctors">
+  <section class="doctors reveal" id="doctors">
     <h2>Meet Our Doctors</h2>
     <p class="section-sub">Experienced physiotherapists dedicated to your recovery</p>
     <div class="doctors-grid">
@@ -145,7 +161,7 @@
   </section>
 
   <!-- WHY US -->
-  <section class="why-us">
+  <section class="why-us reveal">
     <h2>Why Choose Us?</h2>
     <div class="why-grid">
       <div class="why-card">
@@ -172,7 +188,7 @@
   </section>
 
   <!-- CONTACT -->
-  <section class="contact" id="contact">
+  <section class="contact reveal" id="contact">
     <h2>Get In Touch</h2>
     <p class="section-sub">Book your appointment or visit us today</p>
     <div class="contact-grid">
@@ -217,6 +233,89 @@
   </footer>
 
   <script>
+    // SERVICE WORKER + PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('SW registered');
+      }).catch(err => console.log('SW error:', err));
+    }
+
+    // PUSH NOTIFICATIONS
+    async function requestNotificationPermission() {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          showToast('✅ Notifications enabled!');
+          localStorage.setItem('notifEnabled', 'true');
+        }
+      }
+    }
+
+    function sendLocalNotification(title, body, url = '/') {
+      if (Notification.permission === 'granted') {
+        const n = new Notification(title, {
+          body,
+          icon: 'images/logo.png',
+          badge: 'images/logo.png'
+        });
+        n.onclick = () => window.open(url);
+        setTimeout(() => n.close(), 5000);
+      }
+    }
+
+    // Ask for notification permission after 3 seconds
+    setTimeout(() => {
+      if (Notification.permission === 'default') requestNotificationPermission();
+    }, 3000);
+
+    // PAGE LOADER
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 800);
+    });
+
+    // NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('.navbar');
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // HAMBURGER MENU
+    function toggleMenu() {
+      const h = document.getElementById('hamburger');
+      const nav = document.querySelector('.nav-links');
+      h.classList.toggle('open');
+      nav.classList.toggle('open');
+    }
+    // Close menu on link click
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('hamburger').classList.remove('open');
+        document.querySelector('.nav-links').classList.remove('open');
+      });
+    });
+
+    // SCROLL REVEAL
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // TOAST FUNCTION
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // LAZY LOAD IMAGES
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      if (img.complete) img.classList.add('loaded');
+    });
+
     // Slider
     const track = document.getElementById('sliderTrack');
     const dotsContainer = document.getElementById('sliderDots');
@@ -248,6 +347,7 @@
     function submitForm(e) {
       e.preventDefault();
       document.getElementById('formSuccess').style.display = 'block';
+      showToast('✅ Appointment request sent! We\'ll call you shortly.');
       document.getElementById('fname').value = '';
       document.getElementById('fphone').value = '';
       document.getElementById('fcondition').value = '';

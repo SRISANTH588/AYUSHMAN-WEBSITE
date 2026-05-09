@@ -1,0 +1,33 @@
+{
+  "name": "Ayushman PhysioFIT",
+  "short_name": "PhysioFIT",
+  "description": "Ayushman PhysioFIT Rehabilitation Centre — Vijayawada",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0d2d5e",
+  "theme_color": "#1a4b8c",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "images/logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "images/logo.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "images/logo.png", "sizes": "180x180", "type": "image/png", "purpose": "apple touch icon" }
+  ],
+  "screenshots": [
+    { "src": "images/logo.png", "sizes": "1280x720", "type": "image/png" }
+  ],
+  "categories": ["health", "medical", "fitness"],
+  "shortcuts": [
+    {
+      "name": "Book Appointment",
+      "short_name": "Book",
+      "url": "/patient-dashboard.html",
+      "icons": [{ "src": "images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Admin Dashboard",
+      "short_name": "Admin",
+      "url": "/admin-dashboard.html",
+      "icons": [{ "src": "images/logo.png", "sizes": "192x192" }]
+    }
+  ]
+}

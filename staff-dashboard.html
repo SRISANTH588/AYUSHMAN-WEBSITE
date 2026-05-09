@@ -75,8 +75,16 @@
     <nav>
       <a class="active" onclick="showSection('dashboard', this)">🏠 Dashboard</a>
       <a onclick="showSection('schedule', this)">📅 My Schedule</a>
+      <a onclick="showSection('slots', this)">🕐 Slot Assignment</a>
+      <a onclick="showSection('queue', this)">👥 Customer Queue</a>
+      <a onclick="showSection('qr', this)">📷 QR Scanner</a>
       <a onclick="showSection('patients', this)">🧑 My Patients</a>
+      <a onclick="showSection('tracking', this)">📊 Pending/Completed</a>
+      <a onclick="showSection('attendance', this)">✅ Attendance</a>
       <a onclick="showSection('notes', this)">📝 Treatment Notes</a>
+      <a onclick="showSection('token', this)">🎫 Token Queue</a>
+      <a onclick="showSection('sessions', this)">🎥 Sessions</a>
+      <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="logout()">🚪 Logout</button>
@@ -178,6 +186,260 @@
       </div>
     </div>
 
+    <!-- SLOT ASSIGNMENT -->
+    <div class="section" id="sec-slots">
+      <div class="topbar"><div><h1>Slot Assignment</h1><p>Assign time slots to patients</p></div></div>
+      <div class="section-card">
+        <h2>➕ Assign Slot</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="slotPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Date</label><input type="date" id="slotDate"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Time Slot</label>
+            <select id="slotTime">
+              <option>9:00 AM</option><option>9:30 AM</option><option>10:00 AM</option>
+              <option>10:30 AM</option><option>11:00 AM</option><option>11:30 AM</option>
+              <option>12:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+              <option>4:00 PM</option><option>5:00 PM</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Condition</label><input type="text" id="slotCondition" placeholder="Condition"/></div>
+        </div>
+        <button class="btn-primary" onclick="assignSlot()">Assign Slot</button>
+        <p class="success-msg" id="slotSuccess">✅ Slot assigned!</p>
+      </div>
+      <div class="section-card">
+        <h2>🗓️ Today's Slots</h2>
+        <table>
+          <thead><tr><th>Time</th><th>Patient</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="slotTable">
+            <tr><td>9:00 AM</td><td>Ravi Kumar</td><td>Knee Pain</td><td><span class="badge completed">Done</span></td><td>—</td></tr>
+            <tr><td>10:30 AM</td><td>Priya Sharma</td><td>Spine Problem</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>
+            <tr><td>11:00 AM</td><td>Suresh Babu</td><td>Stroke Rehab</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CUSTOMER QUEUE -->
+    <div class="section" id="sec-queue">
+      <div class="topbar"><div><h1>Customer Queue</h1><p>Live walk-in patient queue</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add to Queue</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="qPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Condition</label><input type="text" id="qCondition" placeholder="Condition"/></div>
+        </div>
+        <button class="btn-primary" onclick="addToQueue()">Add to Queue</button>
+        <p class="success-msg" id="qSuccess">✅ Added to queue!</p>
+      </div>
+      <div class="section-card">
+        <h2>👥 Live Queue</h2>
+        <table>
+          <thead><tr><th>Position</th><th>Patient</th><th>Condition</th><th>Wait Time</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="queueTable">
+            <tr><td>#1</td><td>Ravi Kumar</td><td>Knee Pain</td><td>0 min</td><td><span class="badge completed">In Session</span></td><td>—</td></tr>
+            <tr><td>#2</td><td>Priya Sharma</td><td>Spine Problem</td><td>~15 min</td><td><span class="badge confirmed">Waiting</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>
+            <tr><td>#3</td><td>Suresh Babu</td><td>Stroke Rehab</td><td>~30 min</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- QR SCANNER -->
+    <div class="section" id="sec-qr">
+      <div class="topbar"><div><h1>QR / Barcode Scanner</h1><p>Scan patient QR to check in</p></div></div>
+      <div class="section-card" style="text-align:center;">
+        <h2>📷 Scan Patient QR</h2>
+        <div style="margin:24px auto;width:220px;height:220px;background:#f4f8fc;border:3px dashed #2e8b57;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+          <div style="font-size:3rem;">📷</div>
+          <p style="font-size:0.82rem;color:#6b7c93;">Camera QR scan<br/>requires device camera</p>
+        </div>
+        <p style="color:#6b7c93;font-size:0.85rem;margin:12px 0;">— or enter token manually —</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <input type="text" id="qrInput" placeholder="Enter Token # (e.g. #007)" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:220px;"/>
+          <button class="btn-primary" onclick="scanQR()">✅ Check In</button>
+        </div>
+        <p class="success-msg" id="qrSuccess" style="display:none;margin-top:12px;"></p>
+      </div>
+      <div class="section-card">
+        <h2>📋 Today's Check-ins</h2>
+        <table>
+          <thead><tr><th>Token</th><th>Patient</th><th>Check-in Time</th><th>Status</th></tr></thead>
+          <tbody id="checkinTable">
+            <tr><td>#001</td><td>Ravi Kumar</td><td>9:02 AM</td><td><span class="badge completed">Checked In</span></td></tr>
+            <tr><td>#002</td><td>Priya Sharma</td><td>10:28 AM</td><td><span class="badge completed">Checked In</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PENDING / COMPLETED TRACKING -->
+    <div class="section" id="sec-tracking">
+      <div class="topbar"><div><h1>Pending / Completed</h1><p>Track session status</p></div></div>
+      <div class="stats">
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="pendingCount">3</h3><p>Pending</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="doneCount">1</h3><p>Completed</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3>4</h3><p>Total Today</p></div>
+        <div class="stat-card"><div class="icon">📊</div><h3>25%</h3><p>Completion Rate</p></div>
+      </div>
+      <div class="section-card">
+        <h2>⏳ Pending Sessions</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody id="pendingTable">
+            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>10:30 AM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
+            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>11:00 AM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
+            <tr><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td>12:00 PM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <h2>✅ Completed Sessions</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody id="completedTable">
+            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ATTENDANCE & RECORDS -->
+    <div class="section" id="sec-attendance">
+      <div class="topbar"><div><h1>Attendance & Records</h1><p>Patient attendance and history</p></div></div>
+      <div class="section-card">
+        <h2>✅ Mark Attendance</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Patient</label>
+            <select id="attPatient"><option>Ravi Kumar</option><option>Priya Sharma</option><option>Suresh Babu</option><option>Lakshmi Devi</option></select>
+          </div>
+          <div class="form-group"><label>Date</label><input type="date" id="attDate"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Session</label><input type="text" id="attSession" placeholder="e.g. Knee Rehab"/></div>
+          <div class="form-group"><label>Status</label>
+            <select id="attStatus"><option>Present</option><option>Absent</option><option>Late</option></select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="markAtt()">Mark Attendance</button>
+        <p class="success-msg" id="attSuccess">✅ Attendance marked!</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 Attendance Records</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Session</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="attTable">
+            <tr><td>Ravi Kumar</td><td>Knee Rehab</td><td>03 May 2026</td><td><span class="badge completed">Present</span></td></tr>
+            <tr><td>Priya Sharma</td><td>Spine Therapy</td><td>03 May 2026</td><td><span class="badge completed">Present</span></td></tr>
+            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>02 May 2026</td><td><span class="badge pending">Absent</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TOKEN QUEUE -->
+    <div class="section" id="sec-token">
+      <div class="topbar"><div><h1>Token Queue</h1><p>Today's patient token queue</p></div></div>
+      <div class="section-card">
+        <h2>🎫 Live Queue</h2>
+        <table>
+          <thead><tr><th>Token</th><th>Patient</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="tokenQueueTable">
+            <tr><td>#001</td><td>Ravi Kumar</td><td>Knee Pain</td><td><span class="badge completed">Called</span></td><td>—</td></tr>
+            <tr><td>#002</td><td>Priya Sharma</td><td>Spine Problem</td><td><span class="badge confirmed">Waiting</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
+            <tr><td>#003</td><td>Suresh Babu</td><td>Stroke Rehab</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
+            <tr><td>#004</td><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <h2>💬 Notify Patient via WhatsApp</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <input type="text" id="waPhone" placeholder="Patient phone (e.g. 9876543210)" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;flex:1;"/>
+          <input type="text" id="waMsg" placeholder="Message" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;flex:2;"/>
+          <button style="padding:11px 22px;background:#25D366;color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;" onclick="sendWA()">💬 Send WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSIONS -->
+    <div class="section" id="sec-sessions">
+      <div class="topbar"><div><h1>Sessions</h1><p>Manage online & offline sessions</p></div></div>
+      <div class="section-card">
+        <h2>➕ Schedule Session</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Title</label><input type="text" id="sesTitle" placeholder="Session title"/></div>
+          <div class="form-group"><label>Type</label><select id="sesType"><option>Online</option><option>Offline</option></select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Date</label><input type="date" id="sesDate"/></div>
+          <div class="form-group"><label>Time</label><input type="time" id="sesTime"/></div>
+        </div>
+        <div class="form-group"><label>Link (for online)</label><input type="url" id="sesLink" placeholder="https://meet.google.com/..."/></div>
+        <button class="btn-primary" onclick="addSession()">Schedule Session</button>
+        <p class="success-msg" id="sesSuccess">✅ Session scheduled!</p>
+      </div>
+      <div class="section-card">
+        <h2>📊 Scheduled Sessions</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Time</th><th>Link</th><th>Action</th></tr></thead>
+          <tbody id="sesTable">
+            <tr><td>Knee Rehab Exercise</td><td>Online</td><td>12 May 2026</td><td>10:00 AM</td><td><a href="#" style="color:#2e8b57;font-weight:600;">Join</a></td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+            <tr><td>Posture Correction</td><td>Offline</td><td>13 May 2026</td><td>11:00 AM</td><td>—</td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HOME VISITS -->
+    <div class="section" id="sec-homevisit">
+      <div class="topbar"><div><h1>Home Visit Requests</h1><p>Manage patient home visit bookings</p></div></div>
+      <div class="section-card">
+        <h2>📥 Incoming Requests</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Address</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="hvStaffTable">
+            <tr><td colspan="8" style="text-align:center;color:#6b7c93;">No requests yet — requests appear here when patients book via WhatsApp</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card">
+        <h2>➕ Add Manual Home Visit Request</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="hvStaffName" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Phone (WhatsApp)</label><input type="tel" id="hvStaffPhone" placeholder="Patient WhatsApp number"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Condition</label><input type="text" id="hvStaffCondition" placeholder="e.g. Knee Pain"/></div>
+          <div class="form-group"><label>Assigned Date</label><input type="date" id="hvStaffDate"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Assigned Time</label>
+            <select id="hvStaffTime">
+              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+              <option>12:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+              <option>4:00 PM</option><option>5:00 PM</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Assigned Doctor</label>
+            <select id="hvStaffDoctor">
+              <option>Dr. Durga Sowjanya</option>
+              <option>Dr. D. Ramachandra</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;"><label>Patient Address</label>
+          <textarea id="hvStaffAddress" rows="2" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;resize:none;" placeholder="Patient full address"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="assignHomeVisit()">Assign Slot & Notify Patient</button>
+        </div>
+        <p class="success-msg" id="hvStaffSuccess">✅ Slot assigned & WhatsApp sent to patient!</p>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -220,6 +482,165 @@
       const msg = document.getElementById('noteSuccess');
       msg.style.display = 'block';
       setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function assignSlot() {
+      const p = document.getElementById('slotPatient').value.trim();
+      const d = document.getElementById('slotDate').value;
+      const t = document.getElementById('slotTime').value;
+      const c = document.getElementById('slotCondition').value.trim();
+      if (!p || !d || !c) return alert('Please fill all fields.');
+      const row = `<tr><td>${t}</td><td>${p}</td><td>${c}</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>`;
+      document.getElementById('slotTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('slotPatient').value = '';
+      document.getElementById('slotCondition').value = '';
+      document.getElementById('slotDate').value = '';
+      const msg = document.getElementById('slotSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function markSlotDone(btn) {
+      btn.closest('tr').querySelector('td:nth-child(4)').innerHTML = '<span class="badge completed">Done</span>';
+      btn.closest('td').innerHTML = '—';
+    }
+
+    let queueCount = 3;
+    function addToQueue() {
+      const p = document.getElementById('qPatient').value.trim();
+      const c = document.getElementById('qCondition').value.trim();
+      if (!p || !c) return alert('Please fill all fields.');
+      queueCount++;
+      const row = `<tr><td>#${queueCount}</td><td>${p}</td><td>${c}</td><td>~${(queueCount-1)*15} min</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>`;
+      document.getElementById('queueTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('qPatient').value = '';
+      document.getElementById('qCondition').value = '';
+      const msg = document.getElementById('qSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function callNext(btn) {
+      btn.closest('tr').querySelector('td:nth-child(5)').innerHTML = '<span class="badge completed">In Session</span>';
+      btn.closest('td').innerHTML = '—';
+    }
+
+    function scanQR() {
+      const val = document.getElementById('qrInput').value.trim();
+      if (!val) return alert('Enter a token number.');
+      const now = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+      const row = `<tr><td>${val}</td><td>Walk-in Patient</td><td>${now}</td><td><span class="badge completed">Checked In</span></td></tr>`;
+      document.getElementById('checkinTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('qrInput').value = '';
+      const msg = document.getElementById('qrSuccess');
+      msg.textContent = `✅ Token ${val} checked in at ${now}`;
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function completeSess(btn) {
+      const row = btn.closest('tr');
+      const p = row.cells[0].textContent;
+      const c = row.cells[1].textContent;
+      const t = row.cells[2].textContent;
+      row.remove();
+      const doneRow = `<tr><td>${p}</td><td>${c}</td><td>${t}</td><td><span class="badge completed">Completed</span></td></tr>`;
+      document.getElementById('completedTable').insertAdjacentHTML('beforeend', doneRow);
+      document.getElementById('pendingCount').textContent = document.getElementById('pendingTable').rows.length;
+      document.getElementById('doneCount').textContent = document.getElementById('completedTable').rows.length;
+    }
+
+    function markAtt() {
+      const p = document.getElementById('attPatient').value;
+      const d = document.getElementById('attDate').value;
+      const s = document.getElementById('attSession').value.trim();
+      const st = document.getElementById('attStatus').value;
+      if (!d || !s) return alert('Please fill all fields.');
+      const badge = st === 'Present' ? 'completed' : 'pending';
+      const row = `<tr><td>${p}</td><td>${s}</td><td>${d}</td><td><span class="badge ${badge}">${st}</span></td></tr>`;
+      document.getElementById('attTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('attDate').value = '';
+      document.getElementById('attSession').value = '';
+      const msg = document.getElementById('attSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function callToken(btn) {
+      btn.closest('tr').querySelector('td:nth-child(4)').innerHTML = '<span class="badge completed">Called</span>';
+      btn.closest('td').innerHTML = '—';
+    }
+
+    function sendWA() {
+      const phone = document.getElementById('waPhone').value.trim();
+      const msg = document.getElementById('waMsg').value.trim();
+      if (!phone || !msg) return alert('Enter phone and message.');
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function addSession() {
+      const t = document.getElementById('sesTitle').value.trim();
+      const ty = document.getElementById('sesType').value;
+      const d = document.getElementById('sesDate').value;
+      const ti = document.getElementById('sesTime').value;
+      const l = document.getElementById('sesLink').value.trim();
+      if (!t || !d || !ti) return alert('Please fill all fields.');
+      const link = l ? `<a href="${l}" target="_blank" style="color:#2e8b57;font-weight:600;">Join</a>` : '—';
+      const row = `<tr><td>${t}</td><td>${ty}</td><td>${d}</td><td>${ti}</td><td>${link}</td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>`;
+      document.getElementById('sesTable').insertAdjacentHTML('beforeend', row);
+      document.getElementById('sesTitle').value = '';
+      document.getElementById('sesDate').value = '';
+      document.getElementById('sesTime').value = '';
+      document.getElementById('sesLink').value = '';
+      const msg = document.getElementById('sesSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
+    }
+
+    function assignHomeVisit() {
+      const name = document.getElementById('hvStaffName').value.trim();
+      const phone = document.getElementById('hvStaffPhone').value.trim();
+      const condition = document.getElementById('hvStaffCondition').value.trim();
+      const date = document.getElementById('hvStaffDate').value;
+      const time = document.getElementById('hvStaffTime').value;
+      const doctor = document.getElementById('hvStaffDoctor').value;
+      const address = document.getElementById('hvStaffAddress').value.trim();
+      if (!name || !phone || !condition || !date) return alert('Please fill all fields.');
+
+      // Add to table
+      const tbody = document.getElementById('hvStaffTable');
+      if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+      tbody.insertAdjacentHTML('afterbegin',
+        `<tr>
+          <td>${name}</td><td>${phone}</td><td>${condition}</td>
+          <td>${date}</td><td>${time}</td><td>${address.substring(0,25)}...</td>
+          <td><span class="badge confirmed">Confirmed</span></td>
+          <td><button class="btn-done" onclick="notifyPatient('${phone}','${name}','${date}','${time}','${doctor}')">Send WA</button></td>
+        </tr>`);
+
+      // Auto send WhatsApp to patient
+      notifyPatient(phone, name, date, time, doctor);
+
+      document.getElementById('hvStaffName').value = '';
+      document.getElementById('hvStaffPhone').value = '';
+      document.getElementById('hvStaffCondition').value = '';
+      document.getElementById('hvStaffDate').value = '';
+      document.getElementById('hvStaffAddress').value = '';
+      const msg = document.getElementById('hvStaffSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000);
+    }
+
+    function notifyPatient(phone, name, date, time, doctor) {
+      const msg = `✅ *HOME VISIT CONFIRMED*
+
+Dear ${name},
+
+Your home visit has been confirmed!
+
+📅 Date: ${date}
+⏰ Time: ${time}
+👨⚕️ Doctor: ${doctor}
+
+🏥 Ayushman PhysioFIT Rehabilitation Centre
+📞 6302478412 / 7013698578
+
+_We keep you moving..._`;
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
