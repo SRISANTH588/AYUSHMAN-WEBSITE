@@ -2119,3 +2119,7 @@ img.loaded { opacity: 1; }
   .page-hero { padding: 100px 24px 48px; }
   .page-hero h1 { font-size: 1.9rem; }
 }
+
+/* ── TOKEN MODAL ─────────────────────────── */
+#tokenModal { display: none !important; }
+#tokenModal.token-open { display: flex !important; }

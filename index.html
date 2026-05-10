@@ -335,12 +335,17 @@
           errBox.style.display = 'block';
         } else {
           const d = snap.docs[0].data();
-          document.getElementById('tokenNum').textContent           = d.token || '—';
-          document.getElementById('tokenPatientName').textContent   = '👤 ' + (d.name || '');
-          document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
-          document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 Condition: ' + d.condition : '';
-          document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
-          document.getElementById('tokenResult').style.display = 'block';
+          if (!d.token) {
+            errBox.textContent = '⏳ Your booking is confirmed but token is not assigned yet. Please check back soon or contact the clinic.';
+            errBox.style.display = 'block';
+          } else {
+            document.getElementById('tokenNum').textContent            = d.token;
+            document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
+            document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
+            document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
+            document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
+            document.getElementById('tokenResult').style.display = 'block';
+          }
         }
       } catch(e) {
         errBox.textContent = '⚠️ Error looking up token. Please try again.';
@@ -477,9 +482,11 @@
     function toggleToken(e) {
       e.preventDefault();
       const m = document.getElementById('tokenModal');
-      const isOpen = m.style.display === 'flex';
-      m.style.display = isOpen ? 'none' : 'flex';
-      if (!isOpen) {
+      const isOpen = m.classList.contains('token-open');
+      if (isOpen) {
+        m.classList.remove('token-open');
+      } else {
+        m.classList.add('token-open');
         document.getElementById('tokenResult').style.display = 'none';
         document.getElementById('tokenError').style.display  = 'none';
         document.getElementById('tokenBookingId').value = '';
@@ -487,7 +494,7 @@
       }
     }
     function closeToken() {
-      document.getElementById('tokenModal').style.display = 'none';
+      document.getElementById('tokenModal').classList.remove('token-open');
     }
     window.toggleToken = toggleToken;
     window.closeToken  = closeToken;
