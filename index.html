@@ -259,40 +259,39 @@
   </footer>
 
   <!-- TOKEN MODAL -->
-  <div id="tokenModal" style="display:none;position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div id="tokenModal" style="display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);" onclick="closeToken()"></div>
     <div style="position:relative;background:#fff;border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;">
       <button onclick="closeToken()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7c93;">&#x2715;</button>
       <div style="font-size:2.5rem;margin-bottom:12px;">🎫</div>
-      <h2 style="font-size:1.4rem;font-weight:800;color:#1a4b8c;margin-bottom:6px;">Get Your Token</h2>
-      <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:28px;">Enter your details to get a walk-in token number</p>
+      <h2 style="font-size:1.4rem;font-weight:800;color:#1a4b8c;margin-bottom:6px;">Check Your Token</h2>
+      <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:28px;">Enter your Booking ID &amp; Phone to get your token</p>
 
       <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
         <div>
-          <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Full Name</label>
-          <input id="tokenName" type="text" placeholder="Your full name" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/>
+          <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Booking ID</label>
+          <input id="tokenBookingId" type="text" placeholder="e.g. APF-2026-0001" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;text-transform:uppercase;"/>
         </div>
         <div>
           <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Phone Number</label>
-          <input id="tokenPhone" type="tel" placeholder="Phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/>
-        </div>
-        <div>
-          <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Preferred Doctor</label>
-          <select id="tokenDoctor" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;background:#fff;">
-            <option value="">Select Doctor</option>
-            <option>Dr. Durga Sowjanya</option>
-            <option>Dr. D. Ramachandra</option>
-          </select>
+          <input id="tokenPhone" type="tel" placeholder="Registered phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/>
         </div>
       </div>
 
-      <button onclick="generateToken()" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(46,125,209,0.35);">Generate Token</button>
+      <div id="tokenError" style="display:none;margin-top:14px;background:#fff0f0;border:1.5px solid #f5c6cb;border-radius:10px;padding:10px 14px;color:#c0392b;font-size:0.82rem;font-weight:600;"></div>
+
+      <button id="tokenLookupBtn" onclick="lookupToken()" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(46,125,209,0.35);">Get My Token</button>
 
       <!-- Token result -->
       <div id="tokenResult" style="display:none;margin-top:24px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:16px;padding:24px;color:#fff;">
-        <div style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:8px;">Your Token Number</div>
+        <div style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;">Your Token Number</div>
         <div id="tokenNum" style="font-size:4rem;font-weight:900;line-height:1;"></div>
-        <div id="tokenInfo" style="font-size:0.82rem;opacity:0.75;margin-top:8px;"></div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
+          <div id="tokenPatientName" style="font-size:0.9rem;font-weight:600;"></div>
+          <div id="tokenBookingDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+          <div id="tokenDoctorDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+          <div id="tokenDateDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+        </div>
         <button onclick="window.print()" style="margin-top:16px;padding:9px 24px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;font-family:Poppins,sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🖨️ Print Token</button>
       </div>
     </div>
@@ -301,8 +300,56 @@
   <!-- FIREBASE -->
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, addDoc, getDocs, serverTimestamp }
+    import { collection, addDoc, getDocs, query, where, serverTimestamp }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    // TOKEN LOOKUP
+    window.lookupToken = async function() {
+      const bookingId = document.getElementById('tokenBookingId').value.trim().toUpperCase();
+      const phone     = document.getElementById('tokenPhone').value.trim();
+      const btn       = document.getElementById('tokenLookupBtn');
+      const errBox    = document.getElementById('tokenError');
+
+      errBox.style.display = 'none';
+      document.getElementById('tokenResult').style.display = 'none';
+
+      if (!bookingId || !phone) {
+        errBox.textContent = 'Please enter both Booking ID and Phone Number.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.textContent = 'Looking up...';
+      btn.disabled = true;
+
+      try {
+        const q = query(
+          collection(db, 'appointments'),
+          where('bookingId', '==', bookingId),
+          where('phone',     '==', phone)
+        );
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          errBox.textContent = '❌ Booking ID or Phone not found. Please check and try again.';
+          errBox.style.display = 'block';
+        } else {
+          const d = snap.docs[0].data();
+          document.getElementById('tokenNum').textContent           = d.token || '—';
+          document.getElementById('tokenPatientName').textContent   = '👤 ' + (d.name || '');
+          document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
+          document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 Condition: ' + d.condition : '';
+          document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
+          document.getElementById('tokenResult').style.display = 'block';
+        }
+      } catch(e) {
+        errBox.textContent = '⚠️ Error looking up token. Please try again.';
+        errBox.style.display = 'block';
+      }
+
+      btn.textContent = 'Get My Token';
+      btn.disabled = false;
+    };
 
     async function loadSlots() {
       const sel = document.getElementById('enSlot');
@@ -427,30 +474,23 @@
     }
     function slideMove(dir) { goTo(current + dir); }
     // TOKEN MODAL
-    let tokenCounter = 0;
     function toggleToken(e) {
       e.preventDefault();
       const m = document.getElementById('tokenModal');
-      m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-      document.getElementById('tokenResult').style.display = 'none';
+      const isOpen = m.style.display === 'flex';
+      m.style.display = isOpen ? 'none' : 'flex';
+      if (!isOpen) {
+        document.getElementById('tokenResult').style.display = 'none';
+        document.getElementById('tokenError').style.display  = 'none';
+        document.getElementById('tokenBookingId').value = '';
+        document.getElementById('tokenPhone').value = '';
+      }
     }
     function closeToken() {
       document.getElementById('tokenModal').style.display = 'none';
     }
-    function generateToken() {
-      const name   = document.getElementById('tokenName').value.trim();
-      const phone  = document.getElementById('tokenPhone').value.trim();
-      const doctor = document.getElementById('tokenDoctor').value;
-      if (!name || !phone || !doctor) return alert('Please fill all fields.');
-      tokenCounter++;
-      const num = '#' + String(tokenCounter).padStart(3, '0');
-      document.getElementById('tokenNum').textContent  = num;
-      document.getElementById('tokenInfo').textContent = name + ' · ' + doctor;
-      document.getElementById('tokenResult').style.display = 'block';
-    }
-    window.toggleToken   = toggleToken;
-    window.closeToken    = closeToken;
-    window.generateToken = generateToken;
+    window.toggleToken = toggleToken;
+    window.closeToken  = closeToken;
 
     goTo(0);
     setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
