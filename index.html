@@ -259,7 +259,7 @@
   </footer>
 
   <!-- TOKEN MODAL -->
-  <div id="tokenModal" style="display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div id="tokenModal" style="position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);" onclick="closeToken()"></div>
     <div style="position:relative;background:#fff;border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;">
       <button onclick="closeToken()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7c93;">&#x2715;</button>
@@ -303,60 +303,7 @@
     import { collection, addDoc, getDocs, query, where, serverTimestamp }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
-    // TOKEN LOOKUP
-    window.lookupToken = async function() {
-      const bookingId = document.getElementById('tokenBookingId').value.trim().toUpperCase();
-      const phone     = document.getElementById('tokenPhone').value.trim();
-      const btn       = document.getElementById('tokenLookupBtn');
-      const errBox    = document.getElementById('tokenError');
 
-      errBox.style.display = 'none';
-      document.getElementById('tokenResult').style.display = 'none';
-
-      if (!bookingId || !phone) {
-        errBox.textContent = 'Please enter both Booking ID and Phone Number.';
-        errBox.style.display = 'block';
-        return;
-      }
-
-      btn.textContent = 'Looking up...';
-      btn.disabled = true;
-
-      try {
-        // Query only by bookingId (single field — no index needed)
-        const q    = query(collection(db, 'appointments'), where('bookingId', '==', bookingId));
-        const snap = await getDocs(q);
-
-        if (snap.empty) {
-          errBox.textContent = '❌ Booking ID not found. Please check and try again.';
-          errBox.style.display = 'block';
-        } else {
-          const d = snap.docs[0].data();
-          // Verify phone client-side
-          if (d.phone !== phone) {
-            errBox.textContent = '❌ Phone number does not match this Booking ID.';
-            errBox.style.display = 'block';
-          } else if (!d.token) {
-            errBox.textContent = '⏳ Booking confirmed but token not assigned yet. Please contact the clinic.';
-            errBox.style.display = 'block';
-          } else {
-            document.getElementById('tokenNum').textContent            = d.token;
-            document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
-            document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
-            document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
-            document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
-            document.getElementById('tokenResult').style.display = 'block';
-          }
-        }
-      } catch(e) {
-        console.error(e);
-        errBox.textContent = '⚠️ Error: ' + e.message;
-        errBox.style.display = 'block';
-      }
-
-      btn.textContent = 'Get My Token';
-      btn.disabled = false;
-    };
 
     async function loadSlots() {
       const sel = document.getElementById('enSlot');
@@ -505,5 +452,62 @@
     setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
   </script>
 
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    window.lookupToken = async function() {
+      const bookingId = document.getElementById('tokenBookingId').value.trim().toUpperCase();
+      const phone     = document.getElementById('tokenPhone').value.trim();
+      const btn       = document.getElementById('tokenLookupBtn');
+      const errBox    = document.getElementById('tokenError');
+
+      errBox.style.display = 'none';
+      document.getElementById('tokenResult').style.display = 'none';
+
+      if (!bookingId || !phone) {
+        errBox.textContent = 'Please enter both Booking ID and Phone Number.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.textContent = 'Looking up...';
+      btn.disabled = true;
+
+      try {
+        const q    = query(collection(db, 'appointments'), where('bookingId', '==', bookingId));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          errBox.textContent = '❌ Booking ID not found. Please check and try again.';
+          errBox.style.display = 'block';
+        } else {
+          const d = snap.docs[0].data();
+          if (d.phone !== phone) {
+            errBox.textContent = '❌ Phone number does not match this Booking ID.';
+            errBox.style.display = 'block';
+          } else if (!d.token) {
+            errBox.textContent = '⏳ Booking confirmed but token not assigned yet. Please contact the clinic.';
+            errBox.style.display = 'block';
+          } else {
+            document.getElementById('tokenNum').textContent            = d.token;
+            document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
+            document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
+            document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
+            document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
+            document.getElementById('tokenResult').style.display = 'block';
+          }
+        }
+      } catch(e) {
+        console.error(e);
+        errBox.textContent = '⚠️ Error: ' + e.message;
+        errBox.style.display = 'block';
+      }
+
+      btn.textContent = 'Get My Token';
+      btn.disabled = false;
+    };
+  </script>
 </body>
 </html>

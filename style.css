@@ -2121,5 +2121,5 @@ img.loaded { opacity: 1; }
 }
 
 /* ── TOKEN MODAL ─────────────────────────── */
-#tokenModal { display: none !important; }
-#tokenModal.token-open { display: flex !important; }
+#tokenModal { display: none; }
+#tokenModal.token-open { display: flex; }
