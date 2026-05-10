@@ -455,7 +455,7 @@
             .total { text-align:right; font-size:1.2rem; font-weight:700; color:#1a4b8c; margin-top:16px; padding-top:16px; border-top:2px solid #dce8f5; }
           </style>
           <link rel="stylesheet" href="mobile.css"/>
-</head><body>${printContents}<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body></html>`);
+</head><body>${printContents}<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");var opening=!s.classList.contains("open");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");document.body.style.overflow=opening?"hidden":"";}document.addEventListener("keydown",function(e){if(e.key==="Escape"){var s=document.querySelector(".sidebar");if(s<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script><script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script>s.classList.contains("open"))toggleSidebar();}});</script></body></html>`);
       win.document.close();
       win.focus();
       setTimeout(() => { win.print(); win.close(); }, 500);
@@ -501,5 +501,5 @@
       window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(message), '_blank');
     }
   </script>
-<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script></body>
+<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");var opening=!s.classList.contains("open");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");document.body.style.overflow=opening?"hidden":"";}document.addEventListener("keydown",function(e){if(e.key==="Escape"){var s=document.querySelector(".sidebar");if(s<script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script><script>function toggleSidebar(){var s=document.querySelector(".sidebar"),t=document.getElementById("sidebarToggle"),o=document.getElementById("sidebarOverlay");s.classList.toggle("open");t.classList.toggle("open");o.classList.toggle("show");}</script>s.classList.contains("open"))toggleSidebar();}});</script></body>
 </html>

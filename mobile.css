@@ -103,33 +103,35 @@ img { max-width: 100%; height: auto; }
 .sidebar-toggle {
   display: none;
   position: fixed;
-  top: 14px; left: 14px;
-  z-index: 1001;
+  top: 12px; left: 12px;
+  z-index: 1100;
   background: #1a4b8c;
   border: none;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 9px 11px;
   cursor: pointer;
   flex-direction: column;
   gap: 5px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 .sidebar-toggle span {
   display: block;
-  width: 22px; height: 2px;
+  width: 22px; height: 2.5px;
   background: #fff;
   border-radius: 2px;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
 }
-.sidebar-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.sidebar-toggle.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 .sidebar-toggle.open span:nth-child(2) { opacity: 0; }
-.sidebar-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.sidebar-toggle.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
 
 .sidebar-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 999;
+  background: rgba(0,0,0,0.55);
+  z-index: 1050;
 }
 .sidebar-overlay.show { display: block; }
 
@@ -139,18 +141,18 @@ img { max-width: 100%; height: auto; }
   .sidebar {
     position: fixed !important;
     left: -260px !important;
-    top: 0; bottom: 0;
+    top: 0 !important; bottom: 0 !important;
     width: 240px !important;
-    z-index: 1000;
+    height: 100vh !important;
+    z-index: 1099 !important;
     transition: left 0.35s cubic-bezier(0.34,1.56,0.64,1) !important;
-    overflow-y: auto;
+    overflow-y: auto !important;
   }
   .sidebar.open { left: 0 !important; }
 
   .main {
     margin-left: 0 !important;
-    padding: 20px 16px !important;
-    padding-top: 60px !important;
+    padding: 70px 16px 24px !important;
   }
 
   .stats { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
