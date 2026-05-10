@@ -323,20 +323,21 @@
       btn.disabled = true;
 
       try {
-        const q = query(
-          collection(db, 'appointments'),
-          where('bookingId', '==', bookingId),
-          where('phone',     '==', phone)
-        );
+        // Query only by bookingId (single field — no index needed)
+        const q    = query(collection(db, 'appointments'), where('bookingId', '==', bookingId));
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          errBox.textContent = '❌ Booking ID or Phone not found. Please check and try again.';
+          errBox.textContent = '❌ Booking ID not found. Please check and try again.';
           errBox.style.display = 'block';
         } else {
           const d = snap.docs[0].data();
-          if (!d.token) {
-            errBox.textContent = '⏳ Your booking is confirmed but token is not assigned yet. Please check back soon or contact the clinic.';
+          // Verify phone client-side
+          if (d.phone !== phone) {
+            errBox.textContent = '❌ Phone number does not match this Booking ID.';
+            errBox.style.display = 'block';
+          } else if (!d.token) {
+            errBox.textContent = '⏳ Booking confirmed but token not assigned yet. Please contact the clinic.';
             errBox.style.display = 'block';
           } else {
             document.getElementById('tokenNum').textContent            = d.token;
@@ -348,7 +349,8 @@
           }
         }
       } catch(e) {
-        errBox.textContent = '⚠️ Error looking up token. Please try again.';
+        console.error(e);
+        errBox.textContent = '⚠️ Error: ' + e.message;
         errBox.style.display = 'block';
       }
 
