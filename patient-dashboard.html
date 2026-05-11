@@ -94,7 +94,7 @@
       <a onclick="showSection('contact', this)">📞 Contact Doctor</a>
       <a onclick="showSection('token', this)">🎫 My Token</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visit</a>
-      <a onclick="window.logout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
+      <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
     </nav>
   </div>
 
@@ -611,7 +611,7 @@ _Sent from Ayushman PhysioFIT Patient Portal_`;
       sessionStorage.clear();
       window.location.href = 'login.html';
     }
-  </script></body>
+  </script><script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
 <script>
 function toggleSidebar(){
   var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
@@ -623,5 +623,5 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){var s=document.querySelector('.sidebar');if(s&&s.classList.contains('open'))toggleSidebar();}
 });
 </script>
-</body>
+<script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
 </html>
