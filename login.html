@@ -320,18 +320,6 @@
         <label>Password</label>
         <input type="password" id="regPass" placeholder="Create a password"/>
       </div>
-      <div class="form-group">
-        <label>Condition</label>
-        <select id="regCondition">
-          <option value="">Select Condition</option>
-          <option>Frozen Shoulder</option>
-          <option>Knee &amp; Foot Pain</option>
-          <option>Spine Problems</option>
-          <option>Stroke Rehabilitation</option>
-          <option>Sports Injuries</option>
-          <option>Other</option>
-        </select>
-      </div>
       <button class="btn-submit" onclick="registerPatient()">Create Account →</button>
       <div class="divider">or</div>
       <a href="index.html" class="back-home">← Back to Home</a>
@@ -357,13 +345,12 @@
       const n  = document.getElementById('regName').value.trim();
       const p  = document.getElementById('regPhone').value.trim();
       const pw = document.getElementById('regPass').value.trim();
-      const c  = document.getElementById('regCondition').value;
       if (!n || !p || !pw) return alert('Please fill all fields.');
       const email = p + '@ayushman.patient';
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
         await setDoc(doc(db, 'patients', cred.user.uid), {
-          name: n, phone: p, condition: c, role: 'patient',
+          name: n, phone: p, role: 'patient',
           createdAt: new Date().toISOString()
         });
         sessionStorage.setItem('loggedUser', p);
