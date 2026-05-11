@@ -184,3 +184,30 @@ img { max-width: 100%; height: auto; }
 @media (max-width: 520px) {
   .video-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ── SIDEBAR MOBILE SCROLL FIX ──────────── */
+@media (max-width: 900px) {
+  .sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    max-height: 100vh !important;
+  }
+  .sidebar nav {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .sidebar-footer {
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    background: inherit;
+    padding: 16px 20px !important;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar nav a {
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

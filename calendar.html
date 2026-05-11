@@ -323,24 +323,16 @@
     // Init
     renderCalendar();
     renderApptList(formatDate(new Date()));
-  </script>
-s.classList.contains("open"))toggleSidebar();}});</script></body>
+  </script></body>
 <script>
-function toggleSidebar() {
-  var s = document.querySelector('.sidebar');
-  var t = document.getElementById('sidebarToggle');
-  var o = document.getElementById('sidebarOverlay');
-  var opening = !s.classList.contains('open');
-  s.classList.toggle('open');
-  t.classList.toggle('open');
-  o.classList.toggle('show');
-  document.body.style.overflow = opening ? 'hidden' : '';
+function toggleSidebar(){
+  var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
+  var opening=!s.classList.contains('open');
+  s.classList.toggle('open'); t.classList.toggle('open'); o.classList.toggle('show');
+  document.body.style.overflow=opening?'hidden':'';
 }
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    var s = document.querySelector('.sidebar');
-    if (s && s.classList.contains('open')) toggleSidebar();
-  }
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){var s=document.querySelector('.sidebar');if(s&&s.classList.contains('open'))toggleSidebar();}
 });
 </script>
 </body>
