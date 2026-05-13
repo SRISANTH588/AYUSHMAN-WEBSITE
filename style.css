@@ -1195,7 +1195,7 @@ img.loaded { opacity: 1; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
-  max-width: 1060px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: left;
 }
@@ -1203,7 +1203,7 @@ img.loaded { opacity: 1; }
 .oc-card {
   background: white;
   border-radius: 20px;
-  padding: 36px 32px;
+  padding: 40px 36px;
   box-shadow: 0 4px 24px rgba(26,75,140,0.1);
   border: 1.5px solid #dce8f5;
   display: flex;
@@ -1258,9 +1258,14 @@ img.loaded { opacity: 1; }
 }
 
 .oc-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.oc-form select,
+.oc-form button {
+  grid-column: 1 / -1;
 }
 
 .oc-form input,
@@ -1978,7 +1983,8 @@ img.loaded { opacity: 1; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 28px;
-  max-width: 1060px;
+  max-width: 1400px;
+  width: 95%;
   margin: 0 auto;
   text-align: left;
 }
@@ -1989,10 +1995,10 @@ img.loaded { opacity: 1; }
   border: 1px solid rgba(255,255,255,0.14);
   backdrop-filter: blur(16px);
   border-radius: 24px;
-  padding: 36px 32px;
+  padding: 20px 28px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
   position: relative;
   overflow: hidden;
