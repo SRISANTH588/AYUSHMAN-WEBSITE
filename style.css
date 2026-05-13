@@ -95,7 +95,7 @@ body {
   width: 280px;
   height: 280px;
   background: url('images/logo_transparent.png') center/contain no-repeat;
-  opacity: 0.08;
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
 }
@@ -1662,7 +1662,8 @@ img.loaded { opacity: 1; }
   transform: translateY(-50%);
   width: 420px; height: 420px;
   background: url('images/logo_transparent.png') center/contain no-repeat;
-  opacity: 0.05;
+  opacity: 0.55;
+  filter: brightness(1.8);
   pointer-events: none;
   z-index: 0;
 }

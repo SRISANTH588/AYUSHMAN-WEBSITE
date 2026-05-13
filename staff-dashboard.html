@@ -99,19 +99,16 @@
         <div class="welcome-badge">👨⚕️ Staff</div>
       </div>
       <div class="stats">
-        <div class="stat-card"><div class="icon">📅</div><h3 id="totalToday">4</h3><p>Today's Patients</p></div>
-        <div class="stat-card"><div class="icon">✅</div><h3 id="completedCount">1</h3><p>Completed Sessions</p></div>
-        <div class="stat-card"><div class="icon">⏳</div><h3 id="remainingCount">3</h3><p>Remaining</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="totalToday">0</h3><p>Today's Patients</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="completedCount">0</h3><p>Completed Sessions</p></div>
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="remainingCount">0</h3><p>Remaining</p></div>
       </div>
       <div class="section-card">
         <h2>📅 Today's Schedule</h2>
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="scheduleTable">
-            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td><td>—</td></tr>
-            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>10:30 AM</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
-            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>11:00 AM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
-            <tr><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td>12:00 PM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments today</td></tr>
           </tbody>
         </table>
       </div>
@@ -124,11 +121,8 @@
         <h2>📅 All Scheduled Appointments</h2>
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td><td>—</td></tr>
-            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>10:30 AM</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
-            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>11:00 AM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
-            <tr><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td>12:00 PM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td></tr>
+          <tbody id="allScheduleTable">
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments scheduled</td></tr>
           </tbody>
         </table>
       </div>
@@ -141,10 +135,8 @@
         <h2>🧑 Patient List</h2>
         <table>
           <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Progress</th></tr></thead>
-          <tbody>
-            <tr><td>Ravi Kumar</td><td>9876543210</td><td>Knee Pain</td><td>75%</td></tr>
-            <tr><td>Suresh Babu</td><td>9000011122</td><td>Stroke Rehab</td><td>40%</td></tr>
-            <tr><td>Lakshmi Devi</td><td>9988776655</td><td>Frozen Shoulder</td><td>60%</td></tr>
+          <tbody id="myPatientsTable">
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No patients assigned</td></tr>
           </tbody>
         </table>
       </div>
@@ -157,11 +149,7 @@
         <h2>📝 Add Note</h2>
         <div class="form-group">
           <label>Patient</label>
-          <select id="notePatient">
-            <option>Ravi Kumar</option>
-            <option>Suresh Babu</option>
-            <option>Lakshmi Devi</option>
-          </select>
+          <select id="notePatient"><option value="">Select Patient</option></select>
         </div>
         <div class="form-group">
           <label>Session Date</label>
@@ -179,7 +167,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Date</th><th>Notes</th></tr></thead>
           <tbody id="notesTable">
-            <tr><td>Ravi Kumar</td><td>03 May 2026</td><td>Completed ultrasound therapy. Good progress on knee flexion.</td></tr>
+            <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -213,9 +201,7 @@
         <table>
           <thead><tr><th>Time</th><th>Patient</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="slotTable">
-            <tr><td>9:00 AM</td><td>Ravi Kumar</td><td>Knee Pain</td><td><span class="badge completed">Done</span></td><td>—</td></tr>
-            <tr><td>10:30 AM</td><td>Priya Sharma</td><td>Spine Problem</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>
-            <tr><td>11:00 AM</td><td>Suresh Babu</td><td>Stroke Rehab</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No slots assigned yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -238,9 +224,7 @@
         <table>
           <thead><tr><th>Position</th><th>Patient</th><th>Condition</th><th>Wait Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="queueTable">
-            <tr><td>#1</td><td>Ravi Kumar</td><td>Knee Pain</td><td>0 min</td><td><span class="badge completed">In Session</span></td><td>—</td></tr>
-            <tr><td>#2</td><td>Priya Sharma</td><td>Spine Problem</td><td>~15 min</td><td><span class="badge confirmed">Waiting</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>
-            <tr><td>#3</td><td>Suresh Babu</td><td>Stroke Rehab</td><td>~30 min</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">Queue is empty</td></tr>
           </tbody>
         </table>
       </div>
@@ -267,8 +251,7 @@
         <table>
           <thead><tr><th>Token</th><th>Patient</th><th>Check-in Time</th><th>Status</th></tr></thead>
           <tbody id="checkinTable">
-            <tr><td>#001</td><td>Ravi Kumar</td><td>9:02 AM</td><td><span class="badge completed">Checked In</span></td></tr>
-            <tr><td>#002</td><td>Priya Sharma</td><td>10:28 AM</td><td><span class="badge completed">Checked In</span></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No check-ins yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -288,9 +271,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Action</th></tr></thead>
           <tbody id="pendingTable">
-            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>10:30 AM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
-            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>11:00 AM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
-            <tr><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td>12:00 PM</td><td><button class="btn-done" onclick="completeSess(this)">Mark Complete</button></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No pending sessions</td></tr>
           </tbody>
         </table>
       </div>
@@ -299,7 +280,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th></tr></thead>
           <tbody id="completedTable">
-            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No completed sessions yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -312,7 +293,7 @@
         <h2>✅ Mark Attendance</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
           <div class="form-group"><label>Patient</label>
-            <select id="attPatient"><option>Ravi Kumar</option><option>Priya Sharma</option><option>Suresh Babu</option><option>Lakshmi Devi</option></select>
+            <select id="attPatient"><option value="">Select Patient</option></select>
           </div>
           <div class="form-group"><label>Date</label><input type="date" id="attDate"/></div>
         </div>
@@ -330,9 +311,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Session</th><th>Date</th><th>Status</th></tr></thead>
           <tbody id="attTable">
-            <tr><td>Ravi Kumar</td><td>Knee Rehab</td><td>03 May 2026</td><td><span class="badge completed">Present</span></td></tr>
-            <tr><td>Priya Sharma</td><td>Spine Therapy</td><td>03 May 2026</td><td><span class="badge completed">Present</span></td></tr>
-            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>02 May 2026</td><td><span class="badge pending">Absent</span></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No attendance records yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -346,10 +325,7 @@
         <table>
           <thead><tr><th>Token</th><th>Patient</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="tokenQueueTable">
-            <tr><td>#001</td><td>Ravi Kumar</td><td>Knee Pain</td><td><span class="badge completed">Called</span></td><td>—</td></tr>
-            <tr><td>#002</td><td>Priya Sharma</td><td>Spine Problem</td><td><span class="badge confirmed">Waiting</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
-            <tr><td>#003</td><td>Suresh Babu</td><td>Stroke Rehab</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
-            <tr><td>#004</td><td>Lakshmi Devi</td><td>Frozen Shoulder</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callToken(this)">📢 Call</button></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No tokens in queue</td></tr>
           </tbody>
         </table>
       </div>
@@ -385,8 +361,7 @@
         <table>
           <thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Time</th><th>Link</th><th>Action</th></tr></thead>
           <tbody id="sesTable">
-            <tr><td>Knee Rehab Exercise</td><td>Online</td><td>12 May 2026</td><td>10:00 AM</td><td><a href="#" style="color:#2e8b57;font-weight:600;">Join</a></td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>
-            <tr><td>Posture Correction</td><td>Offline</td><td>13 May 2026</td><td>11:00 AM</td><td>—</td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">No sessions scheduled</td></tr>
           </tbody>
         </table>
       </div>
@@ -643,7 +618,66 @@ _We keep you moving..._`;
     }
 
     function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
-  </script><script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
+  </script>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    const staffName = sessionStorage.getItem('loggedName') || '';
+    const todayStr  = new Date().toISOString().slice(0,10);
+
+    // Load today's appointments assigned to this staff/doctor
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
+      const schedTbody = document.getElementById('scheduleTable');
+      const allTbody   = document.getElementById('allScheduleTable');
+      if (!schedTbody) return;
+      schedTbody.innerHTML = '';
+      if (allTbody) allTbody.innerHTML = '';
+      let total = 0, completed = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        if (!a.date) return;
+        total++;
+        const isCompleted = (a.status||'').toLowerCase() === 'completed';
+        if (isCompleted) completed++;
+        const statusClass = isCompleted ? 'completed' : (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : 'pending';
+        const actionBtn = isCompleted ? '<td>—</td>' : '<td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td>';
+        const row = `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td>${actionBtn}</tr>`;
+        if (a.date === todayStr) schedTbody.insertAdjacentHTML('beforeend', row);
+        if (allTbody) allTbody.insertAdjacentHTML('beforeend', row);
+      });
+      if (!schedTbody.innerHTML) schedTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments today</td></tr>';
+      if (allTbody && !allTbody.innerHTML) allTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments scheduled</td></tr>';
+      document.getElementById('totalToday').textContent  = document.querySelectorAll('#scheduleTable tr').length;
+      document.getElementById('completedCount').textContent = completed;
+      document.getElementById('remainingCount').textContent = total - completed;
+    });
+
+    // Load patients
+    onSnapshot(collection(db, 'patients'), snap => {
+      const tbody = document.getElementById('myPatientsTable');
+      const noteSelect = document.getElementById('notePatient');
+      const attSelect  = document.getElementById('attPatient');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const patientNames = [];
+      snap.forEach(d => {
+        const p = d.data();
+        patientNames.push(p.name||'');
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${p.name||''}</td><td>${p.phone||''}</td><td>${p.condition||''}</td><td>${p.progress||'—'}</td></tr>`);
+      });
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No patients assigned</td></tr>';
+      if (noteSelect) {
+        noteSelect.innerHTML = '<option value="">Select Patient</option>' + patientNames.map(n => `<option>${n}</option>`).join('');
+      }
+      if (attSelect) {
+        attSelect.innerHTML = '<option value="">Select Patient</option>' + patientNames.map(n => `<option>${n}</option>`).join('');
+      }
+    });
+  </script>
+
 <script>
 function toggleSidebar(){
   var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
@@ -654,6 +688,7 @@ function toggleSidebar(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){var s=document.querySelector('.sidebar');if(s&&s.classList.contains('open'))toggleSidebar();}
 });
+function doLogout(){sessionStorage.clear();window.location.href='login.html';}
 </script>
-<script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
+</body>
 </html>

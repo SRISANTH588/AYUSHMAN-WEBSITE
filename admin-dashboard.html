@@ -117,19 +117,17 @@
         <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(26,75,140,0.15);z-index:100;max-height:300px;overflow-y:auto;margin-top:4px;"></div>
       </div>
       <div class="stats">
-        <div class="stat-card"><div class="icon">📅</div><h3>24</h3><p>Today's Appointments</p></div>
-        <div class="stat-card"><div class="icon">🧑</div><h3 id="totalPatients">3</h3><p>Total Patients</p></div>
-        <div class="stat-card"><div class="icon">👨⚕️</div><h3 id="totalStaff">2</h3><p>Active Staff</p></div>
-        <div class="stat-card"><div class="icon">✅</div><h3>18</h3><p>Completed Today</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="todayAppts">0</h3><p>Today's Appointments</p></div>
+        <div class="stat-card"><div class="icon">🧑</div><h3 id="totalPatients">0</h3><p>Total Patients</p></div>
+        <div class="stat-card"><div class="icon">👨⚕️</div><h3 id="totalStaff">0</h3><p>Active Staff</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="completedToday">0</h3><p>Completed Today</p></div>
       </div>
       <div class="section-card">
         <h2>📅 Recent Appointments</h2>
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td>9:00 AM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td>10:30 AM</td><td><span class="badge pending">Pending</span></td></tr>
-            <tr><td>Suresh Babu</td><td>Stroke Rehab</td><td>Dr. Durga Sowjanya</td><td>11:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+          <tbody id="dashRecentAppts">
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -161,8 +159,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="apptTable">
-            <tr><td>Ravi Kumar</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td>9:00 AM</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
-            <tr><td>Priya Sharma</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td>10:30 AM</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -185,8 +182,7 @@
         <table>
           <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="staffTable">
-            <tr><td>Dr. Durga Sowjanya</td><td>MPT Neuro, MIAP</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
-            <tr><td>Dr. D. Ramachandra</td><td>Pain Management</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -218,9 +214,7 @@
         <table>
           <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Doctor</th><th>Action</th></tr></thead>
           <tbody id="patTable">
-            <tr><td>Ravi Kumar</td><td>9876543210</td><td>Knee Pain</td><td>Dr. Durga Sowjanya</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
-            <tr><td>Priya Sharma</td><td>9123456780</td><td>Spine Problem</td><td>Dr. D. Ramachandra</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
-            <tr><td>Suresh Babu</td><td>9000011122</td><td>Stroke Rehab</td><td>Dr. Durga Sowjanya</td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -249,8 +243,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Amount</th><th>Mode</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="payTable">
-            <tr><td>Ravi Kumar</td><td>₹500</td><td>UPI</td><td>03 May 2026</td><td><span class="badge confirmed">Paid</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
-            <tr><td>Priya Sharma</td><td>₹800</td><td>Cash</td><td>02 May 2026</td><td><span class="badge pending">Pending</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">No payments recorded yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -283,8 +276,7 @@
         <table>
           <thead><tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Status</th></tr></thead>
           <tbody id="tokenTable">
-            <tr><td>#001</td><td>Ravi Kumar</td><td>Dr. Durga Sowjanya</td><td><span class="badge completed">Called</span></td></tr>
-            <tr><td>#002</td><td>Priya Sharma</td><td>Dr. D. Ramachandra</td><td><span class="badge confirmed">Waiting</span></td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No tokens generated yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -313,7 +305,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Plan</th><th>Start</th><th>End</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="memTable">
-            <tr><td>Ravi Kumar</td><td>Standard</td><td>01 May 2026</td><td>31 May 2026</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">No memberships yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -411,7 +403,7 @@
         <h2>📢 Send Notification</h2>
         <div class="form-row">
           <div class="form-group"><label>To</label>
-            <select id="notifTo"><option>All Patients</option><option>Ravi Kumar</option><option>Priya Sharma</option><option>Suresh Babu</option></select>
+            <select id="notifTo"><option>All Patients</option></select>
           </div>
           <div class="form-group"><label>Type</label>
             <select id="notifType"><option>Appointment Reminder</option><option>Payment Due</option><option>Membership Expiry</option><option>General</option></select>
@@ -429,8 +421,7 @@
         <table>
           <thead><tr><th>To</th><th>Type</th><th>Message</th><th>Sent</th></tr></thead>
           <tbody id="notifTable">
-            <tr><td>Ravi Kumar</td><td>Reminder</td><td>Your appointment is tomorrow at 10:30 AM</td><td>Today</td></tr>
-            <tr><td>All Patients</td><td>General</td><td>FREE PHYSIO CAMP – May 11, 12 & 13!</td><td>Yesterday</td></tr>
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No notifications sent yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -703,12 +694,21 @@
     // Load real-time data from Firestore
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), (snap) => {
       const tbody = document.getElementById('apptTable');
+      const dashTbody = document.getElementById('dashRecentAppts');
       tbody.innerHTML = '';
+      const todayStr = new Date().toISOString().slice(0,10);
+      let todayCount = 0, completedCount = 0, recentRows = '';
       snap.forEach(d => {
         const a = d.data();
+        const statusClass = (a.status||'pending').toLowerCase() === 'confirmed' ? 'confirmed' : (a.status||'').toLowerCase() === 'completed' ? 'completed' : 'pending';
         tbody.insertAdjacentHTML('beforeend',
-          `<tr><td>${a.patientName||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge pending">${a.status||'Pending'}</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`);
+          `<tr><td>${a.patientName||a.name||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`);
+        if (a.date === todayStr) { todayCount++; if ((a.status||'').toLowerCase() === 'completed') completedCount++; }
+        if (recentRows.split('<tr>').length <= 6) recentRows += `<tr><td>${a.patientName||a.name||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td></tr>`;
       });
+      if (dashTbody) dashTbody.innerHTML = recentRows || '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments yet</td></tr>';
+      document.getElementById('todayAppts') && (document.getElementById('todayAppts').textContent = todayCount);
+      document.getElementById('completedToday') && (document.getElementById('completedToday').textContent = completedCount);
       document.getElementById('totalPatients') && (document.getElementById('totalPatients').textContent = snap.size);
     });
 

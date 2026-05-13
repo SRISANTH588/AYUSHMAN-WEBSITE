@@ -95,6 +95,7 @@
       <a onclick="showSection('token', this)">🎫 My Token</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visit</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
+      <a href="index.html" style="color:rgba(255,255,255,0.7);padding-top:8px;">🏠 Back to Main Page</a>
     </nav>
   </div>
 
@@ -107,16 +108,16 @@
         <div class="welcome-badge">🧑 Patient</div>
       </div>
       <div class="stats">
-        <div class="stat-card"><div class="icon">📅</div><h3>1</h3><p>Upcoming Appointment</p></div>
-        <div class="stat-card"><div class="icon">✅</div><h3>6</h3><p>Sessions Completed</p></div>
-        <div class="stat-card"><div class="icon">💪</div><h3>75%</h3><p>Recovery Progress</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="upcomingCount">0</h3><p>Upcoming Appointment</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="sessionsCount">0</h3><p>Sessions Completed</p></div>
+        <div class="stat-card"><div class="icon">💪</div><h3 id="recoveryPct">—</h3><p>Recovery Progress</p></div>
       </div>
       <div class="section-card">
         <h2>📅 Upcoming Appointment</h2>
         <table>
           <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
+            <tr><td colspan="5" id="dashUpcomingRow" style="text-align:center;color:#6b7c93;">No upcoming appointments</td></tr>
           </tbody>
         </table>
       </div>
@@ -162,9 +163,7 @@
         <table>
           <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
           <tbody id="apptHistory">
-            <tr><td>10 May 2026</td><td>10:30 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-            <tr><td>03 May 2026</td><td>9:00 AM</td><td>Dr. D. Ramachandra</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
-            <tr><td>26 Apr 2026</td><td>11:00 AM</td><td>Dr. Durga Sowjanya</td><td>Knee Pain</td><td><span class="badge completed">Completed</span></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -178,9 +177,7 @@
         <table>
           <thead><tr><th>Date</th><th>Doctor</th><th>Notes</th></tr></thead>
           <tbody>
-            <tr><td>03 May 2026</td><td>Dr. Durga Sowjanya</td><td>Completed ultrasound therapy. Good progress on knee flexion.</td></tr>
-            <tr><td>26 Apr 2026</td><td>Dr. Durga Sowjanya</td><td>Started strengthening exercises. Pain reduced by 30%.</td></tr>
-            <tr><td>19 Apr 2026</td><td>Dr. D. Ramachandra</td><td>Initial assessment. Diagnosed with knee osteoarthritis.</td></tr>
+            <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No records yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -192,12 +189,8 @@
       <div class="section-card">
         <h2>💊 Current Treatment Plan</h2>
         <p style="color:#6b7c93; font-size:0.88rem; margin-bottom:20px;">Assigned by Dr. Durga Sowjanya</p>
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          <div>
-            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
-              <span>✅ Ultrasound Therapy — 3x per week</span><span style="color:#8b2e8b;">80%</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar" style="width:80%"></div></div>
+        <p style="color:#6b7c93;font-size:0.88rem;margin-top:12px;">No treatment plan assigned yet. Please contact your doctor.</p>
+      </div>
           </div>
           <div>
             <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
@@ -281,8 +274,7 @@
         <table>
           <thead><tr><th>Service</th><th>Amount</th><th>Mode</th><th>Date</th><th>Status</th></tr></thead>
           <tbody id="payHistTable">
-            <tr><td>Physio Session</td><td>₹500</td><td>UPI</td><td>03 May 2026</td><td><span class="badge confirmed">Paid</span></td></tr>
-            <tr><td>Membership Fee</td><td>₹1,999</td><td>Card</td><td>01 May 2026</td><td><span class="badge confirmed">Paid</span></td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No payment history yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -294,26 +286,14 @@
       <div class="section-card">
         <h2>🔔 Recent Notifications</h2>
         <div style="display:flex;flex-direction:column;gap:12px;" id="notifList">
-          <div style="background:#f0f7ff;border-left:4px solid #2e7dd1;border-radius:10px;padding:16px;">
-            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">📅 Appointment Reminder</div>
-            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Your appointment with Dr. Durga Sowjanya is tomorrow at 10:30 AM.</div>
-            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">Today, 9:00 AM</div>
-          </div>
+          <p style="color:#6b7c93;font-size:0.88rem;text-align:center;padding:20px;">No notifications yet</p>
+        </div>
           <div style="background:#f0fff4;border-left:4px solid #2e8b57;border-radius:10px;padding:16px;">
             <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">📦 Membership Active</div>
             <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Your Standard membership is active until 31 May 2026.</div>
             <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">01 May 2026</div>
           </div>
-          <div style="background:#fff8f0;border-left:4px solid #e63946;border-radius:10px;padding:16px;">
-            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">🏥 FREE PHYSIO CAMP</div>
-            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Join our FREE Physio Camp on May 11, 12 & 13. Pre-registration mandatory!</div>
-            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">Yesterday</div>
-          </div>
-          <div style="background:#f9f0f9;border-left:4px solid #8b2e8b;border-radius:10px;padding:16px;">
-            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">💳 Payment Received</div>
-            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">₹500 payment received for Physiotherapy Session on 03 May 2026.</div>
-            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">03 May 2026</div>
-          </div>
+          <p style="color:#6b7c93;font-size:0.88rem;text-align:center;padding:20px;">No notifications yet</p>
         </div>
       </div>
     </div>
@@ -324,8 +304,8 @@
       <div class="section-card">
         <h2>👤 Personal Information</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div class="form-group"><label>Full Name</label><input type="text" id="profName" value="Ravi Kumar"/></div>
-          <div class="form-group"><label>Phone</label><input type="tel" id="profPhone" value="9876543210"/></div>
+          <div class="form-group"><label>Full Name</label><input type="text" id="profName" value=""/></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="profPhone" value=""/></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
           <div class="form-group"><label>Email</label><input type="email" id="profEmail" placeholder="your@email.com"/></div>
@@ -367,8 +347,7 @@
         <h2>📋 Token History</h2>
         <table><thead><tr><th>Token</th><th>Date</th><th>Doctor</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>#007</td><td>Today</td><td>Dr. Durga Sowjanya</td><td><span class="badge confirmed">Waiting</span></td></tr>
-          <tr><td>#003</td><td>03 May 2026</td><td>Dr. D. Ramachandra</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No token history yet</td></tr>
         </tbody></table>
       </div>
     </div>
@@ -418,17 +397,15 @@
         <h2>🏥 Offline Sessions</h2>
         <table><thead><tr><th>Session</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>Ultrasound Therapy</td><td>10 May 2026</td><td>10:30 AM</td><td><span class="badge confirmed">Confirmed</span></td></tr>
-          <tr><td>Strengthening Exercises</td><td>03 May 2026</td><td>9:00 AM</td><td><span class="badge completed">Completed</span></td></tr>
+          <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No sessions yet</td></tr>
         </tbody></table>
       </div>
       <div class="section-card">
         <h2>🎥 Exercise Video Library</h2>
         <table><thead><tr><th>Title</th><th>Category</th><th>Watch</th></tr></thead>
         <tbody>
-          <tr><td>Knee Strengthening Guide</td><td>Ortho-Sports</td><td><a href="#" style="color:#8b2e8b;font-weight:600;">▶ Watch</a></td></tr>
-          <tr><td>Post Surgery Recovery</td><td>Post Surgery</td><td><a href="#" style="color:#8b2e8b;font-weight:600;">▶ Watch</a></td></tr>
-        </tbody></table>
+          <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No videos available yet</td></tr>
+          </tbody></table>
       </div>
     </div>
 
@@ -494,10 +471,42 @@
   <script type="module">
     import { auth, db } from './firebase.js';
     import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
-    import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs, onSnapshot, query, where, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
-    document.getElementById('patientName').textContent = sessionStorage.getItem('loggedName') || 'Patient';
+    const patientName = sessionStorage.getItem('loggedName') || 'Patient';
+    document.getElementById('patientName').textContent = patientName;
+
+    // Load real appointments for this patient
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
+      const histTbody = document.getElementById('apptHistory');
+      if (!histTbody) return;
+      histTbody.innerHTML = '';
+      let upcoming = 0, completed = 0;
+      const today = new Date().toISOString().slice(0,10);
+      snap.forEach(d => {
+        const a = d.data();
+        const aName = (a.name||a.patientName||'').toLowerCase();
+        if (aName !== patientName.toLowerCase()) return;
+        const statusClass = (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : (a.status||'').toLowerCase() === 'completed' ? 'completed' : 'pending';
+        histTbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${a.date||''}</td><td>${a.time||''}</td><td>${a.doctor||''}</td><td>${a.condition||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td></tr>`);
+        if ((a.status||'').toLowerCase() !== 'completed' && a.date >= today) upcoming++;
+        if ((a.status||'').toLowerCase() === 'completed') completed++;
+      });
+      if (!histTbody.innerHTML) histTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments yet</td></tr>';
+      document.getElementById('upcomingCount') && (document.getElementById('upcomingCount').textContent = upcoming);
+      document.getElementById('sessionsCount') && (document.getElementById('sessionsCount').textContent = completed);
+      // Update dashboard upcoming row
+      const dashRow = document.getElementById('dashUpcomingRow');
+      if (dashRow && upcoming > 0) {
+        const first = [...snap.docs].map(d => d.data()).filter(a => {
+          const n = (a.name||a.patientName||'').toLowerCase();
+          return n === patientName.toLowerCase() && (a.status||'').toLowerCase() !== 'completed' && a.date >= today;
+        })[0];
+        if (first) dashRow.outerHTML = `<tr><td>${first.date||''}</td><td>${first.time||''}</td><td>${first.doctor||''}</td><td>${first.condition||''}</td><td><span class="badge confirmed">${first.status||'Confirmed'}</span></td></tr>`;
+      }
+    });
 
     window.showSection = function(name, el) { if(window.innerWidth<=900){var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');if(s)s.classList.remove('open');if(t)t.classList.remove('open');if(o)o.classList.remove('show');}
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -513,7 +522,6 @@
       const doctor = document.getElementById('bookDoctor').value;
       if (!d || !t || !c) return alert('Please fill all fields.');
       const uid = sessionStorage.getItem('loggedUid');
-      const patientName = sessionStorage.getItem('loggedName');
       try {
         await addDoc(collection(db, 'appointments'), {
           patientName, patientUid: uid || 'guest',

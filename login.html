@@ -289,7 +289,7 @@
     <!-- LOGIN -->
     <div id="loginPanel">
       <p class="error-msg" id="errorMsg">❌ Invalid username or password.</p>
-      <form onsubmit="handleLogin(event)">
+      <form id="loginForm">
         <div class="form-group">
           <label>Username / Phone</label>
           <input type="text" id="userId" placeholder="Enter your username or phone" required/>
@@ -327,29 +327,38 @@
 
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDC3xGBni7Hl59c1UWeLw87-ng-PlLWSUg",
+      authDomain: "ayushman-physiofit-218ae.firebaseapp.com",
+      projectId: "ayushman-physiofit-218ae",
+      storageBucket: "ayushman-physiofit-218ae.firebasestorage.app",
+      messagingSenderId: "797309711753",
+      appId: "1:797309711753:web:a2489fdccdf9a88b12dd58"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
     function switchTab(tab) {
       document.getElementById('loginPanel').style.display    = tab === 'login'    ? 'block' : 'none';
       document.getElementById('registerPanel').style.display = tab === 'register' ? 'block' : 'none';
       document.getElementById('tabLogin').classList.toggle('active',    tab === 'login');
       document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
     }
-  </script>
 
-  <script type="module">
-    import { auth, db } from './firebase.js';
-    import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
-    import { doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
-
-    window.registerPatient = async function() {
+    async function registerPatient() {
       const n  = document.getElementById('regName').value.trim();
       const p  = document.getElementById('regPhone').value.trim();
       const pw = document.getElementById('regPass').value.trim();
       if (!n || !p || !pw) return alert('Please fill all fields.');
       const email = p + '@ayushman.patient';
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pw);
-        await setDoc(doc(db, 'patients', cred.user.uid), {
+        const cred = await auth.createUserWithEmailAndPassword(email, pw);
+        await db.collection('patients').doc(cred.user.uid).set({
           name: n, phone: p, role: 'patient',
           createdAt: new Date().toISOString()
         });
@@ -358,14 +367,17 @@
         sessionStorage.setItem('loggedRole', 'patient');
         sessionStorage.setItem('loggedUid', cred.user.uid);
         document.getElementById('regSuccess').style.display = 'block';
-        setTimeout(() => window.location.href = 'patient-dashboard.html', 1500);
+        setTimeout(() => window.location.href = 'index.html', 1500);
       } catch(e) { alert('Registration failed: ' + e.message); }
-    };
+    }
 
-    window.handleLogin = async function(e) {
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const username = document.getElementById('userId').value.trim();
       const password = document.getElementById('password').value.trim();
+      const errEl = document.getElementById('errorMsg');
+      errEl.style.display = 'none';
+
       const localUsers = [
         { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin', redirect: 'admin-dashboard.html' },
         { username: 'staff', password: 'staff123', role: 'staff', name: 'Staff', redirect: 'staff-dashboard.html' }
@@ -378,20 +390,22 @@
         window.location.href = local.redirect;
         return;
       }
+
       const email = username + '@ayushman.patient';
       try {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        const snap = await getDoc(doc(db, 'patients', cred.user.uid));
-        const data = snap.exists() ? snap.data() : {};
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        const snap = await db.collection('patients').doc(cred.user.uid).get();
+        const data = snap.exists ? snap.data() : {};
         sessionStorage.setItem('loggedUser', username);
         sessionStorage.setItem('loggedName', data.name || username);
         sessionStorage.setItem('loggedRole', 'patient');
         sessionStorage.setItem('loggedUid', cred.user.uid);
-        window.location.href = 'patient-dashboard.html';
+        window.location.href = 'index.html';
       } catch(e) {
-        document.getElementById('errorMsg').style.display = 'block';
+        errEl.textContent = '❌ Invalid username or password.';
+        errEl.style.display = 'block';
       }
-    };
+    });
   </script>
 </body>
 </html>

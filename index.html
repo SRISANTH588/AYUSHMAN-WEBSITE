@@ -40,7 +40,16 @@
       <li id="navOnlineClasses" style="display:none;"><a href="videos.html">Online Classes</a></li>
     </ul>
     <div class="nav-right">
-      <a href="login.html" class="btn-nav-login">Login</a>
+      <div id="navAuthArea">
+        <a href="login.html" class="btn-nav-login" id="navLoginBtn">Login</a>
+        <div id="navProfileBtn" style="display:none;position:relative;">
+          <button onclick="toggleProfileMenu()" style="background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:50px;padding:8px 18px;font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">👤 <span id="navPatientName"></span> ▾</button>
+          <div id="profileDropdown" style="display:none;position:absolute;right:0;top:110%;background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.15);min-width:160px;overflow:hidden;z-index:999;">
+            <a href="patient-dashboard.html" style="display:block;padding:12px 18px;color:#1a2a3a;text-decoration:none;font-size:0.85rem;font-weight:600;border-bottom:1px solid #f0f4f8;">🏠 Dashboard</a>
+            <a onclick="doNavLogout()" style="display:block;padding:12px 18px;color:#e63946;text-decoration:none;font-size:0.85rem;font-weight:600;cursor:pointer;">🚪 Logout</a>
+          </div>
+        </div>
+      </div>
       <div class="hamburger" id="hamburger" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </div>
@@ -97,50 +106,7 @@
 
   </section>
 
-  <!-- SERVICE SLIDER -->
-  <section class="service-slider-section reveal">
-    <h2>Our Services</h2>
-    <p class="section-sub">Specialized physiotherapy treatments for pain relief &amp; recovery</p>
-    <div class="slider-wrapper">
-      <button class="slider-btn prev" onclick="slideMove(-1)">&#8249;</button>
-      <div class="slider-track-outer">
-        <div class="slider-track" id="sliderTrack">
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/neck.png" alt="Neck Pain"/></div>
-            <div class="slide-label">NECK PAIN</div>
-            <div class="slide-telugu">మెడ నొప్పి</div>
-          </div>
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/shoulder.png" alt="Shoulder Pain"/></div>
-            <div class="slide-label">SHOULDER PAIN</div>
-            <div class="slide-telugu">భుజం నొప్పి</div>
-          </div>
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/elbow_pain.png" alt="Elbow Pain"/></div>
-            <div class="slide-label">ELBOW PAIN</div>
-            <div class="slide-telugu">మోచేతి నొప్పి</div>
-          </div>
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/spine_pain.png" alt="Spine Pain"/></div>
-            <div class="slide-label">SPINE PAIN</div>
-            <div class="slide-telugu">వెన్ను నొప్పి</div>
-          </div>
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/knee_pain.png" alt="Knee Pain"/></div>
-            <div class="slide-label">KNEE PAIN</div>
-            <div class="slide-telugu">మోకాలి నొప్పి</div>
-          </div>
-          <div class="slide-card">
-            <div class="slide-img"><img src="images/ankle_pain.png" alt="Ankle Pain"/></div>
-            <div class="slide-label">ANKLE PAIN</div>
-            <div class="slide-telugu">పాదాల నొప్పి</div>
-          </div>
-        </div>
-      </div>
-      <button class="slider-btn next" onclick="slideMove(1)">&#8250;</button>
-    </div>
-    <div class="slider-dots" id="sliderDots"></div>
-  </section>
+
 
   <!-- SERVICES GRID -->
   <section class="services reveal" id="services">
@@ -508,6 +474,31 @@
       btn.textContent = 'Get My Token';
       btn.disabled = false;
     };
+  </script>
+  <script>
+    // Show profile or login in navbar
+    document.addEventListener('DOMContentLoaded', function() {
+      const loggedRole = sessionStorage.getItem('loggedRole');
+      const loggedName = sessionStorage.getItem('loggedName');
+      if (loggedRole === 'patient' && loggedName) {
+        document.getElementById('navLoginBtn').style.display = 'none';
+        document.getElementById('navProfileBtn').style.display = 'block';
+        document.getElementById('navPatientName').textContent = loggedName.split(' ')[0];
+      }
+    });
+    function toggleProfileMenu() {
+      const d = document.getElementById('profileDropdown');
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+    }
+    document.addEventListener('click', function(e) {
+      const btn = document.getElementById('navProfileBtn');
+      if (btn && !btn.contains(e.target))
+        document.getElementById('profileDropdown').style.display = 'none';
+    });
+    function doNavLogout() {
+      sessionStorage.clear();
+      window.location.reload();
+    }
   </script>
 </body>
 </html>
