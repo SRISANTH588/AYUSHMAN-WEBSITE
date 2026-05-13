@@ -336,28 +336,60 @@
       e.preventDefault();
       const btn = document.getElementById('apptBtn');
       btn.disabled = true; btn.textContent = 'Submitting...';
-      const date = document.getElementById('apptDate').value;
-      // Auto-generate unique Booking ID: APF-YEAR-RANDOM4DIGITS
-      const year = new Date().getFullYear();
-      const rand = Math.floor(1000 + Math.random() * 9000);
+      const date      = document.getElementById('apptDate').value;
+      const name      = document.getElementById('apptName').value.trim();
+      const phone     = document.getElementById('apptPhone').value.trim();
+      const condition = document.getElementById('apptCondition').value;
+      const time      = document.getElementById('apptTime').value;
+      const year      = new Date().getFullYear();
+      const rand      = Math.floor(1000 + Math.random() * 9000);
       const bookingId = `APF-${year}-${rand}`;
+      const todayStr  = new Date().toISOString().split('T')[0];
+
       try {
+        // Check if first time patient (no previous appointments with this phone)
+        const prevQ    = query(collection(db, 'appointments'), where('phone', '==', phone));
+        const prevSnap = await getDocs(prevQ);
+        const isFirstTime = prevSnap.empty;
+
+        // Save appointment
         await addDoc(collection(db, 'appointments'), {
           bookingId,
-          name:       document.getElementById('apptName').value.trim(),
+          name, phone,
           age:        document.getElementById('apptAge').value,
-          phone:      document.getElementById('apptPhone').value.trim(),
           occupation: document.getElementById('apptOccupation').value.trim(),
           address:    document.getElementById('apptAddress').value.trim(),
-          condition:  document.getElementById('apptCondition').value,
-          date, time: document.getElementById('apptTime').value,
+          condition, date, time,
+          isFirstTime,
           status: 'pending', createdAt: serverTimestamp()
         });
+
+        let tokenMsg = '';
+        if (isFirstTime) {
+          // Auto-generate token for first-time patient
+          const allTodayQ = query(collection(db, 'tokens'), where('date', '==', todayStr));
+          const allToday  = await getDocs(allTodayQ);
+          const tokenNumber = '#' + String(allToday.size + 1).padStart(3, '0');
+          await addDoc(collection(db, 'tokens'), {
+            tokenNumber,
+            patientName:  name,
+            patientPhone: phone,
+            doctor:       '',
+            condition,
+            date:         todayStr,
+            bookingId,
+            source:       'online-first',
+            status:       'waiting',
+            createdAt:    serverTimestamp()
+          });
+          tokenMsg = `\n🎫 Your Token: ${tokenNumber} (First Visit — Auto Assigned)`;
+        }
+
         document.getElementById('apptForm').reset();
-        document.getElementById('apptSuccess').textContent = `✅ Booking confirmed! Your Booking ID: ${bookingId}. Save this for future reference.`;
+        document.getElementById('apptSuccess').textContent = `✅ Booking confirmed! Booking ID: ${bookingId}.${tokenMsg} Save these for future reference.`;
         document.getElementById('apptSuccess').style.display = 'block';
-        setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 10000);
-      } catch { alert('Submission failed. Please try again.'); }
+        setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 15000);
+      } catch(err) { alert('Submission failed: ' + err.message); }
       btn.disabled = false; btn.textContent = 'Book Appointment';
     };
 
