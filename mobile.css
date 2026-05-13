@@ -211,3 +211,63 @@ img { max-width: 100%; height: auto; }
     white-space: nowrap;
   }
 }
+
+/* ── OP FORM ── */
+@media (max-width: 900px) {
+  .op-page { padding: 20px 16px !important; }
+  .op-clinic-header { flex-wrap: wrap; gap: 10px; }
+  .op-uid-box { font-size: 0.78rem; padding: 6px 10px; }
+  .op-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .op-inline.op-wide, .op-inline.op-full { width: 100% !important; min-width: unset !important; }
+  .op-checkrow { gap: 8px; }
+  .op-actions { flex-direction: column; }
+  .btn-op-print, .btn-op-send, .btn-op-back { width: 100%; text-align: center; }
+}
+
+/* ── APPOINTMENT FORM ── */
+@media (max-width: 700px) {
+  .oc-form { grid-template-columns: 1fr !important; }
+  .oc-form select, .oc-form button { grid-column: 1 !important; }
+}
+
+/* ── NAVBAR PROFILE BUTTON ── */
+@media (max-width: 480px) {
+  #navProfileBtn button { padding: 6px 12px !important; font-size: 0.78rem !important; }
+  #profileDropdown { min-width: 130px !important; }
+}
+
+/* ── BEST SERVICES GRID ── */
+@media (max-width: 600px) {
+  .svc-cards-grid { padding: 0 12px !important; }
+  .svc-card-item { flex: 0 0 calc(50% - 8px) !important; }
+}
+
+/* ── ONLINE SERVICES SECTION ── */
+@media (max-width: 700px) {
+  .oc-grid { width: 100% !important; }
+  .oc-card { padding: 18px 14px !important; }
+  .oc-card-header { flex-direction: column; gap: 8px; }
+}
+
+/* ── HERO LOGO ── */
+@media (max-width: 480px) {
+  .hero-logo-bg { display: none; }
+}
+
+/* ── LOGIN PAGE ── */
+@media (max-width: 600px) {
+  .right-panel { padding: 32px 20px !important; }
+  .form-header h2 { font-size: 1.4rem !important; }
+}
+
+/* ── DOCTORS PAGE ── */
+@media (max-width: 600px) {
+  .doc-card { padding: 20px 16px !important; }
+  .doc-info h3 { font-size: 1rem !important; }
+}
+
+/* ── FOOTER ── */
+@media (max-width: 480px) {
+  .footer-links { gap: 8px !important; }
+  .footer-name { font-size: 1rem !important; }
+}
