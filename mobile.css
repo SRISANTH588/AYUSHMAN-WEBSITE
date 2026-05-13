@@ -271,3 +271,140 @@ img { max-width: 100%; height: auto; }
   .footer-links { gap: 8px !important; }
   .footer-name { font-size: 1rem !important; }
 }
+
+/* ══════════════════════════════════════════
+   DASHBOARD PAGES — ADMIN / STAFF / PATIENT
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+
+  /* Sidebar & Main layout */
+  body { overflow-x: hidden; }
+  .sidebar {
+    position: fixed !important;
+    left: -260px !important;
+    top: 0 !important; bottom: 0 !important;
+    width: 240px !important;
+    height: 100vh !important;
+    z-index: 1099 !important;
+    transition: left 0.3s ease !important;
+    overflow-y: auto !important;
+  }
+  .sidebar.open { left: 0 !important; }
+  .sidebar-toggle { display: flex !important; }
+  .main {
+    margin-left: 0 !important;
+    padding: 70px 14px 30px !important;
+    width: 100% !important;
+  }
+
+  /* Stats grid */
+  .stats { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Tables — horizontal scroll */
+  .section-card { padding: 16px 12px !important; overflow-x: auto; }
+  table { min-width: 600px; font-size: 0.78rem !important; }
+  th, td { padding: 8px 10px !important; white-space: nowrap; }
+
+  /* Form rows */
+  .form-row { grid-template-columns: 1fr !important; }
+  .form-group { margin-bottom: 14px !important; }
+
+  /* Topbar */
+  .topbar { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+  .topbar h1 { font-size: 1.2rem !important; }
+
+  /* Buttons */
+  .btn-primary { padding: 10px 18px !important; font-size: 0.85rem !important; }
+
+  /* Stats with inline grid override */
+  [style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="grid-template-columns:repeat(3"] { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Inline flex rows */
+  [style*="display:flex"][style*="gap:12px"] { flex-wrap: wrap !important; }
+}
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr !important; }
+  table { min-width: 500px; font-size: 0.72rem !important; }
+  .main { padding: 65px 10px 24px !important; }
+  .topbar h1 { font-size: 1rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   PATIENT DASHBOARD SPECIFIC
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .welcome-badge { font-size: 0.75rem !important; padding: 6px 14px !important; }
+  .contact-card { flex-direction: column !important; gap: 12px !important; }
+  .progress-bar-wrap { margin-top: 6px !important; }
+}
+
+/* ══════════════════════════════════════════
+   MEMBERSHIP PAGE
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .membership-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .plan-card { padding: 24px 18px !important; }
+}
+@media (max-width: 480px) {
+  .plan-card { padding: 18px 14px !important; }
+}
+
+/* ══════════════════════════════════════════
+   PAYMENT PAGE
+══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .payment-wrap { padding: 20px 14px !important; }
+  .payment-methods { flex-direction: column !important; gap: 10px !important; }
+  .pay-method-btn { width: 100% !important; }
+}
+
+/* ══════════════════════════════════════════
+   VIDEOS / SESSIONS PAGE
+══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .video-grid { grid-template-columns: 1fr !important; }
+  .video-card iframe { height: 200px !important; }
+}
+
+/* ══════════════════════════════════════════
+   REPORTS PAGE
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .reports-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .chart-wrap { overflow-x: auto !important; }
+}
+
+/* ══════════════════════════════════════════
+   CALENDAR PAGE
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .calendar-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .cal-day { padding: 8px 4px !important; font-size: 0.78rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   TOKEN MODAL
+══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .token-modal { padding: 20px 14px !important; width: 95vw !important; }
+  .token-modal input { font-size: 0.88rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   GENERAL FIXES
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* Prevent horizontal overflow */
+  .section { overflow-x: hidden; }
+  img { max-width: 100%; height: auto; }
+
+  /* Fix inline grid overrides in dashboards */
+  div[style*="display:grid"] { grid-template-columns: 1fr 1fr !important; }
+  div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr 1fr !important; }
+}
+
+@media (max-width: 480px) {
+  div[style*="display:grid"] { grid-template-columns: 1fr !important; }
+}
