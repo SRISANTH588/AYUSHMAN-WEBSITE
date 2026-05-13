@@ -86,6 +86,7 @@
       <a onclick="showSection('token', this)">🎫 Token Queue</a>
       <a onclick="showSection('sessions', this)">🎥 Sessions</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
+      <a onclick="showSection('opform', this)">📋 OP Form</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
     </nav>
   </div>
@@ -414,6 +415,48 @@
       </div>
     </div>
 
+    <!-- OP FORM -->
+    <div class="section" id="sec-opform">
+      <div class="topbar"><div><h1>OP Form</h1><p>View online appointments and fill OP details</p></div></div>
+      <div class="section-card">
+        <h2>📋 Online Appointment Requests</h2>
+        <div class="op-table-wrap">
+          <table>
+            <thead><tr><th>Booking ID</th><th>Name</th><th>Phone</th><th>Condition</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+            <tbody id="opApptTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="op-form-wrap" id="opFormWrap">
+        <div class="op-print-area" id="opPrintArea">
+          <div class="op-header">
+            <h2>✚ Ayushman PhysioFIT – OP Form</h2>
+            <p>Rehabilitation Centre · Vijayawada</p>
+          </div>
+          <div class="op-grid">
+            <div class="op-field"><label>Booking ID</label><input type="text" id="opBookingId" readonly/></div>
+            <div class="op-field"><label>Date &amp; Time</label><input type="text" id="opDate" readonly/></div>
+            <div class="op-field"><label>Patient Name</label><input type="text" id="opName"/></div>
+            <div class="op-field"><label>Age</label><input type="text" id="opAge"/></div>
+            <div class="op-field"><label>Phone Number</label><input type="text" id="opPhone"/></div>
+            <div class="op-field"><label>Occupation</label><input type="text" id="opOccupation"/></div>
+            <div class="op-field full"><label>Address</label><input type="text" id="opAddress"/></div>
+            <div class="op-field full"><label>Condition / Chief Complaint</label><input type="text" id="opCondition"/></div>
+            <div class="op-field full"><label>Diagnosis</label><textarea id="opDiagnosis" placeholder="Enter diagnosis..."></textarea></div>
+            <div class="op-field full"><label>Treatment Plan</label><textarea id="opTreatment" placeholder="Enter treatment plan..."></textarea></div>
+            <div class="op-field"><label>Assigned Doctor</label><input type="text" id="opDoctor" placeholder="Doctor name"/></div>
+            <div class="op-field"><label>Staff Notes</label><textarea id="opNotes" placeholder="Any additional notes..."></textarea></div>
+          </div>
+        </div>
+        <div class="op-actions">
+          <button class="btn-op-back" onclick="closeOPForm()">← Back</button>
+          <button class="btn-op-print" onclick="printOP()">🖨️ Print OP</button>
+          <button class="btn-op-send" onclick="sendOPToAdmin()">✅ Send to Admin</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -689,6 +732,112 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){var s=document.querySelector('.sidebar');if(s&&s.classList.contains('open'))toggleSidebar();}
 });
 function doLogout(){sessionStorage.clear();window.location.href='login.html';}
+</script>
+
+<!-- OP FORM SECTION -->
+<style>
+  #sec-opform { display:none; }
+  #sec-opform.active { display:block; }
+  .op-table-wrap { overflow-x:auto; }
+  .op-form-wrap { background:#fff; border-radius:16px; padding:28px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-top:20px; display:none; }
+  .op-form-wrap.show { display:block; }
+  .op-print-area { font-family:'Poppins',sans-serif; }
+  .op-header { text-align:center; border-bottom:2px solid #1a4b8c; padding-bottom:12px; margin-bottom:20px; }
+  .op-header h2 { color:#1a4b8c; font-size:1.4rem; margin:0; }
+  .op-header p { color:#6b7c93; font-size:0.85rem; margin:4px 0 0; }
+  .op-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+  .op-field label { display:block; font-size:0.75rem; font-weight:600; color:#6b7c93; margin-bottom:4px; text-transform:uppercase; }
+  .op-field input, .op-field textarea, .op-field select {
+    width:100%; padding:10px 14px; border:1.5px solid #dce8f5; border-radius:10px;
+    font-family:'Poppins',sans-serif; font-size:0.9rem; color:#1a2a3a; outline:none;
+  }
+  .op-field.full { grid-column:1/-1; }
+  .op-field textarea { resize:vertical; min-height:80px; }
+  .op-actions { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
+  .btn-op-print { padding:11px 24px; background:#1a4b8c; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
+  .btn-op-send  { padding:11px 24px; background:#27ae60; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
+  .btn-op-back  { padding:11px 24px; background:#f4f8fc; color:#1a4b8c; border:1.5px solid #dce8f5; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
+  @media print {
+    body > *:not(#sec-opform) { display:none !important; }
+    #sec-opform { display:block !important; }
+    .op-actions, .topbar, .section-card:first-child { display:none !important; }
+    .op-form-wrap { box-shadow:none; padding:0; }
+  }
+</style>
+
+<script type="module">
+  import { db } from './firebase.js';
+  import { collection, onSnapshot, addDoc, orderBy, query, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+  let _opDocs = [];
+
+  // Load online appointments into OP table
+  onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt','desc')), snap => {
+    _opDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const tbody = document.getElementById('opApptTable');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    _opDocs.forEach((a, i) => {
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${a.bookingId || '—'}</td>
+          <td>${a.name || ''}</td>
+          <td>${a.phone || ''}</td>
+          <td>${a.condition || ''}</td>
+          <td>${a.date || ''} ${a.time || ''}</td>
+          <td><button onclick="openOPForm(${i})" style="padding:6px 14px;background:#1a4b8c;color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.82rem;cursor:pointer;">Open OP</button></td>
+        </tr>`);
+    });
+    if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No online appointments</td></tr>';
+  });
+
+  window.openOPForm = function(i) {
+    const a = _opDocs[i];
+    document.getElementById('opBookingId').value   = a.bookingId || '';
+    document.getElementById('opName').value        = a.name || '';
+    document.getElementById('opAge').value         = a.age || '';
+    document.getElementById('opPhone').value       = a.phone || '';
+    document.getElementById('opOccupation').value  = a.occupation || '';
+    document.getElementById('opAddress').value     = a.address || '';
+    document.getElementById('opCondition').value   = a.condition || '';
+    document.getElementById('opDate').value        = (a.date || '') + ' ' + (a.time || '');
+    document.getElementById('opDiagnosis').value   = a.diagnosis || '';
+    document.getElementById('opTreatment').value   = a.treatment || '';
+    document.getElementById('opNotes').value       = a.notes || '';
+    document.getElementById('opDoctor').value      = a.doctor || '';
+    document.getElementById('opFormWrap').classList.add('show');
+    document.getElementById('opFormWrap').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window.closeOPForm = function() {
+    document.getElementById('opFormWrap').classList.remove('show');
+  };
+
+  window.sendOPToAdmin = async function() {
+    const data = {
+      bookingId:  document.getElementById('opBookingId').value,
+      name:       document.getElementById('opName').value,
+      age:        document.getElementById('opAge').value,
+      phone:      document.getElementById('opPhone').value,
+      occupation: document.getElementById('opOccupation').value,
+      address:    document.getElementById('opAddress').value,
+      condition:  document.getElementById('opCondition').value,
+      date:       document.getElementById('opDate').value,
+      diagnosis:  document.getElementById('opDiagnosis').value,
+      treatment:  document.getElementById('opTreatment').value,
+      notes:      document.getElementById('opNotes').value,
+      doctor:     document.getElementById('opDoctor').value,
+      submittedBy: 'staff',
+      createdAt:  serverTimestamp()
+    };
+    try {
+      await addDoc(collection(db, 'op_forms'), data);
+      alert('✅ OP Form sent to Admin successfully!');
+      window.closeOPForm();
+    } catch(e) { alert('Failed to send: ' + e.message); }
+  };
+
+  window.printOP = function() { window.print(); };
 </script>
 </body>
 </html>

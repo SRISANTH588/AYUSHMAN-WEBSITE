@@ -95,6 +95,7 @@
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
       <a onclick="showSection('online_bookings', this)">🎫 Online Bookings</a>
       <a onclick="showSection('online_appts', this)">📋 Online Appointments</a>
+      <a onclick="showSection('op_forms', this)">📄 OP Forms</a>
       <a onclick="showSection('enrollments', this)">🏋️ Fitness Enrollments</a>
       <a onclick="showSection('slots', this)">🕐 Manage Slots</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
@@ -543,6 +544,20 @@
       </div>
     </div>
 
+    <!-- OP FORMS -->
+    <div class="section" id="sec-op_forms">
+      <div class="topbar"><div><h1>OP Forms</h1><p>Completed OP forms submitted by staff</p></div></div>
+      <div class="section-card">
+        <h2>📄 Submitted OP Forms</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Booking ID</th><th>Name</th><th>Phone</th><th>Condition</th><th>Diagnosis</th><th>Treatment</th><th>Doctor</th><th>Date</th></tr></thead>
+            <tbody id="opFormsTable"><tr><td colspan="8" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- FITNESS ENROLLMENTS -->
     <div class="section" id="sec-enrollments">
       <div class="topbar">
@@ -690,6 +705,28 @@
       if (snap.exists() && snap.data().fitnessPrice)
         window._defaultFitnessPrice = snap.data().fitnessPrice;
     }).catch(() => {});
+
+    // Load OP Forms
+    onSnapshot(query(collection(db, 'op_forms'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('opFormsTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const f = d.data();
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${f.bookingId||'—'}</strong></td>
+            <td>${f.name||''}</td>
+            <td>${f.phone||''}</td>
+            <td>${f.condition||''}</td>
+            <td>${f.diagnosis||'—'}</td>
+            <td>${f.treatment||'—'}</td>
+            <td>${f.doctor||'—'}</td>
+            <td>${f.date||''}</td>
+          </tr>`);
+      });
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No OP forms submitted yet</td></tr>';
+    });
 
     // Load real-time data from Firestore
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), (snap) => {
