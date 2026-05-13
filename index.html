@@ -337,8 +337,13 @@
       const btn = document.getElementById('apptBtn');
       btn.disabled = true; btn.textContent = 'Submitting...';
       const date = document.getElementById('apptDate').value;
+      // Auto-generate unique Booking ID: APF-YEAR-RANDOM4DIGITS
+      const year = new Date().getFullYear();
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      const bookingId = `APF-${year}-${rand}`;
       try {
         await addDoc(collection(db, 'appointments'), {
+          bookingId,
           name:       document.getElementById('apptName').value.trim(),
           age:        document.getElementById('apptAge').value,
           phone:      document.getElementById('apptPhone').value.trim(),
@@ -349,8 +354,9 @@
           status: 'pending', createdAt: serverTimestamp()
         });
         document.getElementById('apptForm').reset();
+        document.getElementById('apptSuccess').textContent = `✅ Booking confirmed! Your Booking ID: ${bookingId}. Save this for future reference.`;
         document.getElementById('apptSuccess').style.display = 'block';
-        setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 5000);
+        setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 10000);
       } catch { alert('Submission failed. Please try again.'); }
       btn.disabled = false; btn.textContent = 'Book Appointment';
     };
