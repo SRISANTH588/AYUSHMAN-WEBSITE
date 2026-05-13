@@ -336,18 +336,38 @@
     <!-- TOKEN -->
     <div class="section" id="sec-token">
       <div class="topbar"><div><h1>My Token</h1><p>Your current visit token</p></div></div>
-      <div class="section-card" style="text-align:center;">
-        <h2>🎫 Today's Token</h2>
-        <div style="font-size:5rem;font-weight:800;color:#8b2e8b;margin:20px 0;">#007</div>
-        <p style="color:#6b7c93;font-size:0.9rem;">Dr. Durga Sowjanya &nbsp;|&nbsp; 10:30 AM</p>
-        <div style="margin:24px auto;width:130px;height:130px;background:#f9f0f9;border:2px dashed #8b2e8b;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#8b2e8b;font-size:0.75rem;font-weight:600;">QR Code<br/>(scan at desk)</div>
+
+      <div class="section-card" id="tokenGenCard">
+        <h2>🎫 Generate Token</h2>
+        <p style="color:#6b7c93;font-size:0.88rem;margin-bottom:20px;">Generate your token for today's visit. Your details will be sent to the clinic.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+          <div class="form-group" style="margin:0;"><label>Select Doctor</label>
+            <select id="ptTokenDoctor" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;">
+              <option value="Dr. Durga Sowjanya">Dr. Durga Sowjanya</option>
+              <option value="Dr. D. Ramachandra">Dr. D. Ramachandra</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;"><label>Condition / Reason</label>
+            <input type="text" id="ptTokenCondition" placeholder="e.g. Knee Pain" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/>
+          </div>
+        </div>
+        <button onclick="generatePatientToken()" style="padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🎫 Generate My Token</button>
+        <p style="color:#e63946;font-size:0.82rem;margin-top:10px;display:none;" id="tokenGenError"></p>
+      </div>
+
+      <div class="section-card" id="tokenDisplayCard" style="display:none;text-align:center;">
+        <h2>🎫 Your Token</h2>
+        <div style="font-size:5rem;font-weight:800;color:#8b2e8b;margin:20px 0;" id="ptTokenNumber"></div>
+        <p style="color:#6b7c93;font-size:0.9rem;" id="ptTokenInfo"></p>
+        <p style="color:#27ae60;font-size:0.85rem;font-weight:600;margin-top:8px;">✅ Token sent to clinic. Please arrive on time.</p>
         <button style="margin-top:16px;padding:12px 28px;background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="window.print()">🖨️ Print Token</button>
       </div>
+
       <div class="section-card">
         <h2>📋 Token History</h2>
-        <table><thead><tr><th>Token</th><th>Date</th><th>Doctor</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No token history yet</td></tr>
+        <table><thead><tr><th>Token</th><th>Date</th><th>Doctor</th><th>Condition</th><th>Status</th></tr></thead>
+        <tbody id="ptTokenHistory">
+          <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No token history yet</td></tr>
         </tbody></table>
       </div>
     </div>
@@ -619,6 +639,75 @@ _Sent from Ayushman PhysioFIT Patient Portal_`;
       sessionStorage.clear();
       window.location.href = 'login.html';
     }
+
+    // ── TOKEN GENERATION ──
+    const patientPhone = sessionStorage.getItem('loggedUser') || '';
+    const patientUid   = sessionStorage.getItem('loggedUid') || '';
+    const todayStr     = new Date().toISOString().split('T')[0];
+
+    // Load token history for this patient
+    onSnapshot(query(collection(db, 'tokens'), where('patientPhone', '==', patientPhone), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('ptTokenHistory');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const t = d.data();
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${t.tokenNumber || ''}</strong></td>
+            <td>${t.date || ''}</td>
+            <td>${t.doctor || ''}</td>
+            <td>${t.condition || ''}</td>
+            <td><span class="badge ${t.status === 'completed' ? 'completed' : t.status === 'called' ? 'confirmed' : 'pending'}">${t.status || 'Waiting'}</span></td>
+          </tr>`);
+      });
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No token history yet</td></tr>';
+    });
+
+    window.generatePatientToken = async function() {
+      const doctor    = document.getElementById('ptTokenDoctor').value;
+      const condition = document.getElementById('ptTokenCondition').value.trim();
+      const errEl     = document.getElementById('tokenGenError');
+      errEl.style.display = 'none';
+      if (!condition) { errEl.textContent = 'Please enter your condition/reason.'; errEl.style.display = 'block'; return; }
+
+      // Check if already generated token today
+      const todayQ = query(collection(db, 'tokens'), where('patientPhone', '==', patientPhone), where('date', '==', todayStr));
+      const existing = await getDocs(todayQ);
+      if (!existing.empty) {
+        const t = existing.docs[0].data();
+        document.getElementById('ptTokenNumber').textContent = t.tokenNumber;
+        document.getElementById('ptTokenInfo').textContent   = t.doctor + ' | ' + t.date;
+        document.getElementById('tokenGenCard').style.display    = 'none';
+        document.getElementById('tokenDisplayCard').style.display = 'block';
+        return;
+      }
+
+      // Get today's token count to assign next number
+      const allTodayQ = query(collection(db, 'tokens'), where('date', '==', todayStr));
+      const allToday  = await getDocs(allTodayQ);
+      const nextNum   = '#' + String(allToday.size + 1).padStart(3, '0');
+
+      try {
+        await addDoc(collection(db, 'tokens'), {
+          tokenNumber:   nextNum,
+          patientName:   patientName,
+          patientPhone,
+          patientUid,
+          doctor,
+          condition,
+          date:          todayStr,
+          source:        'online',
+          status:        'waiting',
+          createdAt:     serverTimestamp()
+        });
+        document.getElementById('ptTokenNumber').textContent = nextNum;
+        document.getElementById('ptTokenInfo').textContent   = doctor + ' | ' + todayStr;
+        document.getElementById('tokenGenCard').style.display    = 'none';
+        document.getElementById('tokenDisplayCard').style.display = 'block';
+      } catch(e) { errEl.textContent = 'Failed: ' + e.message; errEl.style.display = 'block'; }
+    };
+
   </script><script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
 <script>
 function toggleSidebar(){

@@ -275,9 +275,9 @@
       <div class="section-card">
         <h2>📋 Today's Token Queue</h2>
         <table>
-          <thead><tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Status</th></tr></thead>
+          <thead><tr><th>Token</th><th>Patient</th><th>Phone</th><th>Doctor</th><th>Condition</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="tokenTable">
-            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No tokens generated yet</td></tr>
+            <tr><td colspan="8" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -695,7 +695,7 @@
   <script type="module">
     import { auth, db } from './firebase.js';
     import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
-    import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy, updateDoc, doc, deleteDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy, where, updateDoc, doc, deleteDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
@@ -727,6 +727,37 @@
       });
       if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No OP forms submitted yet</td></tr>';
     });
+
+    // Load real-time token queue
+    const todayDate = new Date().toISOString().split('T')[0];
+    onSnapshot(query(collection(db, 'tokens'), where('date', '==', todayDate), orderBy('createdAt', 'asc')), snap => {
+      const tbody = document.getElementById('tokenTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const t = d.data();
+        const statusClass = t.status === 'completed' ? 'completed' : t.status === 'called' ? 'confirmed' : 'pending';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${t.tokenNumber}</strong></td>
+            <td>${t.patientName || ''}</td>
+            <td>${t.patientPhone || '—'}</td>
+            <td>${t.doctor || ''}</td>
+            <td>${t.condition || '—'}</td>
+            <td><span style="background:${t.source==='online'?'#d4edda':'#fff3cd'};color:${t.source==='online'?'#155724':'#856404'};padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${t.source === 'online' ? '🌐 Online' : '🏥 Clinic'}</span></td>
+            <td><span class="badge ${statusClass}">${t.status || 'waiting'}</span></td>
+            <td style="display:flex;gap:6px;">
+              <button onclick="updateTokenStatus('${d.id}','called')" style="padding:4px 10px;background:#2e7dd1;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Call</button>
+              <button onclick="updateTokenStatus('${d.id}','completed')" style="padding:4px 10px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Done</button>
+            </td>
+          </tr>`);
+      });
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No tokens today</td></tr>';
+    });
+
+    window.updateTokenStatus = async function(id, status) {
+      await updateDoc(doc(db, 'tokens', id), { status });
+    };
 
     // Load real-time data from Firestore
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), (snap) => {
@@ -1270,18 +1301,32 @@ _Ayushman PhysioFIT Rehabilitation Centre_
     }
 
     let tokenCount = 2;
-    window.generateToken = function() {
+    window.generateToken = async function() {
       const p = document.getElementById('tokenPatient').value.trim();
       const d = document.getElementById('tokenDoctor').value;
       if (!p) return alert('Enter patient name.');
-      tokenCount++;
-      const num = '#' + String(tokenCount).padStart(3, '0');
-      document.getElementById('tokenNumber').textContent = num;
-      document.getElementById('tokenInfo').textContent = p + ' — ' + d;
-      document.getElementById('tokenDisplay').style.display = 'block';
-      const row = `<tr><td>${num}</td><td>${p}</td><td>${d}</td><td><span class="badge pending">Waiting</span></td></tr>`;
-      document.getElementById('tokenTable').insertAdjacentHTML('beforeend', row);
-      document.getElementById('tokenPatient').value = '';
+      // Get today's token count
+      const todayStr = new Date().toISOString().split('T')[0];
+      const allTodayQ = query(collection(db, 'tokens'), where('date', '==', todayStr));
+      const allToday  = await getDocs(allTodayQ);
+      const nextNum   = '#' + String(allToday.size + 1).padStart(3, '0');
+      try {
+        await addDoc(collection(db, 'tokens'), {
+          tokenNumber:  nextNum,
+          patientName:  p,
+          patientPhone: '',
+          doctor:       d,
+          condition:    '',
+          date:         todayStr,
+          source:       'clinic',
+          status:       'waiting',
+          createdAt:    serverTimestamp()
+        });
+        document.getElementById('tokenNumber').textContent = nextNum;
+        document.getElementById('tokenInfo').textContent = p + ' — ' + d;
+        document.getElementById('tokenDisplay').style.display = 'block';
+        document.getElementById('tokenPatient').value = '';
+      } catch(e) { alert('Failed: ' + e.message); }
     }
 
     window.addMembership = function() {

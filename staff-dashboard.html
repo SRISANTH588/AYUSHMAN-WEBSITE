@@ -324,9 +324,9 @@
       <div class="section-card">
         <h2>🎫 Live Queue</h2>
         <table>
-          <thead><tr><th>Token</th><th>Patient</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Token</th><th>Patient</th><th>Phone</th><th>Doctor</th><th>Condition</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="tokenQueueTable">
-            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No tokens in queue</td></tr>
+            <tr><td colspan="8" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -788,10 +788,40 @@ _We keep you moving..._`;
 
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, query, where, orderBy, onSnapshot, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     const staffName = sessionStorage.getItem('loggedName') || '';
     const todayStr  = new Date().toISOString().slice(0,10);
+
+    // Load today's token queue
+    onSnapshot(query(collection(db, 'tokens'), where('date', '==', todayStr), orderBy('createdAt', 'asc')), snap => {
+      const tbody = document.getElementById('tokenQueueTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      snap.forEach(d => {
+        const t = d.data();
+        const statusClass = t.status === 'completed' ? 'completed' : t.status === 'called' ? 'confirmed' : 'pending';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${t.tokenNumber}</strong></td>
+            <td>${t.patientName || ''}</td>
+            <td>${t.patientPhone || '—'}</td>
+            <td>${t.doctor || ''}</td>
+            <td>${t.condition || '—'}</td>
+            <td><span style="background:${t.source==='online'?'#d4edda':'#fff3cd'};color:${t.source==='online'?'#155724':'#856404'};padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${t.source === 'online' ? '🌐 Online' : '🏥 Clinic'}</span></td>
+            <td><span class="badge ${statusClass}">${t.status || 'waiting'}</span></td>
+            <td style="display:flex;gap:6px;">
+              <button onclick="updateStaffToken('${d.id}','called')" style="padding:4px 10px;background:#2e7dd1;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Call</button>
+              <button onclick="updateStaffToken('${d.id}','completed')" style="padding:4px 10px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Done</button>
+            </td>
+          </tr>`);
+      });
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No tokens today</td></tr>';
+    });
+
+    window.updateStaffToken = async function(id, status) {
+      await updateDoc(doc(db, 'tokens', id), { status });
+    };
 
     // Load today's appointments assigned to this staff/doctor
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
