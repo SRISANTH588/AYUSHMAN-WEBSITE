@@ -138,8 +138,11 @@
           </div>
         </div>
         <form id="apptForm" class="oc-form" onsubmit="submitAppointment(event)">
-          <input type="text"  id="apptName"      placeholder="Full Name"     required/>
-          <input type="tel"   id="apptPhone"     placeholder="Phone Number"  required/>
+          <input type="text" id="apptName" placeholder="Full Name" required/>
+          <input type="number" id="apptAge" placeholder="Age" min="1" max="120" required/>
+          <input type="tel" id="apptPhone" placeholder="Phone Number" required/>
+          <input type="text" id="apptOccupation" placeholder="Occupation" required/>
+          <input type="text" id="apptAddress" placeholder="Address" required style="grid-column:1/-1;"/>
           <select id="apptCondition" required>
             <option value="">Select Condition</option>
             <option>Neck Pain</option>
@@ -152,10 +155,45 @@
             <option>Sports Injuries</option>
             <option>Other</option>
           </select>
-          <input type="date"  id="apptDate"  required/>
-          <input type="time"  id="apptTime"  required/>
-          <button type="submit" id="apptBtn">Book Appointment</button>
+          <select id="apptDate" required>
+            <option value="">Select Date</option>
+          </select>
+          <select id="apptTime" required>
+            <option value="">Select Time</option>
+            <option>08:00 AM</option>
+            <option>08:30 AM</option>
+            <option>09:00 AM</option>
+            <option>09:30 AM</option>
+            <option>10:00 AM</option>
+            <option>10:30 AM</option>
+            <option>11:00 AM</option>
+            <option>11:30 AM</option>
+            <option>12:00 PM</option>
+            <option>12:30 PM</option>
+            <option>02:00 PM</option>
+            <option>02:30 PM</option>
+            <option>03:00 PM</option>
+            <option>03:30 PM</option>
+            <option>04:00 PM</option>
+            <option>04:30 PM</option>
+            <option>05:00 PM</option>
+            <option>05:30 PM</option>
+            <option>06:00 PM</option>
+          </select>
+          <button type="submit" id="apptBtn" style="grid-column:1/-1;">Book Appointment</button>
         </form>
+        <script>
+          const dateSel = document.getElementById('apptDate');
+          const today = new Date();
+          for (let i = 0; i < 60; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+            const label = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            const o = document.createElement('option');
+            o.value = label; o.textContent = label;
+            dateSel.appendChild(o);
+          }
+        </script>
         <p class="oc-success" id="apptSuccess">✅ Submitted! Admin will assign your Booking ID &amp; Token.</p>
       </div>
 
@@ -167,7 +205,7 @@
             <p>Join our expert-led physiotherapy fitness program</p>
           </div>
         </div>
-        <img src="images/family.png" alt="Online Fitness Classes" style="width:100%;border-radius:12px;margin:12px 0;object-fit:cover;"/>
+        <img src="images/family.png" alt="Online Fitness Classes" style="width:100%;height:200px;border-radius:12px;margin:12px 0;object-fit:cover;"/>
         <ul class="oc-info-list">
           <li>🎯 Personalized for your condition &amp; fitness level</li>
           <li>📅 Flexible morning &amp; evening slots</li>
@@ -292,13 +330,16 @@
       e.preventDefault();
       const btn = document.getElementById('apptBtn');
       btn.disabled = true; btn.textContent = 'Submitting...';
+      const date = document.getElementById('apptDate').value;
       try {
         await addDoc(collection(db, 'appointments'), {
-          name:      document.getElementById('apptName').value.trim(),
-          phone:     document.getElementById('apptPhone').value.trim(),
-          condition: document.getElementById('apptCondition').value,
-          date:      document.getElementById('apptDate').value,
-          time:      document.getElementById('apptTime').value,
+          name:       document.getElementById('apptName').value.trim(),
+          age:        document.getElementById('apptAge').value,
+          phone:      document.getElementById('apptPhone').value.trim(),
+          occupation: document.getElementById('apptOccupation').value.trim(),
+          address:    document.getElementById('apptAddress').value.trim(),
+          condition:  document.getElementById('apptCondition').value,
+          date, time: document.getElementById('apptTime').value,
           status: 'pending', createdAt: serverTimestamp()
         });
         document.getElementById('apptForm').reset();
