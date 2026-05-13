@@ -922,9 +922,14 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   .btn-op-back  { padding:11px 24px; background:#f4f8fc; color:#1a4b8c; border:1.5px solid #dce8f5; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   @media print {
     body > * { display:none !important; }
-    .op-form-wrap { display:block !important; box-shadow:none; padding:0; }
+    #opFormWrap { display:block !important; box-shadow:none !important; padding:0 !important; margin:0 !important; }
     .op-actions { display:none !important; }
-    .op-page { border:none; padding:20px; }
+    .op-page { border:none !important; padding:16px !important; page-break-after:always; }
+    .op-page:last-child { page-break-after:auto; }
+    .op-inline { border:none !important; border-bottom:1px solid #000 !important; }
+    .op-textarea { border:1px solid #ccc !important; }
+    input[type="checkbox"] { width:12px; height:12px; }
+    .op-uid-box { border:2px solid #1a4b8c !important; }
   }
 </style>
 
@@ -1017,7 +1022,13 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
     } catch(e) { alert('Failed to send: ' + e.message); }
   };
 
-  window.printOP = function() { window.print(); };
+  window.printOP = function() {
+    // Sync Treatment Plan name/date from page 1
+    document.getElementById('opTpName').value  = document.getElementById('opName').value + ' / ' + document.getElementById('opAge').value;
+    document.getElementById('opTpDate').value  = document.getElementById('opDate').value;
+    document.getElementById('opTpDiagnosis').value = document.getElementById('opDiagnosis').value;
+    window.print();
+  };
 </script>
 </body>
 </html>

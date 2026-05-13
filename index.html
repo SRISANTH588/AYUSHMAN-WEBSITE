@@ -270,39 +270,72 @@
   <!-- TOKEN MODAL -->
   <div id="tokenModal" style="position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);" onclick="closeToken()"></div>
-    <div style="position:relative;background:#fff;border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;">
+    <div style="position:relative;background:#fff;border-radius:24px;padding:40px 36px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;overflow-y:auto;max-height:90vh;">
       <button onclick="closeToken()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7c93;">&#x2715;</button>
       <div style="font-size:2.5rem;margin-bottom:12px;">🎫</div>
-      <h2 style="font-size:1.4rem;font-weight:800;color:#1a4b8c;margin-bottom:6px;">Check Your Token</h2>
-      <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:28px;">Enter your Booking ID &amp; Phone to get your token</p>
+      <h2 style="font-size:1.4rem;font-weight:800;color:#1a4b8c;margin-bottom:6px;">Token</h2>
 
-      <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
-        <div>
-          <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Booking ID</label>
-          <input id="tokenBookingId" type="text" placeholder="e.g. APF-2026-0001" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;text-transform:uppercase;"/>
+      <!-- Tabs -->
+      <div style="display:flex;background:#f4f8fc;border-radius:12px;padding:4px;margin-bottom:20px;">
+        <button onclick="switchTokenTab('generate')" id="tabGenerate" style="flex:1;padding:9px;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#fff;color:#1a4b8c;box-shadow:0 2px 8px rgba(26,75,140,0.12);">Generate Token</button>
+        <button onclick="switchTokenTab('check')" id="tabCheck" style="flex:1;padding:9px;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:transparent;color:#6b7c93;">Check Token</button>
+      </div>
+
+      <!-- GENERATE TOKEN PANEL -->
+      <div id="generatePanel">
+        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">Fill your details to get a token. First-time patients get auto-assigned token.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:5px;">Full Name</label>
+            <input id="genName" type="text" placeholder="Your full name" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:5px;">Phone Number</label>
+            <input id="genPhone" type="tel" placeholder="Your phone number" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:5px;">Condition / Reason</label>
+            <input id="genCondition" type="text" placeholder="e.g. Knee Pain" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:5px;">Select Doctor</label>
+            <select id="genDoctor" style="width:100%;padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;">
+              <option value="Dr. Durga Sowjanya">Dr. Durga Sowjanya</option>
+              <option value="Dr. D. Ramachandra">Dr. D. Ramachandra</option>
+            </select></div>
         </div>
-        <div>
-          <label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Phone Number</label>
-          <input id="tokenPhone" type="tel" placeholder="Registered phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/>
+        <div id="genError" style="display:none;margin-top:12px;background:#fff0f0;border:1.5px solid #f5c6cb;border-radius:10px;padding:10px 14px;color:#c0392b;font-size:0.82rem;font-weight:600;"></div>
+        <button id="genBtn" onclick="generateTokenFromMain()" style="width:100%;margin-top:18px;padding:14px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">🎫 Get My Token</button>
+        <!-- Token result -->
+        <div id="genResult" style="display:none;margin-top:20px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:16px;padding:24px;color:#fff;">
+          <div style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;">Your Token Number</div>
+          <div id="genTokenNum" style="font-size:4rem;font-weight:900;line-height:1;"></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
+            <div id="genTokenName" style="font-size:0.9rem;font-weight:600;"></div>
+            <div id="genTokenDoctor" style="font-size:0.78rem;opacity:0.8;"></div>
+            <div id="genTokenType" style="font-size:0.78rem;opacity:0.8;"></div>
+          </div>
+          <button onclick="window.print()" style="margin-top:16px;padding:9px 24px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;font-family:Poppins,sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🖨️ Print Token</button>
         </div>
       </div>
 
-      <div id="tokenError" style="display:none;margin-top:14px;background:#fff0f0;border:1.5px solid #f5c6cb;border-radius:10px;padding:10px 14px;color:#c0392b;font-size:0.82rem;font-weight:600;"></div>
-
-      <button id="tokenLookupBtn" onclick="lookupToken()" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(46,125,209,0.35);">Get My Token</button>
-
-      <!-- Token result -->
-      <div id="tokenResult" style="display:none;margin-top:24px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:16px;padding:24px;color:#fff;">
-        <div style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;">Your Token Number</div>
-        <div id="tokenNum" style="font-size:4rem;font-weight:900;line-height:1;"></div>
-        <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
-          <div id="tokenPatientName" style="font-size:0.9rem;font-weight:600;"></div>
-          <div id="tokenBookingDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
-          <div id="tokenDoctorDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
-          <div id="tokenDateDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+      <!-- CHECK TOKEN PANEL -->
+      <div id="checkPanel" style="display:none;">
+        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:20px;">Enter your Booking ID &amp; Phone to check your token</p>
+        <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Booking ID</label>
+            <input id="tokenBookingId" type="text" placeholder="e.g. APF-2026-0001" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;text-transform:uppercase;"/></div>
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Phone Number</label>
+            <input id="tokenPhone" type="tel" placeholder="Registered phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/></div>
         </div>
-        <button onclick="window.print()" style="margin-top:16px;padding:9px 24px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;font-family:Poppins,sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🖨️ Print Token</button>
+        <div id="tokenError" style="display:none;margin-top:14px;background:#fff0f0;border:1.5px solid #f5c6cb;border-radius:10px;padding:10px 14px;color:#c0392b;font-size:0.82rem;font-weight:600;"></div>
+        <button id="tokenLookupBtn" onclick="lookupToken()" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">Get My Token</button>
+        <div id="tokenResult" style="display:none;margin-top:24px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:16px;padding:24px;color:#fff;">
+          <div style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;">Your Token Number</div>
+          <div id="tokenNum" style="font-size:4rem;font-weight:900;line-height:1;"></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
+            <div id="tokenPatientName" style="font-size:0.9rem;font-weight:600;"></div>
+            <div id="tokenBookingDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+            <div id="tokenDoctorDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+            <div id="tokenDateDisplay" style="font-size:0.78rem;opacity:0.7;"></div>
+          </div>
+          <button onclick="window.print()" style="margin-top:16px;padding:9px 24px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;font-family:Poppins,sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🖨️ Print Token</button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -497,7 +530,6 @@
     }
     window.toggleToken = toggleToken;
     window.closeToken  = closeToken;
-
     goTo(0);
     setInterval(() => goTo(current >= maxIndex ? 0 : current + 1), 3000);
   </script>
@@ -505,7 +537,76 @@
 
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    window.switchTokenTab = function(tab) {
+      document.getElementById('generatePanel').style.display = tab === 'generate' ? 'block' : 'none';
+      document.getElementById('checkPanel').style.display    = tab === 'check'    ? 'block' : 'none';
+      document.getElementById('tabGenerate').style.background = tab === 'generate' ? '#fff' : 'transparent';
+      document.getElementById('tabGenerate').style.color      = tab === 'generate' ? '#1a4b8c' : '#6b7c93';
+      document.getElementById('tabGenerate').style.boxShadow  = tab === 'generate' ? '0 2px 8px rgba(26,75,140,0.12)' : 'none';
+      document.getElementById('tabCheck').style.background    = tab === 'check'    ? '#fff' : 'transparent';
+      document.getElementById('tabCheck').style.color         = tab === 'check'    ? '#1a4b8c' : '#6b7c93';
+      document.getElementById('tabCheck').style.boxShadow     = tab === 'check'    ? '0 2px 8px rgba(26,75,140,0.12)' : 'none';
+    };
+
+    window.generateTokenFromMain = async function() {
+      const name      = document.getElementById('genName').value.trim();
+      const phone     = document.getElementById('genPhone').value.trim();
+      const condition = document.getElementById('genCondition').value.trim();
+      const doctor    = document.getElementById('genDoctor').value;
+      const errEl     = document.getElementById('genError');
+      const btn       = document.getElementById('genBtn');
+      errEl.style.display = 'none';
+      if (!name || !phone || !condition) { errEl.textContent = 'Please fill all fields.'; errEl.style.display = 'block'; return; }
+
+      btn.disabled = true; btn.textContent = 'Generating...';
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      // Check if already has token today
+      const todayQ   = query(collection(db, 'tokens'), where('patientPhone', '==', phone), where('date', '==', todayStr));
+      const todaySnap = await getDocs(todayQ);
+      if (!todaySnap.empty) {
+        const t = todaySnap.docs[0].data();
+        document.getElementById('genTokenNum').textContent    = t.tokenNumber;
+        document.getElementById('genTokenName').textContent   = '👤 ' + t.patientName;
+        document.getElementById('genTokenDoctor').textContent = '🩺 ' + t.doctor;
+        document.getElementById('genTokenType').textContent   = 'ℹ️ Token already generated for today';
+        document.getElementById('genResult').style.display = 'block';
+        btn.disabled = false; btn.textContent = '🎫 Get My Token';
+        return;
+      }
+
+      // Check if first time
+      const prevQ    = query(collection(db, 'appointments'), where('phone', '==', phone));
+      const prevSnap = await getDocs(prevQ);
+      const isFirstTime = prevSnap.empty;
+
+      // Get next token number
+      const allTodayQ  = query(collection(db, 'tokens'), where('date', '==', todayStr));
+      const allToday   = await getDocs(allTodayQ);
+      const tokenNumber = '#' + String(allToday.size + 1).padStart(3, '0');
+
+      try {
+        await addDoc(collection(db, 'tokens'), {
+          tokenNumber,
+          patientName:  name,
+          patientPhone: phone,
+          doctor,
+          condition,
+          date:         todayStr,
+          source:       isFirstTime ? 'online-first' : 'online',
+          status:       'waiting',
+          createdAt:    serverTimestamp()
+        });
+        document.getElementById('genTokenNum').textContent    = tokenNumber;
+        document.getElementById('genTokenName').textContent   = '👤 ' + name;
+        document.getElementById('genTokenDoctor').textContent = '🩺 ' + doctor;
+        document.getElementById('genTokenType').textContent   = isFirstTime ? '🌟 First Visit — Auto Assigned' : '🔄 Returning Patient';
+        document.getElementById('genResult').style.display = 'block';
+      } catch(e) { errEl.textContent = 'Failed: ' + e.message; errEl.style.display = 'block'; }
+      btn.disabled = false; btn.textContent = '🎫 Get My Token';
+    };
 
     window.lookupToken = async function() {
       const bookingId = document.getElementById('tokenBookingId').value.trim().toUpperCase();
