@@ -430,24 +430,147 @@
 
       <div class="op-form-wrap" id="opFormWrap">
         <div class="op-print-area" id="opPrintArea">
-          <div class="op-header">
-            <h2>✚ Ayushman PhysioFIT – OP Form</h2>
-            <p>Rehabilitation Centre · Vijayawada</p>
+
+          <!-- PAGE 1: PATIENT ASSESSMENT FORM -->
+          <div class="op-page">
+            <div class="op-clinic-header">
+              <img src="images/logo_transparent.png" style="height:60px;"/>
+              <div class="op-clinic-info">
+                <div style="font-size:1.5rem;font-weight:900;color:#1a4b8c;">Ayushman <span style="color:#e63946;">+</span> <span style="font-size:1rem;color:#2e7dd1;">PhysioFIT</span></div>
+                <div style="font-size:0.8rem;color:#555;">Rehabilitation Center</div>
+                <div style="font-size:0.85rem;font-weight:700;color:#1a4b8c;">&#9742; 6302478412 / Mon-Sat / 9AM-9PM</div>
+              </div>
+              <div class="op-uid-box">OP No: <strong id="opUniqueNo"></strong></div>
+            </div>
+
+            <h2 class="op-form-title">PATIENT ASSESSMENT FORM</h2>
+
+            <div class="op-section">
+              <div class="op-row">
+                <span class="op-label">1) PATIENT INFO</span>
+                <span class="op-dots"></span>
+                <span class="op-label">DATE: </span><input class="op-inline" id="opDate" readonly/>
+              </div>
+              <div class="op-row">
+                <span class="op-label">Patient Name:</span><input class="op-inline op-wide" id="opName"/>
+                <span class="op-label">Age/DOB(D/M/Y):</span><input class="op-inline" id="opAge"/>
+                <span class="op-label">G:</span><input class="op-inline op-sm"/>
+              </div>
+              <div class="op-row">
+                <span class="op-label">Contact No:</span><input class="op-inline op-wide" id="opPhone"/>
+                <span class="op-label">Booking ID:</span><input class="op-inline" id="opBookingId" readonly/>
+              </div>
+              <div class="op-row">
+                <span class="op-label">Occupation:</span><input class="op-inline" id="opOccupation"/>
+                <span class="op-label">Address:</span><input class="op-inline op-wide" id="opAddress"/>
+              </div>
+              <div class="op-row">
+                <span class="op-label">Referred by (Doctor/Source):</span><input class="op-inline op-full" id="opReferred"/>
+              </div>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">2) GENERAL OBSERVATION</div>
+              <textarea class="op-textarea" id="opObservation" rows="3"></textarea>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">3) MEDICAL HISTORY</div>
+              <div class="op-row"><span class="op-label">Past Illness/Surgeries:</span><input class="op-inline op-full" id="opPastIllness"/></div>
+              <div class="op-row"><span class="op-label">Medications:</span><input class="op-inline op-full" id="opMedications"/></div>
+              <div class="op-row"><span class="op-label">Allergies:</span><input class="op-inline op-full" id="opAllergies"/></div>
+              <div class="op-row"><span class="op-label">Family History (Relevant):</span><input class="op-inline op-full" id="opFamilyHistory"/></div>
+              <div class="op-row"><span class="op-label">Lifestyle Habits/Smoking/Alcohol/Physical Activity:</span><input class="op-inline op-full" id="opLifestyle"/></div>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">4) CHIEF COMPLAINTS</div>
+              <input class="op-inline op-full" id="opCondition"/>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">5) ASSESSMENT</div>
+              <div class="op-subsection-title">* PAIN</div>
+              <div class="op-checkrow">
+                <label><input type="checkbox"/> Sharp</label>
+                <label><input type="checkbox"/> Dull</label>
+                <label><input type="checkbox"/> Aching</label>
+                <label><input type="checkbox"/> Burning</label>
+                <label><input type="checkbox"/> Throbbing</label>
+                <label><input type="checkbox"/> Redness</label>
+                <label><input type="checkbox"/> Warmth</label>
+                <label><input type="checkbox"/> Tender</label>
+                <label><input type="checkbox"/> Stiffness</label>
+                <label><input type="checkbox"/> Radiating</label>
+                <label><input type="checkbox"/> Others</label>
+              </div>
+              <div class="op-row" style="margin-top:10px;">
+                <span class="op-label">VAS:</span><input class="op-inline op-sm"/>
+                <span class="op-label">Agg.F:</span><input class="op-inline"/>
+                <span class="op-label">Reli.F:</span><input class="op-inline"/>
+              </div>
+              <div class="op-row">
+                <span class="op-label">*ROM:</span><input class="op-inline"/>
+                <span class="op-label">*TESTS:</span><input class="op-inline"/>
+              </div>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">6) DIAGNOSIS</div>
+              <textarea class="op-textarea" id="opDiagnosis" rows="2"></textarea>
+            </div>
           </div>
-          <div class="op-grid">
-            <div class="op-field"><label>Booking ID</label><input type="text" id="opBookingId" readonly/></div>
-            <div class="op-field"><label>Date &amp; Time</label><input type="text" id="opDate" readonly/></div>
-            <div class="op-field"><label>Patient Name</label><input type="text" id="opName"/></div>
-            <div class="op-field"><label>Age</label><input type="text" id="opAge"/></div>
-            <div class="op-field"><label>Phone Number</label><input type="text" id="opPhone"/></div>
-            <div class="op-field"><label>Occupation</label><input type="text" id="opOccupation"/></div>
-            <div class="op-field full"><label>Address</label><input type="text" id="opAddress"/></div>
-            <div class="op-field full"><label>Condition / Chief Complaint</label><input type="text" id="opCondition"/></div>
-            <div class="op-field full"><label>Diagnosis</label><textarea id="opDiagnosis" placeholder="Enter diagnosis..."></textarea></div>
-            <div class="op-field full"><label>Treatment Plan</label><textarea id="opTreatment" placeholder="Enter treatment plan..."></textarea></div>
-            <div class="op-field"><label>Assigned Doctor</label><input type="text" id="opDoctor" placeholder="Doctor name"/></div>
-            <div class="op-field"><label>Staff Notes</label><textarea id="opNotes" placeholder="Any additional notes..."></textarea></div>
+
+          <!-- PAGE 2: TREATMENT PLAN -->
+          <div class="op-page" style="margin-top:40px;page-break-before:always;">
+            <div class="op-clinic-header">
+              <img src="images/logo_transparent.png" style="height:60px;"/>
+              <div class="op-clinic-info">
+                <div style="font-size:1.5rem;font-weight:900;color:#1a4b8c;">Ayushman <span style="color:#e63946;">+</span> <span style="font-size:1rem;color:#2e7dd1;">PhysioFIT</span></div>
+                <div style="font-size:0.8rem;color:#555;">Rehabilitation Center</div>
+                <div style="font-size:0.85rem;font-weight:700;color:#1a4b8c;">&#9742; 6302478412 / Mon-Sat / 9AM-9PM</div>
+              </div>
+            </div>
+
+            <h2 class="op-form-title">Treatment Plan</h2>
+            <div class="op-row">
+              <span class="op-label">PT Name/G/Age:</span><input class="op-inline" id="opTpName" readonly/>
+              <span class="op-label">Diagnosis:</span><input class="op-inline op-wide" id="opTpDiagnosis"/>
+              <span class="op-label">Date:</span><input class="op-inline op-sm" id="opTpDate" readonly/>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">1) Exercise Therapy / Manual Therapy</div>
+              <textarea class="op-textarea" id="opExercise" rows="3"></textarea>
+            </div>
+            <div class="op-section">
+              <div class="op-section-title">2) Modalities</div>
+              <textarea class="op-textarea" id="opModalities" rows="3"></textarea>
+            </div>
+            <div class="op-section">
+              <div class="op-section-title">3) Home Exercises</div>
+              <textarea class="op-textarea" id="opHomeExercise" rows="2"></textarea>
+            </div>
+            <div class="op-section">
+              <div class="op-section-title">4) Sessions</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <table class="op-session-table" id="opSessionTable1"></table>
+                <table class="op-session-table" id="opSessionTable2"></table>
+              </div>
+            </div>
+
+            <div class="op-section">
+              <div class="op-section-title">Staff Notes</div>
+              <textarea class="op-textarea" id="opNotes" rows="2"></textarea>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;margin-top:30px;font-weight:700;">
+              <div style="text-align:center;">Dr.Durga Sowjanya<br/><span style="font-weight:400;font-size:0.85rem;">MPT Neuro.</span></div>
+              <div style="text-align:center;">Dr.RamaChandra.PT</div>
+            </div>
+            <div style="text-align:center;margin-top:12px;color:#1a4b8c;font-weight:700;font-size:0.85rem;">Home-Physio Available &nbsp; 6302478412</div>
           </div>
+
         </div>
         <div class="op-actions">
           <button class="btn-op-back" onclick="closeOPForm()">← Back</button>
@@ -741,27 +864,37 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   .op-table-wrap { overflow-x:auto; }
   .op-form-wrap { background:#fff; border-radius:16px; padding:28px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-top:20px; display:none; }
   .op-form-wrap.show { display:block; }
-  .op-print-area { font-family:'Poppins',sans-serif; }
-  .op-header { text-align:center; border-bottom:2px solid #1a4b8c; padding-bottom:12px; margin-bottom:20px; }
-  .op-header h2 { color:#1a4b8c; font-size:1.4rem; margin:0; }
-  .op-header p { color:#6b7c93; font-size:0.85rem; margin:4px 0 0; }
-  .op-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
-  .op-field label { display:block; font-size:0.75rem; font-weight:600; color:#6b7c93; margin-bottom:4px; text-transform:uppercase; }
-  .op-field input, .op-field textarea, .op-field select {
-    width:100%; padding:10px 14px; border:1.5px solid #dce8f5; border-radius:10px;
-    font-family:'Poppins',sans-serif; font-size:0.9rem; color:#1a2a3a; outline:none;
-  }
-  .op-field.full { grid-column:1/-1; }
-  .op-field textarea { resize:vertical; min-height:80px; }
+  .op-print-area { font-family:'Times New Roman',serif; color:#000; }
+  .op-page { background:#fff; padding:32px 40px; max-width:800px; margin:0 auto; border:1px solid #ddd; }
+  .op-clinic-header { display:flex; align-items:center; gap:16px; border-bottom:2px solid #1a4b8c; padding-bottom:12px; margin-bottom:16px; }
+  .op-clinic-info { flex:1; }
+  .op-uid-box { background:#1a4b8c; color:#fff; padding:8px 16px; border-radius:8px; font-size:0.9rem; font-weight:700; white-space:nowrap; }
+  .op-form-title { text-align:center; font-size:1.2rem; font-weight:900; text-decoration:underline; margin:12px 0 20px; font-family:'Times New Roman',serif; }
+  .op-section { margin-bottom:16px; }
+  .op-section-title { font-weight:700; font-size:0.95rem; margin-bottom:6px; }
+  .op-subsection-title { font-weight:700; font-size:0.88rem; margin:8px 0 4px; }
+  .op-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .op-label { font-size:0.85rem; white-space:nowrap; font-weight:600; }
+  .op-inline { border:none; border-bottom:1px solid #000; outline:none; font-family:'Times New Roman',serif; font-size:0.88rem; padding:2px 4px; background:transparent; min-width:80px; }
+  .op-inline.op-wide { min-width:160px; flex:1; }
+  .op-inline.op-full { width:100%; flex:1; }
+  .op-inline.op-sm { min-width:50px; max-width:70px; }
+  .op-dots { flex:1; border-bottom:1px dotted #000; margin:0 4px; }
+  .op-textarea { width:100%; border:1px solid #ccc; border-radius:4px; font-family:'Times New Roman',serif; font-size:0.88rem; padding:6px; resize:vertical; }
+  .op-checkrow { display:flex; flex-wrap:wrap; gap:12px; font-size:0.85rem; }
+  .op-checkrow label { display:flex; align-items:center; gap:4px; }
+  .op-session-table { width:100%; border-collapse:collapse; font-size:0.75rem; }
+  .op-session-table td { border:1px solid #000; width:40px; height:28px; }
+  .op-session-table th { border:1px solid #000; padding:4px; background:#f0f0f0; font-size:0.72rem; }
   .op-actions { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
   .btn-op-print { padding:11px 24px; background:#1a4b8c; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   .btn-op-send  { padding:11px 24px; background:#27ae60; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   .btn-op-back  { padding:11px 24px; background:#f4f8fc; color:#1a4b8c; border:1.5px solid #dce8f5; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   @media print {
-    body > *:not(#sec-opform) { display:none !important; }
-    #sec-opform { display:block !important; }
-    .op-actions, .topbar, .section-card:first-child { display:none !important; }
-    .op-form-wrap { box-shadow:none; padding:0; }
+    body > * { display:none !important; }
+    .op-form-wrap { display:block !important; box-shadow:none; padding:0; }
+    .op-actions { display:none !important; }
+    .op-page { border:none; padding:20px; }
   }
 </style>
 
@@ -793,18 +926,26 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
 
   window.openOPForm = function(i) {
     const a = _opDocs[i];
-    document.getElementById('opBookingId').value   = a.bookingId || '';
-    document.getElementById('opName').value        = a.name || '';
-    document.getElementById('opAge').value         = a.age || '';
-    document.getElementById('opPhone').value       = a.phone || '';
-    document.getElementById('opOccupation').value  = a.occupation || '';
-    document.getElementById('opAddress').value     = a.address || '';
-    document.getElementById('opCondition').value   = a.condition || '';
-    document.getElementById('opDate').value        = (a.date || '') + ' ' + (a.time || '');
-    document.getElementById('opDiagnosis').value   = a.diagnosis || '';
-    document.getElementById('opTreatment').value   = a.treatment || '';
-    document.getElementById('opNotes').value       = a.notes || '';
-    document.getElementById('opDoctor').value      = a.doctor || '';
+    // Generate unique OP number
+    const opNo = 'OP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('opUniqueNo').textContent  = opNo;
+    document.getElementById('opBookingId').value       = a.bookingId || '';
+    document.getElementById('opName').value            = a.name || '';
+    document.getElementById('opAge').value             = a.age || '';
+    document.getElementById('opPhone').value           = a.phone || '';
+    document.getElementById('opOccupation').value      = a.occupation || '';
+    document.getElementById('opAddress').value         = a.address || '';
+    document.getElementById('opCondition').value       = a.condition || '';
+    document.getElementById('opDate').value            = (a.date || '') + ' ' + (a.time || '');
+    document.getElementById('opTpName').value          = (a.name || '') + ' / ' + (a.age || '');
+    document.getElementById('opTpDate').value          = a.date || '';
+    // Build session tables
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    ['opSessionTable1','opSessionTable2'].forEach(id => {
+      const t = document.getElementById(id);
+      t.innerHTML = '<tr>' + days.map(d => `<th>${d}</th>`).join('') + '</tr>';
+      for (let r = 0; r < 5; r++) t.innerHTML += '<tr>' + days.map(() => '<td></td>').join('') + '</tr>';
+    });
     document.getElementById('opFormWrap').classList.add('show');
     document.getElementById('opFormWrap').scrollIntoView({ behavior: 'smooth' });
   };
@@ -815,20 +956,29 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
 
   window.sendOPToAdmin = async function() {
     const data = {
-      bookingId:  document.getElementById('opBookingId').value,
-      name:       document.getElementById('opName').value,
-      age:        document.getElementById('opAge').value,
-      phone:      document.getElementById('opPhone').value,
-      occupation: document.getElementById('opOccupation').value,
-      address:    document.getElementById('opAddress').value,
-      condition:  document.getElementById('opCondition').value,
-      date:       document.getElementById('opDate').value,
-      diagnosis:  document.getElementById('opDiagnosis').value,
-      treatment:  document.getElementById('opTreatment').value,
-      notes:      document.getElementById('opNotes').value,
-      doctor:     document.getElementById('opDoctor').value,
-      submittedBy: 'staff',
-      createdAt:  serverTimestamp()
+      opNo:         document.getElementById('opUniqueNo').textContent,
+      bookingId:    document.getElementById('opBookingId').value,
+      name:         document.getElementById('opName').value,
+      age:          document.getElementById('opAge').value,
+      phone:        document.getElementById('opPhone').value,
+      occupation:   document.getElementById('opOccupation').value,
+      address:      document.getElementById('opAddress').value,
+      condition:    document.getElementById('opCondition').value,
+      date:         document.getElementById('opDate').value,
+      referred:     document.getElementById('opReferred').value,
+      observation:  document.getElementById('opObservation').value,
+      pastIllness:  document.getElementById('opPastIllness').value,
+      medications:  document.getElementById('opMedications').value,
+      allergies:    document.getElementById('opAllergies').value,
+      familyHistory:document.getElementById('opFamilyHistory').value,
+      lifestyle:    document.getElementById('opLifestyle').value,
+      diagnosis:    document.getElementById('opDiagnosis').value,
+      exercise:     document.getElementById('opExercise').value,
+      modalities:   document.getElementById('opModalities').value,
+      homeExercise: document.getElementById('opHomeExercise').value,
+      notes:        document.getElementById('opNotes').value,
+      submittedBy:  'staff',
+      createdAt:    serverTimestamp()
     };
     try {
       await addDoc(collection(db, 'op_forms'), data);
