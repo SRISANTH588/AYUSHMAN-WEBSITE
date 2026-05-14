@@ -329,21 +329,22 @@
           </div>
         </div>
         <div class="form-group" style="margin-bottom:16px;">
-          <label>Cloudinary Video URL</label>
-          <input type="url" id="vidUrl" placeholder="https://res.cloudinary.com/your-cloud/video/upload/..."/>
+          <label>Upload Video File</label>
+          <input type="file" id="vidFile" accept="video/*" style="padding:8px 0;"/>
+          <p id="vidUploadProgress" style="font-size:0.82rem;color:#2e7dd1;margin-top:6px;display:none;">Uploading...</p>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Thumbnail URL <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
-            <input type="url" id="vidThumb" placeholder="https://res.cloudinary.com/.../thumbnail.jpg"/>
+            <label>Thumbnail Image <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
+            <input type="file" id="vidThumb" accept="image/*" style="padding:8px 0;"/>
           </div>
           <div class="form-group">
             <label>Description <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
             <input type="text" id="vidDesc" placeholder="Brief description"/>
           </div>
         </div>
-        <button class="btn-primary" onclick="uploadVideo()">📤 Save Video</button>
-        <p class="success-msg" id="vidSuccess">✅ Video saved to Firestore!</p>
+        <button class="btn-primary" onclick="uploadVideo()">📤 Upload Video</button>
+        <p class="success-msg" id="vidSuccess">✅ Video uploaded successfully!</p>
       </div>
 
       <div class="section-card">
@@ -693,9 +694,10 @@
   </div>
 
   <script type="module">
-    import { auth, db } from './firebase.js';
+    import { auth, db, storage } from './firebase.js';
     import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
     import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy, where, updateDoc, doc, deleteDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js';
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
@@ -1403,25 +1405,49 @@ _Ayushman PhysioFIT Rehabilitation Centre_
     });
 
     window.uploadVideo = async function() {
-      const title   = document.getElementById('vidTitle').value.trim();
-      const url     = document.getElementById('vidUrl').value.trim();
-      const slotTag = document.getElementById('vidSlotTag').value;
-      const thumb   = document.getElementById('vidThumb').value.trim();
-      const desc    = document.getElementById('vidDesc').value.trim();
-      if (!title || !url || !slotTag) return alert('Title, URL and Slot Tag are required.');
+      const title    = document.getElementById('vidTitle').value.trim();
+      const slotTag  = document.getElementById('vidSlotTag').value;
+      const vidFile  = document.getElementById('vidFile').files[0];
+      const thumbFile= document.getElementById('vidThumb').files[0];
+      const desc     = document.getElementById('vidDesc').value.trim();
+      if (!title || !slotTag || !vidFile) return alert('Title, Slot Tag and Video File are required.');
+
+      const progress = document.getElementById('vidUploadProgress');
+      progress.style.display = 'block';
+      progress.textContent = 'Uploading video...';
+
+      // Upload video file
+      const vidRef = ref(storage, `videos/${Date.now()}_${vidFile.name}`);
+      const vidTask = uploadBytesResumable(vidRef, vidFile);
+      vidTask.on('state_changed', snap => {
+        const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+        progress.textContent = `Uploading video... ${pct}%`;
+      });
+      await vidTask;
+      const videoUrl = await getDownloadURL(vidRef);
+
+      // Upload thumbnail if provided
+      let thumbUrl = null;
+      if (thumbFile) {
+        progress.textContent = 'Uploading thumbnail...';
+        const thumbRef = ref(storage, `thumbnails/${Date.now()}_${thumbFile.name}`);
+        await uploadBytesResumable(thumbRef, thumbFile);
+        thumbUrl = await getDownloadURL(thumbRef);
+      }
 
       await addDoc(collection(db, 'videos'), {
-        title, url, slotTag,
-        thumbnail: thumb || null,
+        title, url: videoUrl, slotTag,
+        thumbnail: thumbUrl || null,
         description: desc || null,
         createdAt: serverTimestamp()
       });
 
       document.getElementById('vidTitle').value = '';
-      document.getElementById('vidUrl').value   = '';
+      document.getElementById('vidFile').value  = '';
       document.getElementById('vidThumb').value = '';
       document.getElementById('vidDesc').value  = '';
       document.getElementById('vidSlotTag').value = '';
+      progress.style.display = 'none';
       const m = document.getElementById('vidSuccess');
       m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
     };
