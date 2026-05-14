@@ -81,6 +81,7 @@
       <a onclick="showSection('staff', this)">👨⚕️ Staff</a>
       <a onclick="showSection('patients', this)">🧑 Patients</a>
       <a onclick="showSection('settings', this)">⚙️ Settings</a>
+      <a onclick="showSection('payments-config', this)">💳 Razorpay / Payments</a>
       <a href="calendar.html">🗓️ Calendar ↗</a>
       <a onclick="showSection('payments', this)">💳 Payments</a>
       <a href="payment.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">🧾 Payment Page ↗</a>
@@ -663,22 +664,52 @@
       </div>
     </div>
 
+    <!-- RAZORPAY / PAYMENTS CONFIG -->
+    <div class="section" id="sec-payments-config">
+      <div class="topbar"><div><h1>Razorpay Keys</h1><p>Configure live Razorpay credentials used for real payments</p></div></div>
+      <div class="section-card">
+        <h2>🔑 Live API Keys</h2>
+        <p style="font-size:0.82rem;color:#e63946;font-weight:600;margin-bottom:16px;">⚠️ Keep these secret. Never share your Key Secret publicly.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Key ID (rzp_live_...)</label>
+            <input type="text" id="rzpKeyId" placeholder="rzp_live_XXXXXXXXXXXXXXXX" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label>Key Secret</label>
+            <input type="password" id="rzpKeySecret" placeholder="Enter Key Secret" autocomplete="off"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Webhook Secret <span style="font-weight:400;color:#aab4c0;">(optional)</span></label>
+          <input type="password" id="rzpWebhookSecret" placeholder="Webhook secret for payment verification" autocomplete="off"/>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="saveRzpKeys()">💾 Save Keys</button>
+          <button onclick="toggleRzpSecrets()" style="padding:12px 20px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;" id="rzpToggleBtn">👁 Show Secrets</button>
+        </div>
+        <p class="success-msg" id="rzpKeysSuccess">✅ Razorpay keys saved!</p>
+      </div>
+      <div class="section-card" style="background:#fffbea;border:1.5px solid #ffe082;">
+        <h2 style="color:#856404;">📋 How to get your Razorpay Keys</h2>
+        <ol style="font-size:0.85rem;color:#1a2a3a;line-height:2;padding-left:20px;">
+          <li>Login to <a href="https://dashboard.razorpay.com" target="_blank" style="color:#2e7dd1;">dashboard.razorpay.com</a></li>
+          <li>Go to <strong>Settings → API Keys</strong></li>
+          <li>Click <strong>Generate Live Key</strong> (make sure you're in Live mode)</li>
+          <li>Copy the <strong>Key ID</strong> and <strong>Key Secret</strong> and paste above</li>
+        </ol>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="section" id="sec-settings">
       <div class="topbar"><div><h1>Settings</h1><p>Manage clinic configuration</p></div></div>
 
-      <!-- Razorpay Live Key -->
-      <div class="section-card">
-        <h2>💳 Razorpay Live Key</h2>
-        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">This key is used on the payment page to open Razorpay checkout. Keep it secret.</p>
-        <div class="form-row">
-          <div class="form-group" style="grid-column:1/-1;">
-            <label>Live Key (rzp_live_...)</label>
-            <input type="text" id="rzpKey" placeholder="rzp_live_XXXXXXXXXXXXXXXX" autocomplete="off"/>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="saveRzpKey()">💾 Save Razorpay Key</button>
-        <p class="success-msg" id="rzpKeySuccess">✅ Razorpay key saved!</p>
+      <!-- Razorpay Live Key (shortcut to dedicated tab) -->
+      <div class="section-card" style="background:#f0f7ff;border:1.5px solid #dce8f5;">
+        <h2>💳 Razorpay Keys</h2>
+        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:16px;">Manage your Razorpay live credentials from the dedicated tab.</p>
+        <button class="btn-primary" onclick="showSection('payments-config', document.querySelector('[onclick*=payments-config]'))">🔑 Go to Razorpay Keys</button>
       </div>
 
       <!-- Fitness Class Price -->
@@ -1290,7 +1321,9 @@ _Ayushman PhysioFIT Rehabilitation Centre_
         const snap = await getDoc(doc(db, 'settings', 'config'));
         if (snap.exists()) {
           const d = snap.data();
-          if (d.razorpayKey)       document.getElementById('rzpKey').value          = d.razorpayKey;
+          if (d.razorpayKey)     document.getElementById('rzpKeyId').value          = d.razorpayKey;
+          if (d.razorpaySecret)  document.getElementById('rzpKeySecret').value      = d.razorpaySecret;
+          if (d.razorpayWebhook) document.getElementById('rzpWebhookSecret').value  = d.razorpayWebhook;
           if (d.fitnessPrice)      document.getElementById('fitnessPrice').value     = d.fitnessPrice;
           if (d.fitnessPriceDesc)  document.getElementById('fitnessPriceDesc').value = d.fitnessPriceDesc;
         }
@@ -1313,12 +1346,25 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       });
     });
 
-    window.saveRzpKey = async function() {
-      const key = document.getElementById('rzpKey').value.trim();
-      if (!key) return alert('Enter the Razorpay live key.');
-      await setDoc(doc(db, 'settings', 'config'), { razorpayKey: key }, { merge: true });
-      const m = document.getElementById('rzpKeySuccess');
+    window.saveRzpKeys = async function() {
+      const keyId     = document.getElementById('rzpKeyId').value.trim();
+      const keySecret = document.getElementById('rzpKeySecret').value.trim();
+      const webhook   = document.getElementById('rzpWebhookSecret').value.trim();
+      if (!keyId) return alert('Enter the Razorpay Key ID.');
+      const payload = { razorpayKey: keyId };
+      if (keySecret) payload.razorpaySecret = keySecret;
+      if (webhook)   payload.razorpayWebhook = webhook;
+      await setDoc(doc(db, 'settings', 'config'), payload, { merge: true });
+      const m = document.getElementById('rzpKeysSuccess');
       m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    };
+
+    window.toggleRzpSecrets = function() {
+      const fields = ['rzpKeySecret', 'rzpWebhookSecret'];
+      const btn = document.getElementById('rzpToggleBtn');
+      const isHidden = document.getElementById('rzpKeySecret').type === 'password';
+      fields.forEach(id => { document.getElementById(id).type = isHidden ? 'text' : 'password'; });
+      btn.textContent = isHidden ? '🙈 Hide Secrets' : '👁 Show Secrets';
     };
 
     window.saveFitnessPrice = async function() {
