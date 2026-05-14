@@ -208,9 +208,11 @@
         <img src="images/family.png" alt="Online Fitness Classes" style="width:100%;border-radius:12px;margin:12px 0;object-fit:cover;"/>
         <ul class="oc-info-list">
           <li>🎯 Personalized for your condition &amp; fitness level</li>
-          <li>📅 Flexible morning &amp; evening slots</li>
+          <li>📅 3 Classes per week (Mon / Wed / Fri)</li>
+          <li>💰 Monthly Plan: <strong>&#8377;2,400</strong></li>
+          <li>🔒 Access to premium video library after enrollment</li>
         </ul>
-        <form id="enrollForm" class="oc-form" onsubmit="submitEnrollment(event)">
+        <form id="enrollForm" class="oc-form" onsubmit="showEnrollModal(event)">
           <input type="text"   id="enName"   placeholder="Full Name"    required/>
           <input type="number" id="enAge"    placeholder="Age"          min="5"  max="100" required/>
           <input type="tel"    id="enPhone"  placeholder="Phone Number" required/>
@@ -220,7 +222,61 @@
           </select>
           <button type="submit" id="enrollBtn">Enroll Now</button>
         </form>
-        <p class="oc-success" id="enrollSuccess">✅ Enrolled! Admin will confirm &amp; send payment link.</p>
+        <p class="oc-success" id="enrollSuccess"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENROLLMENT MODAL -->
+  <div id="enrollModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:white;border-radius:20px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:32px 28px;">
+      <h2 style="color:#1a4b8c;font-size:1.2rem;margin-bottom:4px;">🏋️ Online Fitness Class Package</h2>
+      <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:20px;">Please read before proceeding to payment</p>
+
+      <div style="background:#f0f7ff;border-radius:12px;padding:16px 18px;margin-bottom:16px;">
+        <div style="font-weight:700;color:#1a4b8c;margin-bottom:10px;">📦 Package Details</div>
+        <div style="font-size:0.88rem;color:#1a2a3a;line-height:2;">
+          📅 <strong>3 Classes per week</strong> (Mon, Wed, Fri)<br/>
+          ⏰ Slot: <strong id="modalSlot"></strong><br/>
+          💰 Monthly Fee: <strong>&#8377;2,400</strong><br/>
+          🎥 Premium video access included<br/>
+          👨‍⚕️ Expert physiotherapist-led sessions
+        </div>
+      </div>
+
+      <div style="background:#fff8f0;border:1.5px solid #ffe0b2;border-radius:12px;padding:16px 18px;margin-bottom:16px;">
+        <div style="font-weight:700;color:#e65100;margin-bottom:8px;">📜 Terms &amp; Conditions</div>
+        <ul style="font-size:0.82rem;color:#444;line-height:1.9;padding-left:16px;">
+          <li>Classes are held 3 times a week on Mon, Wed &amp; Fri.</li>
+          <li>Membership is valid for 1 calendar month from enrollment date.</li>
+          <li>Video access is granted within 24 hours of payment confirmation.</li>
+          <li>Missed classes cannot be rescheduled or refunded individually.</li>
+          <li>Patient must attend sessions at the enrolled time slot.</li>
+          <li>Ayushman PhysioFIT reserves the right to reschedule sessions.</li>
+        </ul>
+      </div>
+
+      <div style="background:#fff0f0;border:1.5px solid #ffcdd2;border-radius:12px;padding:16px 18px;margin-bottom:20px;">
+        <div style="font-weight:700;color:#c62828;margin-bottom:8px;">❌ Cancellation Policy</div>
+        <ul style="font-size:0.82rem;color:#444;line-height:1.9;padding-left:16px;">
+          <li>Cancellation within 24 hours of enrollment: <strong>Full refund</strong>.</li>
+          <li>Cancellation after 24 hours but before first class: <strong>50% refund</strong>.</li>
+          <li>No refund after the first class has been attended.</li>
+          <li>To cancel, contact us on WhatsApp: <strong>6302478412</strong>.</li>
+        </ul>
+      </div>
+
+      <label style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#1a2a3a;margin-bottom:20px;cursor:pointer;">
+        <input type="checkbox" id="agreeCheck" style="margin-top:3px;width:16px;height:16px;"/>
+        I have read and agree to the Terms &amp; Conditions and Cancellation Policy.
+      </label>
+
+      <div style="display:flex;gap:12px;">
+        <button onclick="closeEnrollModal()" style="flex:1;padding:12px;background:#f0f4f8;color:#1a2a3a;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-weight:600;cursor:pointer;">Cancel</button>
+        <button onclick="proceedToPayment()" style="flex:2;padding:12px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-weight:700;cursor:pointer;">🔒 Pay &#8377;2,400 &amp; Enroll</button>
+      </div>
+    </div>
+  </div>
       </div>
 
     </div>
@@ -434,25 +490,37 @@
       btn.disabled = false; btn.textContent = 'Book Appointment';
     };
 
-    window.submitEnrollment = async function(e) {
+    window.showEnrollModal = function(e) {
       e.preventDefault();
+      const slot = document.getElementById('enSlot').value;
+      if (!slot) return alert('Please select a time slot.');
+      document.getElementById('modalSlot').textContent = slot;
+      document.getElementById('agreeCheck').checked = false;
+      document.getElementById('enrollModal').style.display = 'flex';
+    };
+
+    window.closeEnrollModal = function() {
+      document.getElementById('enrollModal').style.display = 'none';
+    };
+
+    window.proceedToPayment = async function() {
+      if (!document.getElementById('agreeCheck').checked) return alert('Please agree to the Terms & Conditions to proceed.');
+      closeEnrollModal();
       const btn = document.getElementById('enrollBtn');
       const name   = document.getElementById('enName').value.trim();
       const age    = document.getElementById('enAge').value;
       const phone  = document.getElementById('enPhone').value.trim();
       const weight = document.getElementById('enWeight').value;
       const slot   = document.getElementById('enSlot').value;
-      if (!name || !phone || !slot) return alert('Please fill all required fields.');
-      btn.disabled = true; btn.textContent = 'Loading payment...';
+      btn.disabled = true; btn.textContent = 'Opening payment...';
       try {
-        // Load Razorpay key + price from Firestore
-        const cfg = await getDoc(doc(db, 'settings', 'config'));
-        const rzpKey  = cfg.exists() ? cfg.data().razorpayKey  || '' : '';
-        const amount  = cfg.exists() ? cfg.data().fitnessPrice || '999' : '999';
+        const cfg    = await getDoc(doc(db, 'settings', 'config'));
+        const rzpKey = cfg.exists() ? cfg.data().razorpayKey || '' : '';
+        const amount = 2400;
         if (!rzpKey) { alert('Payment not configured. Please contact the clinic.'); btn.disabled = false; btn.textContent = 'Enroll Now'; return; }
         const rzp = new Razorpay({
           key: rzpKey,
-          amount: parseInt(amount) * 100,
+          amount: amount * 100,
           currency: 'INR',
           name: 'Ayushman PhysioFIT',
           description: `Online Fitness Class – ${slot}`,
@@ -464,14 +532,15 @@
             btn.textContent = 'Confirming...';
             await addDoc(collection(db, 'fitnessEnrollments'), {
               name, age, phone, weight, slot,
-              status: 'enrolled',
+              status: 'enrolled', amount: String(amount),
               paymentId: response.razorpay_payment_id,
-              amount, paidAt: serverTimestamp(), createdAt: serverTimestamp()
+              paidAt: serverTimestamp(), createdAt: serverTimestamp()
             });
             document.getElementById('enrollForm').reset();
-            document.getElementById('enrollSuccess').textContent = `✅ Payment successful! You are enrolled for ${slot}. Admin will add your videos shortly.`;
-            document.getElementById('enrollSuccess').style.display = 'block';
-            setTimeout(() => document.getElementById('enrollSuccess').style.display = 'none', 8000);
+            const s = document.getElementById('enrollSuccess');
+            s.textContent = `✅ Payment successful! You are enrolled for ${slot}. Your premium video access will be activated shortly.`;
+            s.style.display = 'block';
+            setTimeout(() => s.style.display = 'none', 10000);
             btn.disabled = false; btn.textContent = 'Enroll Now';
           }
         });
@@ -479,6 +548,8 @@
         rzp.open();
       } catch(err) { alert('Error: ' + err.message); btn.disabled = false; btn.textContent = 'Enroll Now'; }
     };
+
+    window.submitEnrollment = window.showEnrollModal;
   </script>
 
   <!-- CORE JS -->

@@ -87,6 +87,7 @@
       <a onclick="showSection('payment', this)">💳 Online Payment</a>
       <a onclick="showSection('membership', this)">📦 Membership</a>
       <a onclick="showSection('sessions', this)">🎥 Video / Classes</a>
+      <a onclick="showSection('videos', this)" id="videoNavLink">👑 Premium Videos <span id="premiumBadge" style="background:#e63946;color:white;font-size:0.65rem;padding:2px 7px;border-radius:10px;margin-left:4px;display:none;">LOCKED</span></a>
       <a onclick="showSection('records', this)">📊 Booking History</a>
       <a onclick="showSection('notifications', this)">🔔 Notifications</a>
       <a onclick="showSection('profile', this)">👤 My Profile</a>
@@ -483,6 +484,40 @@
       </div>
     </div>
 
+    <!-- PREMIUM VIDEOS -->
+    <div class="section" id="sec-videos">
+      <div class="topbar"><div><h1>👑 Premium Video Library</h1><p>Exclusive videos for enrolled fitness class members</p></div></div>
+
+      <!-- LOCKED STATE -->
+      <div id="videosLocked" style="display:none;">
+        <div style="text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(26,75,140,0.08);">
+          <div style="font-size:4rem;margin-bottom:16px;">🔒</div>
+          <h2 style="color:#1a4b8c;margin-bottom:8px;">Premium Content</h2>
+          <p style="color:#6b7c93;font-size:0.9rem;margin-bottom:24px;">Enroll in our Online Fitness Class to unlock premium videos.<br/>3 classes/week &middot; &#8377;2,400/month</p>
+          <a href="index.html#enroll" style="padding:14px 32px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border-radius:12px;text-decoration:none;font-weight:700;font-size:0.95rem;">🏋️ Enroll Now</a>
+        </div>
+      </div>
+
+      <!-- UNLOCKED STATE -->
+      <div id="videosUnlocked" style="display:none;">
+        <div style="background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:16px;padding:20px 24px;margin-bottom:24px;color:white;display:flex;align-items:center;gap:16px;">
+          <div style="font-size:2.5rem;">👑</div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;">Premium Member</div>
+            <div style="font-size:0.82rem;opacity:0.85;">Slot: <span id="enrolledSlotLabel"></span> &middot; 3 classes/week</div>
+          </div>
+          <div style="margin-left:auto;background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;">ACTIVE</div>
+        </div>
+        <div class="section-card">
+          <h2>🎥 Your Class Videos</h2>
+          <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">Videos are available during your enrolled slot time.</p>
+          <div id="premiumVideoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+            <p style="color:#6b7c93;font-size:0.88rem;">Loading your videos...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- HOME VISIT -->
     <div class="section" id="sec-homevisit">
       <div class="topbar"><div><h1>Book Home Visit</h1><p>Request a physiotherapist at your home</p></div></div>
@@ -549,7 +584,52 @@
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     const patientName = sessionStorage.getItem('loggedName') || 'Patient';
+    const patientPhone = sessionStorage.getItem('loggedUser') || '';
     document.getElementById('patientName').textContent = patientName;
+
+    // ── CHECK ENROLLMENT & LOAD PREMIUM VIDEOS ──────────────────────────────
+    async function checkEnrollmentAndLoadVideos() {
+      const badge = document.getElementById('premiumBadge');
+      if (!patientPhone) { showLockedVideos(); return; }
+      const snap = await getDocs(query(collection(db, 'fitnessEnrollments'),
+        where('phone', '==', patientPhone), where('status', '==', 'enrolled')));
+      if (snap.empty) { showLockedVideos(); return; }
+      const enrollment = snap.docs[0].data();
+      const slot = enrollment.slot || '';
+      // Show premium badge as unlocked
+      if (badge) { badge.textContent = 'PREMIUM'; badge.style.background = '#27ae60'; badge.style.display = 'inline-block'; }
+      document.getElementById('enrolledSlotLabel').textContent = slot;
+      document.getElementById('videosLocked').style.display = 'none';
+      document.getElementById('videosUnlocked').style.display = 'block';
+      // Load videos tagged to this slot — only available during slot time
+      const now = new Date();
+      const hour = now.getHours();
+      const vidSnap = await getDocs(query(collection(db, 'videos'), where('slotTag', '==', slot)));
+      const grid = document.getElementById('premiumVideoGrid');
+      if (vidSnap.empty) { grid.innerHTML = '<p style="color:#6b7c93;font-size:0.88rem;">🕒 No videos uploaded yet for your slot. Check back soon.</p>'; return; }
+      grid.innerHTML = '';
+      vidSnap.forEach(d => {
+        const v = d.data();
+        grid.insertAdjacentHTML('beforeend', `
+          <div style="background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(26,75,140,0.08);">
+            <div style="background:linear-gradient(135deg,#1a4b8c,#2e7dd1);height:110px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎥</div>
+            <div style="padding:14px;">
+              <h4 style="font-size:0.9rem;color:#1a2a3a;margin-bottom:4px;">${v.title||''}</h4>
+              <p style="font-size:0.78rem;color:#6b7c93;margin-bottom:10px;">${v.description||slot}</p>
+              <a href="${v.url}" target="_blank" style="display:inline-block;padding:7px 16px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border-radius:8px;text-decoration:none;font-size:0.8rem;font-weight:600;">▶ Watch</a>
+            </div>
+          </div>`);
+      });
+    }
+
+    function showLockedVideos() {
+      const badge = document.getElementById('premiumBadge');
+      if (badge) { badge.textContent = 'LOCKED'; badge.style.background = '#e63946'; badge.style.display = 'inline-block'; }
+      document.getElementById('videosLocked').style.display = 'block';
+      document.getElementById('videosUnlocked').style.display = 'none';
+    }
+
+    checkEnrollmentAndLoadVideos();
 
     // Load real appointments for this patient
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
