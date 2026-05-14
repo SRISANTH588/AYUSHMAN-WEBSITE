@@ -290,7 +290,7 @@
           <div style="font-size:4rem; font-weight:800; color:#1a4b8c;" id="tokenNumber"></div>
           <p id="tokenInfo" style="color:#6b7c93; margin-top:8px;"></p>
           <div id="qrBox" style="margin:20px auto; width:120px; height:120px; background:#f0f4f8; border:2px dashed #2e7dd1; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:0.75rem; color:#6b7c93;">QR Code<br/>(scan)</div>
-          <button class="btn-primary" onclick="window.print()">🖨️ Print Token</button>
+          <button class="btn-primary" onclick="printToken()">🖨️ Print Token</button>
         </div>
       </div>
       <div class="section-card">
@@ -1301,6 +1301,34 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
       document.getElementById('sec-' + name).classList.add('active');
       el.classList.add('active');
+    }
+
+    window.printToken = function() {
+      const num  = document.getElementById('tokenNumber').textContent;
+      const info = document.getElementById('tokenInfo').textContent;
+      const win  = window.open('', '_blank', 'width=400,height=500');
+      win.document.write(`
+        <!DOCTYPE html><html><head><title>Token</title>
+        <style>
+          body { font-family: 'Arial', sans-serif; text-align: center; padding: 40px; }
+          .token-box { border: 3px solid #1a4b8c; border-radius: 16px; padding: 40px 30px; display: inline-block; min-width: 280px; }
+          h2 { color: #1a4b8c; margin-bottom: 8px; font-size: 1rem; }
+          .clinic { font-size: 1.1rem; font-weight: 700; color: #1a4b8c; margin-bottom: 20px; }
+          .token-num { font-size: 5rem; font-weight: 900; color: #1a4b8c; line-height: 1; margin: 16px 0; }
+          .info { font-size: 0.85rem; color: #444; margin-top: 12px; line-height: 1.8; }
+          .date { font-size: 0.78rem; color: #888; margin-top: 16px; }
+          @media print { body { margin: 0; } }
+        </style></head><body>
+        <div class="token-box">
+          <div class="clinic">✚ Ayushman PhysioFIT</div>
+          <h2>YOUR TOKEN NUMBER</h2>
+          <div class="token-num">${num}</div>
+          <div class="info">${info.replace(/\|/g, '<br/>')}</div>
+          <div class="date">${new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}</div>
+        </div>
+        <script>window.onload = function(){ window.print(); window.onafterprint = function(){ window.close(); }; }<\/script>
+        </body></html>`);
+      win.document.close();
     }
 
     window.deleteRow = function(btn) {
