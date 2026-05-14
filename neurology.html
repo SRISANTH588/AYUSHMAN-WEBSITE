@@ -6,6 +6,50 @@
   <title>Neurology Conditions – Ayushman PhysioFIT</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .service-img-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px;
+    }
+    .service-img-card {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(26,75,140,0.15);
+      border: 2px solid #dce8f5;
+      background: #fff;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+    }
+    .service-img-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 48px rgba(26,75,140,0.25);
+    }
+    .service-img-card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .service-img-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 32px 16px;
+        gap: 16px;
+      }
+    }
+    @media (max-width: 480px) {
+      .service-img-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 20px 12px;
+        gap: 12px;
+      }
+      .service-img-card { border-radius: 14px; }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar" id="navbar">
@@ -26,8 +70,17 @@
     <p>Specialised physiotherapy for neurological disorders and recovery</p>
   </div>
 
-  <section style="padding:60px 60px;background:#f4f8fc;text-align:center;">
-    <img src="images/image2.png" alt="Neurology Conditions" style="max-width:700px;width:100%;border-radius:20px;box-shadow:0 8px 40px rgba(26,75,140,0.15);"/>
+  <section style="background:#f4f8fc;">
+    <div class="service-img-grid">
+      <div class="service-img-card"><img src="images/stroke.jpeg" alt="Stroke"/></div>
+      <div class="service-img-card"><img src="images/bells.jpeg" alt="Bells Palsy"/></div>
+      <div class="service-img-card"><img src="images/nerve.jpeg" alt="Nerve Injuries"/></div>
+      <div class="service-img-card"><img src="images/parkinsons.jpeg" alt="Parkinson's Disease"/></div>
+      <div class="service-img-card"><img src="images/sciatica.jpeg" alt="Sciatica"/></div>
+      <div class="service-img-card"><img src="images/radiculopathy.jpeg" alt="Radiculopathy"/></div>
+      <div class="service-img-card"><img src="images/cognitive.jpeg" alt="Cognitive Therapy"/></div>
+      <div class="service-img-card"><img src="images/cerebral.jpeg" alt="Cerebral Palsy"/></div>
+    </div>
   </section>
 
   <footer class="site-footer">
