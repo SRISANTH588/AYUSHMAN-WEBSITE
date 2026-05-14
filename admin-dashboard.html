@@ -274,6 +274,10 @@
         <h2>🎫 Generate Token</h2>
         <div class="form-row">
           <div class="form-group"><label>Patient Name</label><input type="text" id="tokenPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>OP ID</label><input type="text" id="tokenOpId" placeholder="e.g. OP-2024-001"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="tokenPhone" placeholder="10-digit mobile number"/></div>
           <div class="form-group"><label>Doctor</label>
             <select id="tokenDoctor"><option>Dr. Durga Sowjanya</option><option>Dr. D. Ramachandra</option></select>
           </div>
@@ -292,7 +296,7 @@
       <div class="section-card">
         <h2>📋 Today's Token Queue</h2>
         <table>
-          <thead><tr><th>Token</th><th>Patient</th><th>Phone</th><th>Doctor</th><th>Condition</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Token</th><th>Patient</th><th>OP ID</th><th>Phone</th><th>Doctor</th><th>Condition</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="tokenTable">
             <tr><td colspan="8" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
@@ -781,6 +785,7 @@
           <tr>
             <td><strong>${t.tokenNumber}</strong></td>
             <td>${t.patientName || ''}</td>
+            <td>${t.opId || '—'}</td>
             <td>${t.patientPhone || '—'}</td>
             <td>${t.doctor || ''}</td>
             <td>${t.condition || '—'}</td>
@@ -792,7 +797,7 @@
             </td>
           </tr>`);
       });
-      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No tokens today</td></tr>';
+      if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#6b7c93;">No tokens today</td></tr>';
     });
 
     window.updateTokenStatus = async function(id, status) {
@@ -1388,10 +1393,11 @@ _Ayushman PhysioFIT Rehabilitation Centre_
 
     let tokenCount = 2;
     window.generateToken = async function() {
-      const p = document.getElementById('tokenPatient').value.trim();
-      const d = document.getElementById('tokenDoctor').value;
-      if (!p) return alert('Enter patient name.');
-      // Get today's token count
+      const p     = document.getElementById('tokenPatient').value.trim();
+      const opId  = document.getElementById('tokenOpId').value.trim();
+      const phone = document.getElementById('tokenPhone').value.trim();
+      const d     = document.getElementById('tokenDoctor').value;
+      if (!p || !opId || !phone) return alert('Please enter Patient Name, OP ID and Phone Number.');
       const todayStr = new Date().toISOString().split('T')[0];
       const allTodayQ = query(collection(db, 'tokens'), where('date', '==', todayStr));
       const allToday  = await getDocs(allTodayQ);
@@ -1400,7 +1406,8 @@ _Ayushman PhysioFIT Rehabilitation Centre_
         await addDoc(collection(db, 'tokens'), {
           tokenNumber:  nextNum,
           patientName:  p,
-          patientPhone: '',
+          opId:         opId,
+          patientPhone: phone,
           doctor:       d,
           condition:    '',
           date:         todayStr,
@@ -1409,9 +1416,11 @@ _Ayushman PhysioFIT Rehabilitation Centre_
           createdAt:    serverTimestamp()
         });
         document.getElementById('tokenNumber').textContent = nextNum;
-        document.getElementById('tokenInfo').textContent = p + ' — ' + d;
+        document.getElementById('tokenInfo').textContent = p + ' | OP: ' + opId + ' | 📞 ' + phone + ' — ' + d;
         document.getElementById('tokenDisplay').style.display = 'block';
         document.getElementById('tokenPatient').value = '';
+        document.getElementById('tokenOpId').value    = '';
+        document.getElementById('tokenPhone').value   = '';
       } catch(e) { alert('Failed: ' + e.message); }
     }
 
