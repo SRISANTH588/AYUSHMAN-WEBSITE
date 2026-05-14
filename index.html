@@ -342,7 +342,7 @@
   <!-- FIREBASE -->
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, addDoc, getDocs, query, where, serverTimestamp }
+    import { collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
 
@@ -403,7 +403,7 @@
           const allTodayQ = query(collection(db, 'tokens'), where('date', '==', todayStr));
           const allToday  = await getDocs(allTodayQ);
           const tokenNumber = '#' + String(allToday.size + 1).padStart(3, '0');
-          await addDoc(collection(db, 'tokens'), {
+          const tokenRef = await addDoc(collection(db, 'tokens'), {
             tokenNumber,
             patientName:  name,
             patientPhone: phone,
@@ -415,6 +415,11 @@
             status:       'waiting',
             createdAt:    serverTimestamp()
           });
+          // Write token back to appointment so Check Token works
+          const apptSnap2 = await getDocs(query(collection(db, 'appointments'), where('bookingId', '==', bookingId)));
+          if (!apptSnap2.empty) {
+            await updateDoc(doc(db, 'appointments', apptSnap2.docs[0].id), { token: tokenNumber, status: 'confirmed' });
+          }
           tokenMsg = `\n🎫 Your Token: ${tokenNumber} (First Visit — Auto Assigned)`;
         }
 
@@ -638,16 +643,24 @@
           if (d.phone !== phone) {
             errBox.textContent = '❌ Phone number does not match this Booking ID.';
             errBox.style.display = 'block';
-          } else if (!d.token) {
-            errBox.textContent = '⏳ Booking confirmed but token not assigned yet. Please contact the clinic.';
-            errBox.style.display = 'block';
           } else {
-            document.getElementById('tokenNum').textContent            = d.token;
-            document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
-            document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
-            document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
-            document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
-            document.getElementById('tokenResult').style.display = 'block';
+            // Try to get token from appointment doc first, else look in tokens collection
+            let tokenNumber = d.token;
+            if (!tokenNumber) {
+              const tokSnap = await getDocs(query(collection(db, 'tokens'), where('bookingId', '==', bookingId)));
+              if (!tokSnap.empty) tokenNumber = tokSnap.docs[0].data().tokenNumber;
+            }
+            if (!tokenNumber) {
+              errBox.textContent = '⏳ Booking confirmed but token not assigned yet. Please contact the clinic.';
+              errBox.style.display = 'block';
+            } else {
+              document.getElementById('tokenNum').textContent            = tokenNumber;
+              document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
+              document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
+              document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
+              document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
+              document.getElementById('tokenResult').style.display = 'block';
+            }
           }
         }
       } catch(e) {
