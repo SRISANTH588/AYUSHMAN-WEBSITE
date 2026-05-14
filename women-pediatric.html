@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Women & Pediatric Problems – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-brand">
+      <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="nav-logo"/>
+      <div class="nav-brand-text"><span class="nav-name">Ayushman PhysioFIT</span><span class="nav-sub">Rehabilitation Centre · Vijayawada</span></div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Doctors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Women & Pediatric Problems</h1>
+    <p>Dedicated care for women's health and paediatric physiotherapy needs</p>
+  </div>
+
+  <section style="padding:60px 60px;background:#f4f8fc;text-align:center;">
+    <img src="images/image3.png" alt="Women & Pediatric Problems" style="max-width:700px;width:100%;border-radius:20px;box-shadow:0 8px 40px rgba(26,75,140,0.15);"/>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">© 2026 Ayushman PhysioFIT Rehabilitation Centre. All rights reserved.</div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
