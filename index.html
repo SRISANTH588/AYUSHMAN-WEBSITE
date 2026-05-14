@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="mobile.css"/>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -335,7 +336,7 @@
   <!-- FIREBASE -->
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc }
+    import { collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc, getDoc }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
 
@@ -436,21 +437,47 @@
     window.submitEnrollment = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('enrollBtn');
-      btn.disabled = true; btn.textContent = 'Enrolling...';
+      const name   = document.getElementById('enName').value.trim();
+      const age    = document.getElementById('enAge').value;
+      const phone  = document.getElementById('enPhone').value.trim();
+      const weight = document.getElementById('enWeight').value;
+      const slot   = document.getElementById('enSlot').value;
+      if (!name || !phone || !slot) return alert('Please fill all required fields.');
+      btn.disabled = true; btn.textContent = 'Loading payment...';
       try {
-        await addDoc(collection(db, 'fitnessEnrollments'), {
-          name:   document.getElementById('enName').value.trim(),
-          age:    document.getElementById('enAge').value,
-          phone:  document.getElementById('enPhone').value.trim(),
-          weight: document.getElementById('enWeight').value,
-          slot:   document.getElementById('enSlot').value,
-          status: 'pending', createdAt: serverTimestamp()
+        // Load Razorpay key + price from Firestore
+        const cfg = await getDoc(doc(db, 'settings', 'config'));
+        const rzpKey  = cfg.exists() ? cfg.data().razorpayKey  || '' : '';
+        const amount  = cfg.exists() ? cfg.data().fitnessPrice || '999' : '999';
+        if (!rzpKey) { alert('Payment not configured. Please contact the clinic.'); btn.disabled = false; btn.textContent = 'Enroll Now'; return; }
+        const rzp = new Razorpay({
+          key: rzpKey,
+          amount: parseInt(amount) * 100,
+          currency: 'INR',
+          name: 'Ayushman PhysioFIT',
+          description: `Online Fitness Class – ${slot}`,
+          image: 'images/logo.png',
+          prefill: { name, contact: phone },
+          theme: { color: '#1a4b8c' },
+          modal: { ondismiss: () => { btn.disabled = false; btn.textContent = 'Enroll Now'; } },
+          handler: async function(response) {
+            btn.textContent = 'Confirming...';
+            await addDoc(collection(db, 'fitnessEnrollments'), {
+              name, age, phone, weight, slot,
+              status: 'enrolled',
+              paymentId: response.razorpay_payment_id,
+              amount, paidAt: serverTimestamp(), createdAt: serverTimestamp()
+            });
+            document.getElementById('enrollForm').reset();
+            document.getElementById('enrollSuccess').textContent = `✅ Payment successful! You are enrolled for ${slot}. Admin will add your videos shortly.`;
+            document.getElementById('enrollSuccess').style.display = 'block';
+            setTimeout(() => document.getElementById('enrollSuccess').style.display = 'none', 8000);
+            btn.disabled = false; btn.textContent = 'Enroll Now';
+          }
         });
-        document.getElementById('enrollForm').reset();
-        document.getElementById('enrollSuccess').style.display = 'block';
-        setTimeout(() => document.getElementById('enrollSuccess').style.display = 'none', 5000);
-      } catch { alert('Enrollment failed. Please try again.'); }
-      btn.disabled = false; btn.textContent = 'Enroll Now';
+        rzp.on('payment.failed', () => { alert('Payment failed. Please try again.'); btn.disabled = false; btn.textContent = 'Enroll Now'; });
+        rzp.open();
+      } catch(err) { alert('Error: ' + err.message); btn.disabled = false; btn.textContent = 'Enroll Now'; }
     };
   </script>
 

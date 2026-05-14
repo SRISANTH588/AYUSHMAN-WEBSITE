@@ -582,10 +582,11 @@
     <!-- FITNESS ENROLLMENTS -->
     <div class="section" id="sec-enrollments">
       <div class="topbar">
-        <div><h1>Fitness Enrollments</h1><p>Approve enrollment requests &amp; send Razorpay payment links via WhatsApp</p></div>
-        <div style="display:flex;gap:12px;align-items:center;">
+        <div><h1>Fitness Enrollments</h1><p>Patient pays directly via Razorpay — add to membership after payment</p></div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
           <span style="background:#fff3cd;color:#856404;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="enPendingBadge">⏳ 0 Pending</span>
           <span style="background:#d4edda;color:#155724;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="enPaidBadge">💰 0 Paid</span>
+          <span style="background:#e63946;color:white;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:700;display:none;" id="enNewBadge"></span>
         </div>
       </div>
 
@@ -1128,7 +1129,13 @@ _We keep you moving..._`;
           : '<span class="badge pending">⏳ Pending</span>';
 
         const actionHtml = isPaid
-          ? `<span style="font-size:0.78rem;color:#6b7c93;">Payment ID:<br/><code style="font-size:0.72rem;">${d.paymentId || '—'}</code></span>`
+          ? `<div style="display:flex;flex-direction:column;gap:6px;">
+               <span style="font-size:0.72rem;color:#6b7c93;">Payment ID: <code>${d.paymentId || '—'}</code></span>
+               ${d.addedToMembership
+                 ? '<span style="color:#27ae60;font-size:0.78rem;font-weight:600;">✅ Added to Membership</span>'
+                 : `<button class="btn-primary" style="padding:6px 12px;font-size:0.75rem;" onclick="addToMembership('${d._id}','${d.name}','${d.phone}','${d.slot}','${d.amount||d.amountSent||''}')">➕ Add to Membership</button>`
+               }
+             </div>`
           : `<div style="display:flex;gap:6px;align-items:center;">
                <input type="number" id="en-amt-${d._id}" value="${window._defaultFitnessPrice || ''}" placeholder="₹ Amt" min="1"
                  style="width:72px;padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;"/>
@@ -1156,13 +1163,14 @@ _We keep you moving..._`;
 
     onSnapshot(query(collection(db, 'fitnessEnrollments'), orderBy('createdAt', 'desc')), snap => {
       _enDocs = [];
-      let pending = 0, paid = 0, revenue = 0;
+      let pending = 0, paid = 0, revenue = 0, newPaid = 0;
       snap.forEach(d => {
         const e = d.data();
         _enDocs.push({ _id: d.id, ...e });
         if (e.status === 'enrolled') {
           paid++;
-          revenue += parseInt(e.amountSent || 0, 10);
+          revenue += parseInt(e.amount || e.amountSent || 0, 10);
+          if (!e.addedToMembership) newPaid++;
         } else {
           pending++;
         }
@@ -1174,9 +1182,45 @@ _We keep you moving..._`;
       document.getElementById('enRevenue')      && (document.getElementById('enRevenue').textContent      = '₹' + revenue.toLocaleString('en-IN'));
       document.getElementById('enPendingBadge') && (document.getElementById('enPendingBadge').textContent = `⏳ ${pending} Pending`);
       document.getElementById('enPaidBadge')    && (document.getElementById('enPaidBadge').textContent    = `💰 ${paid} Paid`);
+      // Show alert badge if new paid enrollments need to be added to membership
+      const badge = document.getElementById('enNewBadge');
+      if (badge) { badge.textContent = newPaid > 0 ? `🔔 ${newPaid} New Payment${newPaid>1?'s':''}` : ''; badge.style.display = newPaid > 0 ? 'inline-block' : 'none'; }
 
       renderEnrollTable(_enDocs);
     });
+
+    window.addToMembership = async function(docId, name, phone, slot, amount) {
+      // 1. Add to memberships collection
+      const today = new Date();
+      const end   = new Date(today); end.setMonth(end.getMonth() + 1);
+      const fmt   = d => d.toISOString().split('T')[0];
+      await addDoc(collection(db, 'memberships'), {
+        patient: name, phone, plan: 'Fitness Class – ' + slot,
+        startDate: fmt(today), endDate: fmt(end),
+        slot, status: 'Active', createdAt: serverTimestamp()
+      });
+      // 2. Mark enrollment as added
+      await updateDoc(doc(db, 'fitnessEnrollments', docId), { addedToMembership: true });
+      // 3. Fetch videos tagged to this slot and notify via WhatsApp
+      const vidSnap = await getDocs(query(collection(db, 'videos'), where('slotTag', '==', slot)));
+      let videoLinks = '';
+      vidSnap.forEach(v => { videoLinks += `\n\u25b6 ${v.data().title}: ${v.data().url}`; });
+      const msg =
+`✅ *ENROLLMENT CONFIRMED – Ayushman PhysioFIT*
+
+Dear ${name},
+
+You have been added to our *Online Fitness Class*! 🏋️
+
+🕒 Slot: ${slot}
+💰 Amount Paid: ₹${amount}
+
+${videoLinks ? '🎥 *Your Class Videos:*' + videoLinks : 'Your videos will be shared shortly.'}
+
+_Ayushman PhysioFIT Rehabilitation Centre_
+📞 6302478412 / 7013698578`;
+      window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    };
 
     window.enApprove = async function(docId, phone, name, slot) {
       const amtInput = document.getElementById('en-amt-' + docId);
