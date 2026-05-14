@@ -429,6 +429,58 @@
         </tbody></table>
       </div>
       <div class="section-card">
+        <h2>➕ Book Online Fitness Class Slot</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Class</label>
+            <select id="fitClass">
+              <option value="">Select Class</option>
+              <option>Knee Rehab Exercise</option>
+              <option>Posture Correction</option>
+              <option>Breathing Exercises</option>
+              <option>Spine Mobility Class</option>
+              <option>General Fitness Routine</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred Date</label>
+            <input type="date" id="fitDate"/>
+          </div>
+          <div class="form-group">
+            <label>Time Slot</label>
+            <select id="fitTime">
+              <option value="">Select Slot</option>
+              <option value="7:00 AM">7:00 AM – 8:00 AM</option>
+              <option value="8:00 AM">8:00 AM – 9:00 AM</option>
+              <option value="9:00 AM">9:00 AM – 10:00 AM</option>
+              <option value="10:00 AM">10:00 AM – 11:00 AM</option>
+              <option value="11:00 AM">11:00 AM – 12:00 PM</option>
+              <option value="12:00 PM">12:00 PM – 1:00 PM</option>
+              <option value="1:00 PM">1:00 PM – 2:00 PM</option>
+              <option value="2:00 PM">2:00 PM – 3:00 PM</option>
+              <option value="3:00 PM">3:00 PM – 4:00 PM</option>
+              <option value="4:00 PM">4:00 PM – 5:00 PM</option>
+              <option value="5:00 PM">5:00 PM – 6:00 PM</option>
+              <option value="6:00 PM">6:00 PM – 7:00 PM</option>
+              <option value="7:00 PM">7:00 PM – 8:00 PM</option>
+              <option value="8:00 PM">8:00 PM – 9:00 PM</option>
+              <option value="9:00 PM">9:00 PM – 10:00 PM</option>
+              <option value="10:00 PM">10:00 PM – 11:00 PM</option>
+              <option value="11:00 PM">11:00 PM – 12:00 AM</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="bookFitnessClass()">Book Slot</button>
+        <p class="success-msg" id="fitSuccess">✅ Slot booked! We'll confirm shortly.</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 My Booked Fitness Slots</h2>
+        <table><thead><tr><th>Class</th><th>Date</th><th>Time Slot</th><th>Status</th></tr></thead>
+        <tbody id="fitHistory">
+          <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No slots booked yet</td></tr>
+        </tbody></table>
+      </div>
+      <div class="section-card">
         <h2>🏥 Offline Sessions</h2>
         <table><thead><tr><th>Session</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
         <tbody>
@@ -548,6 +600,21 @@
       document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
       document.getElementById('sec-' + name).classList.add('active');
       el.classList.add('active');
+    }
+
+    function bookFitnessClass() {
+      const cls = document.getElementById('fitClass').value;
+      const date = document.getElementById('fitDate').value;
+      const time = document.getElementById('fitTime').value;
+      if (!cls || !date || !time) return alert('Please fill all fields.');
+      const tbody = document.getElementById('fitHistory');
+      if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+      tbody.insertAdjacentHTML('afterbegin', `<tr><td>${cls}</td><td>${date}</td><td>${time}</td><td><span class="badge confirmed">Confirmed</span></td></tr>`);
+      document.getElementById('fitClass').value = '';
+      document.getElementById('fitDate').value = '';
+      document.getElementById('fitTime').value = '';
+      const msg = document.getElementById('fitSuccess');
+      msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
     async function bookAppointment() {
