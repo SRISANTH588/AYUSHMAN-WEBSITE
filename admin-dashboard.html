@@ -841,6 +841,53 @@
       });
     });
 
+    onSnapshot(query(collection(db, 'payments'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('payTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No payments yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const p = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${p.patient||''}</td><td>\u20b9${p.amount||''}</td><td>${p.mode||''}</td><td>${p.date||''}</td><td><span class="badge confirmed">Paid</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'memberships'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('memTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No memberships yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const m = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${m.patient||''}</td><td>${m.plan||''}</td><td>${m.startDate||''}</td><td>${m.endDate||''}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('notifTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No notifications yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const n = d.data();
+        const t = n.createdAt?.toDate ? n.createdAt.toDate().toLocaleString() : 'Just now';
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${n.to||''}</td><td>${n.type||''}</td><td>${n.message||''}</td><td>${t}</td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'homevisits'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('hvAdminTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#6b7c93;">No home visits yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const h = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${h.name||''}</td><td>${h.phone||''}</td><td>${h.condition||''}</td><td>${h.date||''}</td><td>${h.time||''}</td><td>${h.doctor||''}</td><td>${(h.address||'').substring(0,20)}...</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" onclick="notifyPatientAdmin('${h.phone}','${h.name}','${h.date}','${h.time}','${h.doctor}')">\ud83d\udcac Patient</button></td></tr>`);
+      });
+      document.getElementById('hvTotal') && (document.getElementById('hvTotal').textContent = snap.size);
+      document.getElementById('hvConfirmed') && (document.getElementById('hvConfirmed').textContent = snap.size);
+    });
+
     window.globalSearchFn = function() {
       const q = document.getElementById('globalSearch').value.toLowerCase().trim();
       const results = document.getElementById('searchResults');
@@ -1325,14 +1372,13 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       } catch(e) { alert('Error: ' + e.message); }
     }
 
-    window.addPayment = function() {
+    window.addPayment = async function() {
       const p = document.getElementById('payPatient').value.trim();
       const a = document.getElementById('payAmount').value.trim();
       const m = document.getElementById('payMode').value;
       const d = document.getElementById('payDate').value;
       if (!p || !a || !d) return alert('Please fill all fields.');
-      const row = `<tr><td>${p}</td><td>\u20b9${a}</td><td>${m}</td><td>${d}</td><td><span class="badge confirmed">Paid</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`;
-      document.getElementById('payTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'payments'), { patient: p, amount: a, mode: m, date: d, status: 'Paid', createdAt: serverTimestamp() });
       document.getElementById('payPatient').value = '';
       document.getElementById('payAmount').value = '';
       document.getElementById('payDate').value = '';
@@ -1369,14 +1415,13 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       } catch(e) { alert('Failed: ' + e.message); }
     }
 
-    window.addMembership = function() {
+    window.addMembership = async function() {
       const p = document.getElementById('memPatient').value.trim();
       const pl = document.getElementById('memPlan').value;
       const s = document.getElementById('memStart').value;
       const e = document.getElementById('memEnd').value;
       if (!p || !s || !e) return alert('Please fill all fields.');
-      const row = `<tr><td>${p}</td><td>${pl}</td><td>${s}</td><td>${e}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
-      document.getElementById('memTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'memberships'), { patient: p, plan: pl, startDate: s, endDate: e, status: 'Active', createdAt: serverTimestamp() });
       document.getElementById('memPatient').value = '';
       document.getElementById('memStart').value = '';
       document.getElementById('memEnd').value = '';
@@ -1495,13 +1540,12 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       await deleteDoc(doc(db, 'videos', id));
     };
 
-    window.sendNotif = function() {
+    window.sendNotif = async function() {
       const to = document.getElementById('notifTo').value;
       const type = document.getElementById('notifType').value;
       const msg = document.getElementById('notifMsg').value.trim();
       if (!msg) return alert('Enter a message.');
-      const row = `<tr><td>${to}</td><td>${type}</td><td>${msg}</td><td>Just now</td></tr>`;
-      document.getElementById('notifTable').insertAdjacentHTML('afterbegin', row);
+      await addDoc(collection(db, 'notifications'), { to, type, message: msg, createdAt: serverTimestamp() });
       document.getElementById('notifMsg').value = '';
       const s = document.getElementById('notifSuccess');
       s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 3000);
@@ -1513,7 +1557,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    window.adminAssignHV = function() {
+    window.adminAssignHV = async function() {
       const name = document.getElementById('hvAdminName').value.trim();
       const phone = document.getElementById('hvAdminPhone').value.trim();
       const condition = document.getElementById('hvAdminCondition').value.trim();
@@ -1522,7 +1566,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
       const doctor = document.getElementById('hvAdminDoctor').value;
       const address = document.getElementById('hvAdminAddress').value.trim();
       if (!name || !phone || !condition || !date) return alert('Please fill all fields.');
-
+      await addDoc(collection(db, 'homevisits'), { name, phone, condition, date, time, doctor, address, status: 'Confirmed', createdAt: serverTimestamp() });
       // Add to table
       const tbody = document.getElementById('hvAdminTable');
       if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';

@@ -631,13 +631,12 @@
       document.getElementById('remainingCount').textContent = rows.length - completed;
     }
 
-    function saveNote() {
+    async function saveNote() {
       const p = document.getElementById('notePatient').value;
       const d = document.getElementById('noteDate').value;
       const n = document.getElementById('noteText').value.trim();
       if (!d || !n) return alert('Please fill all fields.');
-      const row = `<tr><td>${p}</td><td>${d}</td><td>${n}</td></tr>`;
-      document.getElementById('notesTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'notes'), { patient: p, date: d, note: n, createdAt: serverTimestamp() });
       document.getElementById('noteText').value = '';
       document.getElementById('noteDate').value = '';
       const msg = document.getElementById('noteSuccess');
@@ -645,14 +644,13 @@
       setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    function assignSlot() {
+    async function assignSlot() {
       const p = document.getElementById('slotPatient').value.trim();
       const d = document.getElementById('slotDate').value;
       const t = document.getElementById('slotTime').value;
       const c = document.getElementById('slotCondition').value.trim();
       if (!p || !d || !c) return alert('Please fill all fields.');
-      const row = `<tr><td>${t}</td><td>${p}</td><td>${c}</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="markSlotDone(this)">Mark Done</button></td></tr>`;
-      document.getElementById('slotTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'slots'), { patient: p, date: d, time: t, condition: c, status: 'Pending', createdAt: serverTimestamp() });
       document.getElementById('slotPatient').value = '';
       document.getElementById('slotCondition').value = '';
       document.getElementById('slotDate').value = '';
@@ -665,14 +663,11 @@
       btn.closest('td').innerHTML = '—';
     }
 
-    let queueCount = 3;
-    function addToQueue() {
+    async function addToQueue() {
       const p = document.getElementById('qPatient').value.trim();
       const c = document.getElementById('qCondition').value.trim();
       if (!p || !c) return alert('Please fill all fields.');
-      queueCount++;
-      const row = `<tr><td>#${queueCount}</td><td>${p}</td><td>${c}</td><td>~${(queueCount-1)*15} min</td><td><span class="badge pending">Pending</span></td><td><button class="btn-done" onclick="callNext(this)">Call In</button></td></tr>`;
-      document.getElementById('queueTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'queue'), { patient: p, condition: c, status: 'Pending', createdAt: serverTimestamp() });
       document.getElementById('qPatient').value = '';
       document.getElementById('qCondition').value = '';
       const msg = document.getElementById('qSuccess');
@@ -708,15 +703,13 @@
       document.getElementById('doneCount').textContent = document.getElementById('completedTable').rows.length;
     }
 
-    function markAtt() {
+    async function markAtt() {
       const p = document.getElementById('attPatient').value;
       const d = document.getElementById('attDate').value;
       const s = document.getElementById('attSession').value.trim();
       const st = document.getElementById('attStatus').value;
       if (!d || !s) return alert('Please fill all fields.');
-      const badge = st === 'Present' ? 'completed' : 'pending';
-      const row = `<tr><td>${p}</td><td>${s}</td><td>${d}</td><td><span class="badge ${badge}">${st}</span></td></tr>`;
-      document.getElementById('attTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'attendance'), { patient: p, session: s, date: d, status: st, createdAt: serverTimestamp() });
       document.getElementById('attDate').value = '';
       document.getElementById('attSession').value = '';
       const msg = document.getElementById('attSuccess');
@@ -735,16 +728,14 @@
       window.open('https://wa.me/91' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    function addSession() {
+    async function addSession() {
       const t = document.getElementById('sesTitle').value.trim();
       const ty = document.getElementById('sesType').value;
       const d = document.getElementById('sesDate').value;
       const ti = document.getElementById('sesTime').value;
       const l = document.getElementById('sesLink').value.trim();
       if (!t || !d || !ti) return alert('Please fill all fields.');
-      const link = l ? `<a href="${l}" target="_blank" style="color:#2e8b57;font-weight:600;">Join</a>` : '—';
-      const row = `<tr><td>${t}</td><td>${ty}</td><td>${d}</td><td>${ti}</td><td>${link}</td><td><button class="btn-done" onclick="this.closest('tr').remove()">Delete</button></td></tr>`;
-      document.getElementById('sesTable').insertAdjacentHTML('beforeend', row);
+      await addDoc(collection(db, 'sessions'), { title: t, type: ty, date: d, time: ti, link: l || null, createdAt: serverTimestamp() });
       document.getElementById('sesTitle').value = '';
       document.getElementById('sesDate').value = '';
       document.getElementById('sesTime').value = '';
@@ -809,7 +800,7 @@ _We keep you moving..._`;
 
   <script type="module">
     import { db } from './firebase.js';
-    import { collection, query, where, orderBy, onSnapshot, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     const staffName = sessionStorage.getItem('loggedName') || '';
     const todayStr  = new Date().toISOString().slice(0,10);
@@ -892,6 +883,65 @@ _We keep you moving..._`;
       if (attSelect) {
         attSelect.innerHTML = '<option value="">Select Patient</option>' + patientNames.map(n => `<option>${n}</option>`).join('');
       }
+    });
+
+    onSnapshot(query(collection(db, 'notes'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('notesTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const n = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${n.patient||''}</td><td>${n.date||''}</td><td>${n.note||''}</td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'slots'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('slotTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No slots yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const s = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${s.time||''}</td><td>${s.patient||''}</td><td>${s.condition||''}</td><td><span class="badge pending">${s.status||'Pending'}</span></td><td>—</td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'queue'), orderBy('createdAt', 'asc')), snap => {
+      const tbody = document.getElementById('queueTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">Queue is empty</td></tr>'; return; }
+      let i = 0;
+      snap.forEach(d => {
+        i++;
+        const q = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>#${i}</td><td>${q.patient||''}</td><td>${q.condition||''}</td><td>~${(i-1)*15} min</td><td><span class="badge pending">Pending</span></td><td>—</td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'attendance'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('attTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No attendance records</td></tr>'; return; }
+      snap.forEach(d => {
+        const a = d.data();
+        const badge = a.status === 'Present' ? 'completed' : 'pending';
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${a.patient||''}</td><td>${a.session||''}</td><td>${a.date||''}</td><td><span class="badge ${badge}">${a.status||''}</span></td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'sessions'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('sesTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No sessions scheduled</td></tr>'; return; }
+      snap.forEach(d => {
+        const s = d.data();
+        const link = s.link ? `<a href="${s.link}" target="_blank" style="color:#2e8b57;font-weight:600;">Join</a>` : '\u2014';
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${s.title||''}</td><td>${s.type||''}</td><td>${s.date||''}</td><td>${s.time||''}</td><td>${link}</td><td>—</td></tr>`);
+      });
     });
   </script>
 
