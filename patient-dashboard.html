@@ -489,10 +489,15 @@
       </div>
       <div class="section-card">
         <h2>🎥 Exercise Video Library</h2>
+        <p style="font-size:0.82rem;color:#6b7c93;margin-bottom:16px;">Book a class slot above to unlock its video.</p>
         <table><thead><tr><th>Title</th><th>Category</th><th>Watch</th></tr></thead>
-        <tbody>
-          <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No videos available yet</td></tr>
-          </tbody></table>
+        <tbody id="videoLibrary">
+          <tr data-class="Knee Rehab Exercise"><td>Knee Rehab Exercise</td><td>Ortho-Sports</td><td><span class="locked-msg" style="color:#e63946;font-size:0.82rem;">🔒 Book slot to unlock</span></td></tr>
+          <tr data-class="Posture Correction"><td>Posture Correction</td><td>Ortho-Sports</td><td><span class="locked-msg" style="color:#e63946;font-size:0.82rem;">🔒 Book slot to unlock</span></td></tr>
+          <tr data-class="Breathing Exercises"><td>Breathing Exercises</td><td>Cardio-Pulmonary</td><td><span class="locked-msg" style="color:#e63946;font-size:0.82rem;">🔒 Book slot to unlock</span></td></tr>
+          <tr data-class="Spine Mobility Class"><td>Spine Mobility Class</td><td>Ortho-Sports</td><td><span class="locked-msg" style="color:#e63946;font-size:0.82rem;">🔒 Book slot to unlock</span></td></tr>
+          <tr data-class="General Fitness Routine"><td>General Fitness Routine</td><td>General Fitness</td><td><span class="locked-msg" style="color:#e63946;font-size:0.82rem;">🔒 Book slot to unlock</span></td></tr>
+        </tbody></table>
       </div>
     </div>
 
@@ -610,6 +615,11 @@
       const tbody = document.getElementById('fitHistory');
       if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
       tbody.insertAdjacentHTML('afterbegin', `<tr><td>${cls}</td><td>${date}</td><td>${time}</td><td><span class="badge confirmed">Confirmed</span></td></tr>`);
+      // Unlock matching video
+      const videoRow = document.querySelector(`#videoLibrary tr[data-class="${cls}"]`);
+      if (videoRow) {
+        videoRow.querySelector('.locked-msg').outerHTML = `<a href="#" style="background:#1a4b8c;color:white;padding:5px 14px;border-radius:8px;text-decoration:none;font-size:0.8rem;font-weight:600;">▶ Watch</a>`;
+      }
       document.getElementById('fitClass').value = '';
       document.getElementById('fitDate').value = '';
       document.getElementById('fitTime').value = '';
