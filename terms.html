@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms & Conditions – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Poppins',sans-serif;background:#f4f8fc;min-height:100vh;}
+
+    .header{background:linear-gradient(135deg,#0d2d5e,#1a4b8c);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;}
+    .header h1{color:white;font-size:1.2rem;font-weight:700;}
+    .header p{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-top:2px;}
+    .btn-back{padding:8px 18px;background:rgba(255,255,255,0.15);color:white;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;}
+    .btn-back:hover{background:rgba(255,255,255,0.25);}
+
+    .tabs{display:flex;gap:0;background:white;border-bottom:2px solid #dce8f5;padding:0 32px;}
+    .tab{padding:14px 24px;font-size:0.88rem;font-weight:600;color:#6b7c93;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+    .tab.active{color:#1a4b8c;border-bottom-color:#1a4b8c;}
+
+    .content{max-width:800px;margin:32px auto;padding:0 24px 60px;}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+
+    .card{background:white;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(26,75,140,0.08);margin-bottom:20px;}
+    .card-title{font-size:1.1rem;font-weight:700;color:#1a4b8c;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+
+    h3{font-size:0.95rem;color:#1a2a3a;font-weight:700;margin:20px 0 8px;}
+    p{font-size:0.88rem;color:#444;line-height:1.8;margin-bottom:10px;}
+    ul{padding-left:20px;margin-bottom:12px;}
+    ul li{font-size:0.88rem;color:#444;line-height:1.9;}
+
+    .highlight{background:#f0f7ff;border-left:4px solid #1a4b8c;border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:0.88rem;color:#1a2a3a;}
+    .warning{background:#fff8f0;border-left:4px solid #e65100;border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:0.88rem;color:#444;}
+    .danger{background:#fff0f0;border-left:4px solid #e63946;border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:0.88rem;color:#444;}
+
+    .refund-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.85rem;}
+    .refund-table th{background:#f4f8fc;color:#6b7c93;font-weight:600;padding:10px 14px;text-align:left;border-bottom:2px solid #dce8f5;}
+    .refund-table td{padding:10px 14px;border-bottom:1px solid #f0f4f8;color:#1a2a3a;}
+    .refund-table tr:last-child td{border-bottom:none;}
+    .badge-green{background:#d4edda;color:#155724;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;}
+    .badge-yellow{background:#fff3cd;color:#856404;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;}
+    .badge-red{background:#f8d7da;color:#721c24;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;}
+
+    .contact-box{background:linear-gradient(135deg,#1a4b8c,#2e7dd1);border-radius:14px;padding:20px 24px;color:white;text-align:center;margin-top:24px;}
+    .contact-box p{color:rgba(255,255,255,0.85);font-size:0.85rem;margin-bottom:12px;}
+    .btn-wa{display:inline-block;padding:10px 24px;background:#25D366;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.88rem;}
+
+    .updated{font-size:0.75rem;color:#aab4c0;margin-top:24px;text-align:center;}
+
+    @media(max-width:600px){
+      .tabs{padding:0 16px;overflow-x:auto;}
+      .tab{padding:12px 16px;white-space:nowrap;}
+      .content{padding:0 16px 60px;}
+      .card{padding:20px;}
+      .header{padding:16px;}
+    }
+  </style>
+  <link rel="stylesheet" href="mobile.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>📋 Policies & Terms</h1>
+      <p>Ayushman PhysioFIT Rehabilitation Centre</p>
+    </div>
+    <a href="index.html" class="btn-back">← Back</a>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('terms', this)">📜 Terms & Conditions</div>
+    <div class="tab" onclick="switchTab('cancellation', this)">❌ Cancellation Policy</div>
+    <div class="tab" onclick="switchTab('privacy', this)">🔒 Privacy Policy</div>
+  </div>
+
+  <div class="content">
+
+    <!-- TERMS & CONDITIONS -->
+    <div class="tab-content active" id="tab-terms">
+      <div class="card">
+        <div class="card-title">📜 Terms & Conditions</div>
+        <p>By enrolling in any program or booking an appointment at <strong>Ayushman PhysioFIT Rehabilitation Centre</strong>, you agree to the following terms and conditions.</p>
+
+        <h3>1. Online Fitness Class Program</h3>
+        <ul>
+          <li>Classes are conducted <strong>3 times per week</strong> — Monday, Wednesday & Friday.</li>
+          <li>Each membership is valid for <strong>1 calendar month</strong> from the date of enrollment.</li>
+          <li>Monthly fee is <strong>₹2,400</strong> (inclusive of all taxes).</li>
+          <li>Premium video access is granted within <strong>24 hours</strong> of payment confirmation.</li>
+          <li>Videos are accessible only during the enrolled time slot.</li>
+        </ul>
+
+        <h3>2. Appointments</h3>
+        <ul>
+          <li>Appointment slots are available from <strong>9:00 AM to 9:00 PM</strong>.</li>
+          <li>Patients must arrive <strong>10 minutes before</strong> their scheduled time.</li>
+          <li>Late arrivals may result in a shortened session without refund.</li>
+          <li>Appointments can be rescheduled up to <strong>24 hours in advance</strong>.</li>
+        </ul>
+
+        <h3>3. Patient Responsibilities</h3>
+        <ul>
+          <li>Patients must disclose all medical conditions before starting any program.</li>
+          <li>Follow all instructions given by the physiotherapist during sessions.</li>
+          <li>Inform the clinic immediately if you experience any discomfort or adverse effects.</li>
+          <li>Maintain respectful conduct during all online and offline sessions.</li>
+        </ul>
+
+        <h3>4. Clinic Rights</h3>
+        <ul>
+          <li>Ayushman PhysioFIT reserves the right to reschedule or cancel sessions due to unforeseen circumstances.</li>
+          <li>The clinic may terminate membership without refund in case of misconduct.</li>
+          <li>Session content, videos, and materials are the intellectual property of Ayushman PhysioFIT.</li>
+        </ul>
+
+        <div class="highlight">
+          💡 By proceeding with payment, you confirm that you have read, understood, and agreed to all terms and conditions listed above.
+        </div>
+
+        <p class="updated">Last updated: May 2026</p>
+      </div>
+    </div>
+
+    <!-- CANCELLATION POLICY -->
+    <div class="tab-content" id="tab-cancellation">
+      <div class="card">
+        <div class="card-title">❌ Cancellation & Refund Policy</div>
+        <p>We understand that plans can change. Please read our cancellation policy carefully before enrolling.</p>
+
+        <h3>Online Fitness Class – Cancellation</h3>
+        <table class="refund-table">
+          <thead>
+            <tr><th>Cancellation Time</th><th>Refund</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Within 24 hours of enrollment</td>
+              <td><strong>100% Full Refund</strong></td>
+              <td><span class="badge-green">Full Refund</span></td>
+            </tr>
+            <tr>
+              <td>After 24 hours, before first class</td>
+              <td><strong>50% Refund</strong></td>
+              <td><span class="badge-yellow">Partial Refund</span></td>
+            </tr>
+            <tr>
+              <td>After first class attended</td>
+              <td><strong>No Refund</strong></td>
+              <td><span class="badge-red">No Refund</span></td>
+            </tr>
+            <tr>
+              <td>Mid-month cancellation</td>
+              <td><strong>No Refund</strong></td>
+              <td><span class="badge-red">No Refund</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="warning">
+          ⚠️ Missed classes due to personal reasons are <strong>non-refundable</strong> and cannot be rescheduled individually.
+        </div>
+
+        <h3>Appointment – Cancellation</h3>
+        <table class="refund-table">
+          <thead>
+            <tr><th>Cancellation Time</th><th>Refund</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>More than 24 hours before appointment</td>
+              <td><strong>Full Refund</strong></td>
+              <td><span class="badge-green">Full Refund</span></td>
+            </tr>
+            <tr>
+              <td>Less than 24 hours before appointment</td>
+              <td><strong>No Refund</strong></td>
+              <td><span class="badge-red">No Refund</span></td>
+            </tr>
+            <tr>
+              <td>No-show (did not attend)</td>
+              <td><strong>No Refund</strong></td>
+              <td><span class="badge-red">No Refund</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>How to Cancel</h3>
+        <ul>
+          <li>Contact us on WhatsApp: <strong>6302478412</strong> or <strong>7013698578</strong></li>
+          <li>Send your <strong>name, phone number, and enrollment/booking ID</strong>.</li>
+          <li>Refunds are processed within <strong>5–7 business days</strong> to the original payment method.</li>
+        </ul>
+
+        <div class="danger">
+          ❌ Refunds will not be processed for cancellations made verbally. All cancellation requests must be submitted via WhatsApp or email.
+        </div>
+
+        <div class="contact-box">
+          <p>Need to cancel or have a query? Contact us directly on WhatsApp.</p>
+          <a href="https://wa.me/916302478412" target="_blank" class="btn-wa">💬 WhatsApp Us</a>
+        </div>
+
+        <p class="updated">Last updated: May 2026</p>
+      </div>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="tab-content" id="tab-privacy">
+      <div class="card">
+        <div class="card-title">🔒 Privacy Policy</div>
+        <p>Your privacy is important to us. This policy explains how Ayushman PhysioFIT collects, uses, and protects your personal information.</p>
+
+        <h3>1. Information We Collect</h3>
+        <ul>
+          <li>Name, phone number, age, and weight during enrollment or appointment booking.</li>
+          <li>Medical condition and treatment history for physiotherapy purposes.</li>
+          <li>Payment information (processed securely via Razorpay — we do not store card details).</li>
+        </ul>
+
+        <h3>2. How We Use Your Information</h3>
+        <ul>
+          <li>To schedule and manage your appointments and fitness classes.</li>
+          <li>To send appointment confirmations and reminders via WhatsApp.</li>
+          <li>To provide personalized physiotherapy and fitness recommendations.</li>
+          <li>To process payments and issue receipts.</li>
+        </ul>
+
+        <h3>3. Data Security</h3>
+        <ul>
+          <li>All data is stored securely on <strong>Google Firebase</strong> with industry-standard encryption.</li>
+          <li>Payment transactions are secured by <strong>Razorpay</strong> with 256-bit SSL encryption.</li>
+          <li>We do not sell or share your personal data with third parties.</li>
+        </ul>
+
+        <h3>4. Your Rights</h3>
+        <ul>
+          <li>You may request deletion of your personal data at any time.</li>
+          <li>You may opt out of WhatsApp communications by informing us.</li>
+          <li>Contact us at <strong>6302478412</strong> for any data-related requests.</li>
+        </ul>
+
+        <div class="highlight">
+          🔐 We are committed to protecting your health data and personal information in compliance with applicable data protection laws.
+        </div>
+
+        <p class="updated">Last updated: May 2026</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    window.switchTab = function(name, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+    // Open specific tab via URL hash
+    const hash = window.location.hash.replace('#','');
+    if (hash === 'cancellation' || hash === 'privacy') {
+      const tabs = document.querySelectorAll('.tab');
+      const map = { cancellation: 1, privacy: 2 };
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      tabs[map[hash]].classList.add('active');
+      document.getElementById('tab-' + hash).classList.add('active');
+    }
+  </script>
+</body>
+</html>

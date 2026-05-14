@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Videos – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Poppins',sans-serif;background:#f4f8fc;min-height:100vh;}
+
+    /* ── HEADER ── */
+    .header{background:linear-gradient(135deg,#0d2d5e,#1a4b8c);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;}
+    .header-left{display:flex;align-items:center;gap:14px;}
+    .header-left h1{color:white;font-size:1.2rem;font-weight:700;}
+    .header-left p{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-top:2px;}
+    .btn-back{padding:8px 18px;background:rgba(255,255,255,0.15);color:white;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;}
+    .btn-back:hover{background:rgba(255,255,255,0.25);}
+
+    /* ── PREMIUM BANNER ── */
+    .premium-banner{background:linear-gradient(135deg,#1a4b8c,#2e7dd1);margin:24px 32px 0;border-radius:16px;padding:24px 28px;display:flex;align-items:center;gap:20px;color:white;}
+    .premium-banner .icon{font-size:3rem;}
+    .premium-banner h2{font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+    .premium-banner p{font-size:0.82rem;opacity:0.85;}
+    .premium-badge{margin-left:auto;background:rgba(255,255,255,0.2);padding:8px 20px;border-radius:20px;font-size:0.82rem;font-weight:700;white-space:nowrap;}
+
+    /* ── LOCKED SCREEN ── */
+    .locked-screen{text-align:center;padding:80px 20px;background:white;border-radius:16px;margin:24px 32px;box-shadow:0 2px 12px rgba(26,75,140,0.08);}
+    .locked-screen .lock-icon{font-size:5rem;margin-bottom:20px;}
+    .locked-screen h2{color:#1a4b8c;font-size:1.4rem;margin-bottom:10px;}
+    .locked-screen p{color:#6b7c93;font-size:0.9rem;line-height:1.7;margin-bottom:28px;}
+    .btn-enroll{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border-radius:12px;text-decoration:none;font-weight:700;font-size:1rem;}
+
+    /* ── CONTENT ── */
+    .content{padding:24px 32px;}
+    .section-card{background:white;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(26,75,140,0.08);margin-bottom:24px;}
+    .section-card h2{font-size:1rem;color:#1a2a3a;font-weight:700;margin-bottom:6px;}
+    .section-card p{font-size:0.82rem;color:#6b7c93;margin-bottom:20px;}
+
+    /* ── VIDEO GRID ── */
+    .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
+    .video-card{background:#f8fbff;border:1.5px solid #dce8f5;border-radius:14px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+    .video-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(26,75,140,0.12);}
+    .video-thumb{background:linear-gradient(135deg,#1a4b8c,#2e7dd1);height:130px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;}
+    .video-thumb .play-btn{position:absolute;width:48px;height:48px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+    .video-info{padding:16px;}
+    .video-info h4{font-size:0.9rem;color:#1a2a3a;font-weight:600;margin-bottom:4px;}
+    .video-info p{font-size:0.78rem;color:#6b7c93;margin-bottom:12px;}
+    .btn-watch{display:inline-block;padding:8px 18px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:white;border-radius:8px;text-decoration:none;font-size:0.82rem;font-weight:600;}
+
+    /* ── SCHEDULE ── */
+    .schedule-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+    .schedule-day{background:#f0f7ff;border:1.5px solid #dce8f5;border-radius:12px;padding:16px;text-align:center;}
+    .schedule-day .day{font-size:0.78rem;font-weight:700;color:#6b7c93;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+    .schedule-day .time{font-size:1rem;font-weight:700;color:#1a4b8c;}
+    .schedule-day.today{border-color:#1a4b8c;background:#e8f0fb;}
+
+    /* ── EMPTY ── */
+    .empty-state{text-align:center;padding:40px 20px;color:#6b7c93;font-size:0.88rem;}
+
+    @media(max-width:700px){
+      .premium-banner{flex-wrap:wrap;margin:16px;}
+      .premium-badge{margin-left:0;}
+      .content{padding:16px;}
+      .schedule-grid{grid-template-columns:1fr;}
+      .header{padding:16px;}
+    }
+  </style>
+  <link rel="stylesheet" href="mobile.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div>
+        <h1>👑 Premium Video Library</h1>
+        <p>Exclusive content for enrolled fitness members</p>
+      </div>
+    </div>
+    <a href="patient-dashboard.html" class="btn-back">← Dashboard</a>
+  </div>
+
+  <!-- LOCKED SCREEN (shown if not enrolled) -->
+  <div class="locked-screen" id="lockedScreen" style="display:none;">
+    <div class="lock-icon">🔒</div>
+    <h2>Premium Content Locked</h2>
+    <p>Enroll in our Online Fitness Class to unlock premium videos.<br/>
+       <strong>3 classes/week · ₹2,400/month</strong><br/>
+       Expert physiotherapist-led sessions tailored for you.</p>
+    <a href="index.html#enroll" class="btn-enroll">🏋️ Enroll Now</a>
+  </div>
+
+  <!-- UNLOCKED CONTENT -->
+  <div id="unlockedContent" style="display:none;">
+
+    <!-- PREMIUM BANNER -->
+    <div class="premium-banner">
+      <div class="icon">👑</div>
+      <div>
+        <h2>Premium Member</h2>
+        <p>Slot: <span id="slotLabel">—</span> &nbsp;·&nbsp; 3 classes/week (Mon, Wed, Fri)</p>
+      </div>
+      <div class="premium-badge">✅ ACTIVE</div>
+    </div>
+
+    <div class="content">
+
+      <!-- CLASS SCHEDULE -->
+      <div class="section-card">
+        <h2>📅 Your Weekly Schedule</h2>
+        <p>Classes run every Monday, Wednesday & Friday at your enrolled slot.</p>
+        <div class="schedule-grid">
+          <div class="schedule-day" id="dayMon">
+            <div class="day">Monday</div>
+            <div class="time" id="timeMon">—</div>
+          </div>
+          <div class="schedule-day" id="dayWed">
+            <div class="day">Wednesday</div>
+            <div class="time" id="timeWed">—</div>
+          </div>
+          <div class="schedule-day" id="dayFri">
+            <div class="day">Friday</div>
+            <div class="time" id="timeFri">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEO LIBRARY -->
+      <div class="section-card">
+        <h2>🎥 Your Class Videos</h2>
+        <p>Videos uploaded by your instructor for your enrolled slot.</p>
+        <div class="video-grid" id="videoGrid">
+          <div class="empty-state">⏳ Loading your videos...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    const phone = sessionStorage.getItem('loggedUser') || '';
+    if (!phone) { window.location.href = 'login.html'; }
+
+    async function init() {
+      // Check enrollment
+      const snap = await getDocs(query(collection(db, 'fitnessEnrollments'),
+        where('phone', '==', phone), where('status', '==', 'enrolled')));
+
+      if (snap.empty) {
+        document.getElementById('lockedScreen').style.display = 'block';
+        return;
+      }
+
+      const enrollment = snap.docs[0].data();
+      const slot = enrollment.slot || '';
+
+      // Show unlocked content
+      document.getElementById('unlockedContent').style.display = 'block';
+      document.getElementById('slotLabel').textContent = slot;
+
+      // Highlight today's class day
+      const today = new Date().getDay(); // 0=Sun,1=Mon,3=Wed,5=Fri
+      if (today === 1) document.getElementById('dayMon').classList.add('today');
+      if (today === 3) document.getElementById('dayWed').classList.add('today');
+      if (today === 5) document.getElementById('dayFri').classList.add('today');
+      ['timeMon','timeWed','timeFri'].forEach(id => document.getElementById(id).textContent = slot);
+
+      // Load videos for this slot
+      const vidSnap = await getDocs(query(collection(db, 'videos'), where('slotTag', '==', slot)));
+      const grid = document.getElementById('videoGrid');
+      if (vidSnap.empty) {
+        grid.innerHTML = '<div class="empty-state">🎬 No videos uploaded yet for your slot.<br/>Check back after your first class!</div>';
+        return;
+      }
+      grid.innerHTML = '';
+      vidSnap.forEach(d => {
+        const v = d.data();
+        const thumb = v.thumbnail
+          ? `<img src="${v.thumbnail}" style="width:100%;height:130px;object-fit:cover;"/>`
+          : `<div class="video-thumb"><div class="play-btn">▶</div></div>`;
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="video-card">
+            ${thumb}
+            <div class="video-info">
+              <h4>${v.title || 'Untitled'}</h4>
+              <p>${v.description || slot}</p>
+              <a href="${v.url}" target="_blank" class="btn-watch">▶ Watch Now</a>
+            </div>
+          </div>`);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
