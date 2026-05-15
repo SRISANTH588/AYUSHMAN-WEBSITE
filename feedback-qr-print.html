@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Feedback QR – Ayushman PhysioFIT</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:Arial,sans-serif; background:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .poster {
+      width:148mm; padding:20mm 16mm;
+      border:3px solid #1a4b8c; border-radius:12px;
+      text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px;
+    }
+    .clinic-name { font-size:1.4rem; font-weight:900; color:#1a4b8c; }
+    .plus { color:#e63946; }
+    .sub { font-size:0.8rem; color:#555; }
+    .divider { width:100%; border-top:2px solid #1a4b8c; margin:6px 0; }
+    .heading { font-size:1.1rem; font-weight:800; color:#1a2a3a; }
+    .instruction { font-size:0.82rem; color:#444; line-height:1.6; }
+    #qr { margin:10px 0; }
+    .url { font-size:0.62rem; color:#aaa; word-break:break-all; }
+    .steps { text-align:left; font-size:0.78rem; color:#333; line-height:2; }
+    .steps li { list-style:none; }
+    .footer { font-size:0.72rem; color:#1a4b8c; font-weight:700; margin-top:6px; }
+    @media print {
+      body { background:#fff; }
+      .poster { border:3px solid #1a4b8c !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="poster">
+  <div class="clinic-name">✚ Ayushman <span class="plus"></span>PhysioFIT</div>
+  <div class="sub">Rehabilitation Centre · Vijayawada</div>
+  <div class="divider"></div>
+  <div class="heading">⭐ Share Your Feedback</div>
+  <div class="instruction">Scan the QR code below,<br/>enter your <strong>Booking ID</strong> and rate your sessions</div>
+  <div id="qr"></div>
+  <div class="url">https://srisanth588.github.io/AYUSHMAN-WEBSITE/feedback.html</div>
+  <div class="divider"></div>
+  <ul class="steps">
+    <li>1️⃣ Scan QR with your phone camera</li>
+    <li>2️⃣ Enter your Booking ID (e.g. APF-2025-0001)</li>
+    <li>3️⃣ Rate your previous sessions with smileys 😊</li>
+    <li>4️⃣ Submit — takes less than 1 minute!</li>
+  </ul>
+  <div class="footer">📞 6302478412 / 7013698578</div>
+</div>
+
+<script>
+  new QRCode(document.getElementById('qr'), {
+    text: 'https://srisanth588.github.io/AYUSHMAN-WEBSITE/feedback.html',
+    width: 200,
+    height: 200,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  // Auto print after QR renders
+  setTimeout(() => window.print(), 800);
+</script>
+</body>
+</html>
