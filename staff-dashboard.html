@@ -596,8 +596,10 @@
         <div class="op-actions">
           <button class="btn-op-back" onclick="closeOPForm()">← Back</button>
           <button class="btn-op-print" onclick="printOP()">🖨️ Print OP</button>
+          <button class="btn-op-save" onclick="saveOPDraft()">💾 Save Draft</button>
           <button class="btn-op-send" onclick="sendOPToAdmin()">✅ Send to Admin</button>
         </div>
+        <p id="opSaveMsg" style="color:#2e7dd1;font-weight:600;font-size:0.85rem;margin-top:10px;display:none;">✅ Draft saved!</p>
       </div>
     </div>
 
@@ -989,6 +991,7 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   .op-session-table th { border:1px solid #000; padding:4px; background:#f0f0f0; font-size:0.72rem; }
   .op-actions { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
   .btn-op-print { padding:11px 24px; background:#1a4b8c; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
+  .btn-op-save  { padding:11px 24px; background:#f39c12; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   .btn-op-send  { padding:11px 24px; background:#27ae60; color:#fff; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   .btn-op-back  { padding:11px 24px; background:#f4f8fc; color:#1a4b8c; border:1.5px solid #dce8f5; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; cursor:pointer; }
   @media print {
@@ -1030,9 +1033,8 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
     if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No online appointments</td></tr>';
   });
 
-  window.openOPForm = function(i) {
+  window.openOPForm = async function(i) {
     const a = _opDocs[i];
-    // Generate unique OP number
     const opNo = 'OP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
     document.getElementById('opUniqueNo').textContent  = opNo;
     document.getElementById('opBookingId').value       = a.bookingId || '';
@@ -1052,6 +1054,35 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
       t.innerHTML = '<tr>' + days.map(d => `<th>${d}</th>`).join('') + '</tr>';
       for (let r = 0; r < 5; r++) t.innerHTML += '<tr>' + days.map(() => '<td></td>').join('') + '</tr>';
     });
+    // Load saved draft if exists
+    if (a.bookingId) {
+      try {
+        const { getDocs, query: q, where } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+        const snap = await getDocs(q(collection(db, 'op_forms'), where('bookingId','==',a.bookingId), where('status','==','draft')));
+        if (!snap.empty) {
+          const d = snap.docs[0].data();
+          document.getElementById('opUniqueNo').textContent  = d.opNo || opNo;
+          document.getElementById('opOccupation').value      = d.occupation || '';
+          document.getElementById('opAddress').value         = d.address || '';
+          document.getElementById('opReferred').value        = d.referred || '';
+          document.getElementById('opObservation').value     = d.observation || '';
+          document.getElementById('opPastIllness').value     = d.pastIllness || '';
+          document.getElementById('opMedications').value     = d.medications || '';
+          document.getElementById('opAllergies').value       = d.allergies || '';
+          document.getElementById('opFamilyHistory').value   = d.familyHistory || '';
+          document.getElementById('opLifestyle').value       = d.lifestyle || '';
+          document.getElementById('opCondition').value       = d.condition || a.condition || '';
+          document.getElementById('opDiagnosis').value       = d.diagnosis || '';
+          document.getElementById('opExercise').value        = d.exercise || '';
+          document.getElementById('opModalities').value      = d.modalities || '';
+          document.getElementById('opHomeExercise').value    = d.homeExercise || '';
+          document.getElementById('opNotes').value           = d.notes || '';
+          const m = document.getElementById('opSaveMsg');
+          m.textContent = '💾 Draft loaded'; m.style.display = 'block';
+          setTimeout(() => { m.style.display = 'none'; m.textContent = '✅ Draft saved!'; }, 3000);
+        }
+      } catch(e) {}
+    }
     document.getElementById('opFormWrap').classList.add('show');
     document.getElementById('opFormWrap').scrollIntoView({ behavior: 'smooth' });
   };
@@ -1060,8 +1091,8 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
     document.getElementById('opFormWrap').classList.remove('show');
   };
 
-  window.sendOPToAdmin = async function() {
-    const data = {
+  function collectOPData(status) {
+    return {
       opNo:         document.getElementById('opUniqueNo').textContent,
       bookingId:    document.getElementById('opBookingId').value,
       name:         document.getElementById('opName').value,
@@ -1083,10 +1114,37 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
       modalities:   document.getElementById('opModalities').value,
       homeExercise: document.getElementById('opHomeExercise').value,
       notes:        document.getElementById('opNotes').value,
+      status,
       submittedBy:  'staff',
       createdAt:    serverTimestamp()
     };
+  }
+
+  window.saveOPDraft = async function() {
+    const bookingId = document.getElementById('opBookingId').value;
     try {
+      // Overwrite existing draft for same booking if exists
+      const { getDocs, query: q, where, setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+      const snap = await getDocs(q(collection(db, 'op_forms'), where('bookingId','==',bookingId), where('status','==','draft')));
+      if (!snap.empty) {
+        await setDoc(doc(db, 'op_forms', snap.docs[0].id), collectOPData('draft'), { merge: true });
+      } else {
+        await addDoc(collection(db, 'op_forms'), collectOPData('draft'));
+      }
+      const m = document.getElementById('opSaveMsg');
+      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+    } catch(e) { alert('Save failed: ' + e.message); }
+  };
+
+  window.sendOPToAdmin = async function() {
+    const data = {
+      ...collectOPData('submitted')
+    };
+    try {
+      // Remove any existing draft before submitting
+      const { getDocs, query: q, where, deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+      const snap = await getDocs(q(collection(db, 'op_forms'), where('bookingId','==',data.bookingId), where('status','==','draft')));
+      snap.forEach(async d => await deleteDoc(doc(db, 'op_forms', d.id)));
       await addDoc(collection(db, 'op_forms'), data);
       alert('✅ OP Form sent to Admin successfully!');
       window.closeOPForm();
