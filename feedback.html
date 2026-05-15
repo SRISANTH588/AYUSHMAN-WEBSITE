@@ -100,13 +100,19 @@
     const appt = snap.docs[0].data();
     _bookingData = { bookingId: bid, name: appt.name || appt.patientName || '', ...appt };
 
-    // Count sessions from op_forms (each submitted op_form = 1 session)
-    const opSnap = await getDocs(query(collection(db, 'op_forms'),
-      where('bookingId','==', bid), where('status','==','submitted'), orderBy('createdAt','asc')));
-    const sessionCount = opSnap.size;
+    // Count sessions from tokens by bookingId OR phone
+    const phone = appt.phone || appt.patientPhone || '';
+    let tokenSnap = await getDocs(query(collection(db, 'tokens'),
+      where('bookingId','==', bid), orderBy('createdAt','asc')));
+    // fallback: match by phone if no tokens found with bookingId
+    if (tokenSnap.empty && phone) {
+      tokenSnap = await getDocs(query(collection(db, 'tokens'),
+        where('patientPhone','==', phone), orderBy('createdAt','asc')));
+    }
+    const sessionCount = tokenSnap.size;
 
     if (sessionCount < 2) {
-      document.getElementById('loginErr').textContent = 'No previous sessions found to give feedback for.';
+      document.getElementById('loginErr').textContent = 'You need at least 2 previous visits to give feedback.';
       err.style.display = 'block';
       return;
     }
