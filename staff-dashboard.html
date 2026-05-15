@@ -87,6 +87,7 @@
       <a onclick="showSection('sessions', this)">🎥 Sessions</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
       <a onclick="showSection('opform', this)">📋 OP Form</a>
+      <a onclick="showSection('feedback', this)">💪 Patient Condition</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
     </nav>
   </div>
@@ -603,6 +604,20 @@
       </div>
     </div>
 
+    <!-- PATIENT CONDITION FEEDBACK -->
+    <div class="section" id="sec-feedback">
+      <div class="topbar"><div><h1>Patient Condition</h1><p>Condition recovery ratings from session feedback</p></div></div>
+      <div class="section-card">
+        <h2>💪 Condition Feedback</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Booking ID</th><th>Patient</th><th>Session</th><th>💪 Condition</th><th>Date</th></tr></thead>
+            <tbody id="staffFeedbackTable"><tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -1009,7 +1024,28 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
 
 <script type="module">
   import { db } from './firebase.js';
-  import { collection, onSnapshot, addDoc, orderBy, query, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+  import { collection, onSnapshot, addDoc, getDocs, orderBy, query, where, serverTimestamp, setDoc, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+  // ── CONDITION FEEDBACK (staff sees condition only) ───────────────────────────────────────
+  const SMILEY_MAP = ['','😞','😕','😐','🙂','😄'];
+  onSnapshot(query(collection(db, 'sessionFeedback'), orderBy('createdAt','desc')), snap => {
+    const tbody = document.getElementById('staffFeedbackTable');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No feedback yet</td></tr>'; return; }
+    snap.forEach(d => {
+      const f = d.data();
+      const date = f.createdAt?.toDate ? f.createdAt.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td><strong>${f.bookingId||'—'}</strong></td>
+          <td>${f.patientName||'—'}</td>
+          <td style="text-align:center;font-weight:700;color:#1a4b8c;">Session ${f.sessionNo}</td>
+          <td style="text-align:center;font-size:1.4rem;">${SMILEY_MAP[f.conditionRating]||'—'} <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.conditionLabel||''}</span></td>
+          <td style="font-size:0.82rem;color:#6b7c93;">${date}</td>
+        </tr>`);
+    });
+  });
 
   let _opDocs = [];
 

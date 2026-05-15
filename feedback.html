@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Session Feedback – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#0d2d5e,#1a4b8c); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .card { background:#fff; border-radius:24px; padding:36px 32px; max-width:480px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+    .logo { text-align:center; margin-bottom:24px; }
+    .logo h2 { font-size:1.3rem; font-weight:900; color:#1a4b8c; }
+    .logo p { font-size:0.8rem; color:#6b7c93; margin-top:4px; }
+    h3 { font-size:1rem; color:#1a2a3a; font-weight:700; margin-bottom:16px; text-align:center; }
+    .input-group { margin-bottom:16px; }
+    .input-group label { font-size:0.82rem; font-weight:600; color:#1a2a3a; display:block; margin-bottom:6px; }
+    .input-group input { width:100%; padding:12px 16px; border:1.5px solid #dce8f5; border-radius:12px; font-family:'Poppins',sans-serif; font-size:0.9rem; outline:none; }
+    .input-group input:focus { border-color:#2e7dd1; }
+    .btn { width:100%; padding:14px; background:linear-gradient(135deg,#1a4b8c,#2e7dd1); color:#fff; border:none; border-radius:12px; font-family:'Poppins',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+    /* Feedback screens */
+    #feedbackArea { display:none; }
+    .session-block { background:#f4f8fc; border-radius:16px; padding:20px; margin-bottom:20px; }
+    .session-block h4 { font-size:0.95rem; font-weight:700; color:#1a4b8c; margin-bottom:16px; }
+    .rating-row { margin-bottom:14px; }
+    .rating-row label { font-size:0.82rem; font-weight:600; color:#1a2a3a; display:block; margin-bottom:8px; }
+    .smileys { display:flex; gap:8px; justify-content:center; }
+    .smiley { font-size:2rem; cursor:pointer; opacity:0.35; transition:all 0.2s; border:2px solid transparent; border-radius:50%; padding:4px; }
+    .smiley:hover { opacity:0.7; transform:scale(1.1); }
+    .smiley.selected { opacity:1; border-color:#1a4b8c; transform:scale(1.15); background:#e8f0fb; }
+    .smiley-labels { display:flex; justify-content:space-between; font-size:0.65rem; color:#aab4c0; margin-top:4px; padding:0 4px; }
+
+    #loginArea {}
+    #thankYou { display:none; text-align:center; padding:20px 0; }
+    #thankYou .big { font-size:4rem; }
+    #thankYou h3 { color:#1a4b8c; margin:12px 0 8px; }
+    #thankYou p { font-size:0.85rem; color:#6b7c93; }
+    .err { color:#e63946; font-size:0.82rem; margin-top:8px; display:none; }
+    .info-badge { background:#e8f0fb; color:#1a4b8c; border-radius:10px; padding:10px 14px; font-size:0.82rem; font-weight:600; margin-bottom:16px; text-align:center; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h2>✚ Ayushman PhysioFIT</h2>
+    <p>Session Feedback</p>
+  </div>
+
+  <!-- STEP 1: Enter Booking ID -->
+  <div id="loginArea">
+    <h3>Enter your Booking ID</h3>
+    <div class="input-group">
+      <label>Booking ID</label>
+      <input type="text" id="bookingIdInput" placeholder="e.g. APF-2025-0001" autocomplete="off"/>
+    </div>
+    <button class="btn" onclick="loadFeedback()">Continue →</button>
+    <p class="err" id="loginErr">Booking ID not found. Please check and try again.</p>
+  </div>
+
+  <!-- STEP 2: Feedback Forms -->
+  <div id="feedbackArea">
+    <div class="info-badge" id="patientBadge"></div>
+    <div id="sessionBlocks"></div>
+    <button class="btn" onclick="submitFeedback()">✅ Submit Feedback</button>
+    <p class="err" id="submitErr">Please rate all sessions before submitting.</p>
+  </div>
+
+  <!-- STEP 3: Thank You -->
+  <div id="thankYou">
+    <div class="big">🙏</div>
+    <h3>Thank You!</h3>
+    <p>Your feedback helps us improve your treatment experience.</p>
+    <p style="margin-top:8px;color:#1a4b8c;font-weight:600;">Ayushman PhysioFIT</p>
+  </div>
+</div>
+
+<script type="module">
+  import { db } from './firebase.js';
+  import { collection, getDocs, addDoc, query, where, orderBy, serverTimestamp }
+    from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+  const SMILEYS = ['😞','😕','😐','🙂','😄'];
+  const LABELS  = ['Poor','Fair','Okay','Good','Great'];
+  let _bookingData = null;
+  let _pendingSessions = []; // session numbers needing feedback
+  const _ratings = {};       // { 'session_1_treatment': 3, 'session_1_condition': 4, ... }
+
+  window.loadFeedback = async function() {
+    const bid = document.getElementById('bookingIdInput').value.trim().toUpperCase();
+    const err = document.getElementById('loginErr');
+    err.style.display = 'none';
+    if (!bid) return;
+
+    // Find appointment by bookingId
+    const snap = await getDocs(query(collection(db, 'appointments'), where('bookingId','==', bid)));
+    if (snap.empty) { err.style.display = 'block'; return; }
+
+    const appt = snap.docs[0].data();
+    _bookingData = { bookingId: bid, name: appt.name || appt.patientName || '', ...appt };
+
+    // Count sessions from op_forms (each submitted op_form = 1 session)
+    const opSnap = await getDocs(query(collection(db, 'op_forms'),
+      where('bookingId','==', bid), where('status','==','submitted'), orderBy('createdAt','asc')));
+    const sessionCount = opSnap.size;
+
+    if (sessionCount < 2) {
+      document.getElementById('loginErr').textContent = 'No previous sessions found to give feedback for.';
+      err.style.display = 'block';
+      return;
+    }
+
+    // Check which sessions already have feedback
+    const fbSnap = await getDocs(query(collection(db, 'sessionFeedback'), where('bookingId','==', bid)));
+    const doneSessions = new Set();
+    fbSnap.forEach(d => doneSessions.add(d.data().sessionNo));
+
+    // Sessions to collect = all except the current (last) one
+    _pendingSessions = [];
+    for (let s = 1; s < sessionCount; s++) {
+      if (!doneSessions.has(s)) _pendingSessions.push(s);
+    }
+
+    if (_pendingSessions.length === 0) {
+      document.getElementById('loginErr').textContent = 'You have already submitted feedback for all previous sessions. Thank you!';
+      err.style.display = 'block';
+      return;
+    }
+
+    // Build UI
+    document.getElementById('patientBadge').textContent =
+      `👤 ${_bookingData.name}  |  📋 ${bid}  |  Session ${sessionCount} today`;
+
+    const container = document.getElementById('sessionBlocks');
+    container.innerHTML = '';
+    _pendingSessions.forEach(sNo => {
+      container.insertAdjacentHTML('beforeend', `
+        <div class="session-block">
+          <h4>Session ${sNo} Feedback</h4>
+          <div class="rating-row">
+            <label>🩺 How was your Treatment?</label>
+            <div class="smileys" id="treatment_${sNo}">
+              ${SMILEYS.map((s,i) => `<span class="smiley" data-key="session_${sNo}_treatment" data-val="${i+1}" onclick="selectSmiley(this)">${s}</span>`).join('')}
+            </div>
+            <div class="smiley-labels"><span>Poor</span><span>Fair</span><span>Okay</span><span>Good</span><span>Great</span></div>
+          </div>
+          <div class="rating-row">
+            <label>💪 How is your Condition / Recovery?</label>
+            <div class="smileys" id="condition_${sNo}">
+              ${SMILEYS.map((s,i) => `<span class="smiley" data-key="session_${sNo}_condition" data-val="${i+1}" onclick="selectSmiley(this)">${s}</span>`).join('')}
+            </div>
+            <div class="smiley-labels"><span>Poor</span><span>Fair</span><span>Okay</span><span>Good</span><span>Great</span></div>
+          </div>
+        </div>`);
+    });
+
+    document.getElementById('loginArea').style.display = 'none';
+    document.getElementById('feedbackArea').style.display = 'block';
+  };
+
+  window.selectSmiley = function(el) {
+    const key = el.dataset.key;
+    const val = parseInt(el.dataset.val);
+    _ratings[key] = val;
+    // Highlight selected
+    el.closest('.smileys').querySelectorAll('.smiley').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+  };
+
+  window.submitFeedback = async function() {
+    const err = document.getElementById('submitErr');
+    err.style.display = 'none';
+    // Validate all sessions rated
+    for (const sNo of _pendingSessions) {
+      if (!_ratings[`session_${sNo}_treatment`] || !_ratings[`session_${sNo}_condition`]) {
+        err.style.display = 'block'; return;
+      }
+    }
+    // Save each session feedback
+    for (const sNo of _pendingSessions) {
+      await addDoc(collection(db, 'sessionFeedback'), {
+        bookingId:         _bookingData.bookingId,
+        patientName:       _bookingData.name,
+        sessionNo:         sNo,
+        treatmentRating:   _ratings[`session_${sNo}_treatment`],
+        conditionRating:   _ratings[`session_${sNo}_condition`],
+        treatmentLabel:    LABELS[_ratings[`session_${sNo}_treatment`] - 1],
+        conditionLabel:    LABELS[_ratings[`session_${sNo}_condition`] - 1],
+        createdAt:         serverTimestamp()
+      });
+    }
+    document.getElementById('feedbackArea').style.display = 'none';
+    document.getElementById('thankYou').style.display = 'block';
+  };
+</script>
+</body>
+</html>

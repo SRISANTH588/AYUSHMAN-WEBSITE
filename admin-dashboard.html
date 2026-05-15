@@ -94,6 +94,8 @@
       <a href="reports.html" style="display:flex;align-items:center;gap:12px;padding:13px 28px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.88rem;font-weight:500;">📈 Reports Page ↗</a>
       <a onclick="showSection('notifications', this)">🔔 Notifications</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
+      <a onclick="showSection('feedback', this)">⭐ Session Feedback</a>
+      <a onclick="showSection('feedbackqr', this)">📲 Feedback QR</a>
       <a onclick="showSection('online_bookings', this)">🎫 Online Bookings</a>
       <a onclick="showSection('online_appts', this)">📋 Online Appointments</a>
       <a onclick="showSection('op_forms', this)">📄 OP Forms</a>
@@ -661,6 +663,43 @@
           <thead><tr><th>Slot Timing</th><th>Action</th></tr></thead>
           <tbody id="slotsTable"><tr><td colspan="2" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- SESSION FEEDBACK -->
+    <div class="section" id="sec-feedback">
+      <div class="topbar"><div><h1>Session Feedback</h1><p>Patient ratings for treatment &amp; condition</p></div></div>
+      <div class="section-card">
+        <h2>⭐ All Feedback</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Booking ID</th><th>Patient</th><th>Session</th><th>🩺 Treatment</th><th>💪 Condition</th><th>Date</th></tr></thead>
+            <tbody id="feedbackTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEEDBACK QR -->
+    <div class="section" id="sec-feedbackqr">
+      <div class="topbar"><div><h1>Feedback QR Code</h1><p>Print &amp; place at reception — patients scan to give session feedback</p></div></div>
+      <div class="section-card" style="text-align:center;">
+        <h2 style="margin-bottom:8px;">📲 Reception QR Code</h2>
+        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:20px;">Patient scans this QR, enters their Booking ID, and rates previous sessions.</p>
+        <div id="qrCodeBox" style="display:inline-block;padding:16px;background:#fff;border:2px solid #dce8f5;border-radius:16px;margin-bottom:20px;"></div>
+        <p style="font-size:0.82rem;color:#1a4b8c;font-weight:600;margin-bottom:20px;" id="feedbackUrl"></p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="printFeedbackQR()">🖨️ Print QR</button>
+        </div>
+      </div>
+      <div class="section-card" style="background:#fffbea;border:1.5px solid #ffe082;">
+        <h2 style="color:#856404;font-size:0.95rem;">📌 How to use</h2>
+        <ol style="font-size:0.85rem;color:#1a2a3a;line-height:2.2;padding-left:20px;">
+          <li>Print this QR code and place it at the reception desk or waiting area</li>
+          <li>When a patient arrives for their <strong>3rd session or later</strong>, ask them to scan the QR</li>
+          <li>Patient enters their <strong>Booking ID</strong> and rates previous sessions with smileys</li>
+          <li>Feedback appears instantly in the <strong>Session Feedback</strong> tab above</li>
+        </ol>
       </div>
     </div>
 
@@ -1345,6 +1384,57 @@ _Ayushman PhysioFIT Rehabilitation Centre_
           `<tr><td>${d.data().slot}</td><td><button class="btn-danger" onclick="deleteSlot('${d.id}')">Delete</button></td></tr>`);
       });
     });
+
+    // ── SESSION FEEDBACK ─────────────────────────────────────────────────────
+    const SMILEY_MAP = ['','😞','😕','😐','🙂','😄'];
+    onSnapshot(query(collection(db, 'sessionFeedback'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('feedbackTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No feedback yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const f = d.data();
+        const date = f.createdAt?.toDate ? f.createdAt.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${f.bookingId||'—'}</strong></td>
+            <td>${f.patientName||'—'}</td>
+            <td style="text-align:center;font-weight:700;color:#1a4b8c;">Session ${f.sessionNo}</td>
+            <td style="text-align:center;font-size:1.4rem;" title="${f.treatmentLabel||''}">${ SMILEY_MAP[f.treatmentRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.treatmentLabel||''}</span></td>
+            <td style="text-align:center;font-size:1.4rem;" title="${f.conditionLabel||''}">${ SMILEY_MAP[f.conditionRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.conditionLabel||''}</span></td>
+            <td style="font-size:0.82rem;color:#6b7c93;">${date}</td>
+          </tr>`);
+      });
+    });
+
+    // ── FEEDBACK QR ───────────────────────────────────────────────────────────
+    (function initFeedbackQR() {
+      const url = window.location.origin + window.location.pathname.replace('admin-dashboard.html','') + 'feedback.html';
+      document.getElementById('feedbackUrl') && (document.getElementById('feedbackUrl').textContent = url);
+      const box = document.getElementById('qrCodeBox');
+      if (!box) return;
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      script.onload = () => { new QRCode(box, { text: url, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.H }); };
+      document.head.appendChild(script);
+    })();
+
+    window.printFeedbackQR = function() {
+      const url = window.location.origin + window.location.pathname.replace('admin-dashboard.html','') + 'feedback.html';
+      const win = window.open('', '_blank', 'width=500,height=600');
+      win.document.write(`<!DOCTYPE html><html><head><title>Feedback QR</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+        <style>body{font-family:Arial,sans-serif;text-align:center;padding:40px;}h2{color:#1a4b8c;}p{color:#555;font-size:0.9rem;margin:8px 0;}#qr{display:inline-block;margin:20px 0;}</style>
+      </head><body>
+        <h2>✚ Ayushman PhysioFIT</h2>
+        <p style="font-size:1rem;font-weight:700;">Session Feedback</p>
+        <p>Scan to rate your previous sessions</p>
+        <div id="qr"></div>
+        <p style="font-size:0.75rem;color:#aaa;">${url}</p>
+        <script>new QRCode(document.getElementById('qr'),{text:'${url}',width:220,height:220,correctLevel:QRCode.CorrectLevel.H});setTimeout(()=>{window.print();window.onafterprint=()=>window.close();},600);<\/script>
+      </body></html>`);
+      win.document.close();
+    };
 
     window.saveRzpKeys = async function() {
       const keyId     = document.getElementById('rzpKeyId').value.trim();
