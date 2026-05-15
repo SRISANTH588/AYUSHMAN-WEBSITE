@@ -194,7 +194,7 @@
             dateSel.appendChild(o);
           }
         </script>
-        <p class="oc-success" id="apptSuccess">✅ Submitted! Admin will assign your Booking ID &amp; Token.</p>
+        <p class="oc-success" id="apptSuccess">✅ Submitted! Admin will assign your OP No &amp; Token.</p>
       </div>
 
       <div class="oc-card">
@@ -364,9 +364,9 @@
 
       <!-- CHECK TOKEN PANEL -->
       <div id="checkPanel" style="display:none;">
-        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:20px;">Enter your Booking ID &amp; Phone to check your token</p>
+        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:20px;">Enter your OP No &amp; Phone to check your token</p>
         <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
-          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Booking ID</label>
+          <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">OP No</label>
             <input id="tokenBookingId" type="text" placeholder="e.g. APF-2026-0001" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;text-transform:uppercase;"/></div>
           <div><label style="font-size:0.78rem;font-weight:600;color:#1a2a3a;display:block;margin-bottom:6px;">Phone Number</label>
             <input id="tokenPhone" type="tel" placeholder="Registered phone number" style="width:100%;padding:12px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;outline:none;"/></div>
@@ -483,7 +483,7 @@
         }
 
         document.getElementById('apptForm').reset();
-        document.getElementById('apptSuccess').textContent = `✅ Booking confirmed! Booking ID: ${bookingId}.${tokenMsg} Save these for future reference.`;
+        document.getElementById('apptSuccess').textContent = `✅ Booking confirmed! OP No: ${bookingId}.${tokenMsg} Save these for future reference.`;
         document.getElementById('apptSuccess').style.display = 'block';
         setTimeout(() => document.getElementById('apptSuccess').style.display = 'none', 15000);
       } catch(err) { alert('Submission failed: ' + err.message); }
@@ -723,7 +723,7 @@
       document.getElementById('tokenResult').style.display = 'none';
 
       if (!bookingId || !phone) {
-        errBox.textContent = 'Please enter both Booking ID and Phone Number.';
+        errBox.textContent = 'Please enter both OP No and Phone Number.';
         errBox.style.display = 'block';
         return;
       }
@@ -736,12 +736,12 @@
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          errBox.textContent = '❌ Booking ID not found. Please check and try again.';
+          errBox.textContent = '❌ OP No not found. Please check and try again.';
           errBox.style.display = 'block';
         } else {
           const d = snap.docs[0].data();
           if (d.phone !== phone) {
-            errBox.textContent = '❌ Phone number does not match this Booking ID.';
+            errBox.textContent = '❌ Phone number does not match this OP No.';
             errBox.style.display = 'block';
           } else {
             // Try to get token from appointment doc first, else look in tokens collection
@@ -756,7 +756,7 @@
             } else {
               document.getElementById('tokenNum').textContent            = tokenNumber;
               document.getElementById('tokenPatientName').textContent    = '👤 ' + (d.name || '');
-              document.getElementById('tokenBookingDisplay').textContent = '📋 Booking ID: ' + bookingId;
+              document.getElementById('tokenBookingDisplay').textContent = '📋 OP No: ' + bookingId;
               document.getElementById('tokenDoctorDisplay').textContent  = d.condition ? '🩺 ' + d.condition : '';
               document.getElementById('tokenDateDisplay').textContent    = d.date ? '📅 ' + d.date + (d.time ? '  ⏰ ' + d.time : '') : '';
               document.getElementById('tokenResult').style.display = 'block';

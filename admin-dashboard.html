@@ -508,7 +508,7 @@
     <!-- ONLINE BOOKINGS -->
     <div class="section" id="sec-online_bookings">
       <div class="topbar">
-        <div><h1>Online Bookings</h1><p>All booking requests from the website — generate Booking ID &amp; Token</p></div>
+        <div><h1>Online Bookings</h1><p>All booking requests from the website — generate OP No &amp; Token</p></div>
         <div style="display:flex;gap:12px;align-items:center;">
           <span style="background:#fff3cd;color:#856404;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="pendingBadge">⏳ 0 Pending</span>
           <span style="background:#d4edda;color:#155724;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;" id="confirmedBadge">✅ 0 Confirmed</span>
@@ -541,7 +541,7 @@
                 <th>Date</th>
                 <th>Time</th>
                 <th>Submitted</th>
-                <th>Booking ID</th>
+                <th>OP No</th>
                 <th>Token</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -557,11 +557,11 @@
 
     <!-- ONLINE APPOINTMENTS -->
     <div class="section" id="sec-online_appts">
-      <div class="topbar"><div><h1>Online Appointments</h1><p>Assign Booking ID & Token to submitted requests</p></div></div>
+      <div class="topbar"><div><h1>Online Appointments</h1><p>Assign OP No & Token to submitted requests</p></div></div>
       <div class="section-card">
         <h2>📋 Pending Online Appointments</h2>
         <table>
-          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Booking ID</th><th>Token</th><th>Status</th><th>Notify</th></tr></thead>
+          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>OP No</th><th>Token</th><th>Status</th><th>Notify</th></tr></thead>
           <tbody id="onlineApptTable"><tr><td colspan="9" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
         </table>
       </div>
@@ -574,7 +574,7 @@
         <h2>📄 Submitted OP Forms</h2>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>Booking ID</th><th>Name</th><th>Phone</th><th>Condition</th><th>Diagnosis</th><th>Treatment</th><th>Doctor</th><th>Date</th></tr></thead>
+            <thead><tr><th>OP No</th><th>Name</th><th>Phone</th><th>Condition</th><th>Diagnosis</th><th>Treatment</th><th>Doctor</th><th>Date</th></tr></thead>
             <tbody id="opFormsTable"><tr><td colspan="8" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
           </table>
         </div>
@@ -672,7 +672,7 @@
         <h2>⭐ All Feedback</h2>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>Booking ID</th><th>Patient</th><th>Session</th><th>🩺 Treatment</th><th>💪 Condition</th><th>Date</th></tr></thead>
+            <thead><tr><th>OP No</th><th>Patient</th><th>Session</th><th>🩺 Treatment</th><th>💪 Condition</th><th>Date</th></tr></thead>
             <tbody id="feedbackTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
           </table>
         </div>
@@ -1048,7 +1048,7 @@
       renderObTable(_obDocs);
     });
 
-    // Generate Booking ID + Token, save to Firestore, notify via WhatsApp
+    // Generate OP No + Token, save to Firestore, notify via WhatsApp
     window.obGenerate = async function(docId) {
       // Count existing confirmed to get next sequential number
       const existing = _obDocs.filter(d => d.bookingId).length;
@@ -1078,7 +1078,7 @@ Dear ${name},
 
 Your appointment has been confirmed!
 
-📋 Booking ID: *${bookingId}*
+📋 OP No: *${bookingId}*
 🎫 Token: *${token}*
 📅 Date: ${date}
 ⏰ Time: ${time}
@@ -1126,7 +1126,7 @@ _Please arrive 10 mins early. We keep you moving..._`;
     window.assignAppt = async function(docId, phone, name, date, time) {
       const bookingId = document.getElementById('bid-' + docId).value.trim();
       const token     = document.getElementById('tok-' + docId).value.trim();
-      if (!bookingId || !token) return alert('Enter both Booking ID and Token.');
+      if (!bookingId || !token) return alert('Enter both OP No and Token.');
       await updateDoc(doc(db, 'appointments', docId), { bookingId, token, status: 'confirmed' });
       notifyApptWA(phone, name, date, time, bookingId, token);
     };
@@ -1138,7 +1138,7 @@ Dear ${name},
 
 Your appointment has been confirmed!
 
-📋 Booking ID: ${bookingId}
+📋 OP No: ${bookingId}
 🎫 Token: ${token}
 📅 Date: ${date}
 ⏰ Time: ${time}
