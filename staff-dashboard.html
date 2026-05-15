@@ -1027,7 +1027,7 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   import { collection, onSnapshot, addDoc, getDocs, orderBy, query, where, serverTimestamp, setDoc, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
   // ── CONDITION FEEDBACK (staff sees condition only) ───────────────────────────────────────
-  const SMILEY_MAP = ['','😞','😕','😐','🙂','😄'];
+  const SMILEY_MAP = ['','😡','😑','😊'];
   onSnapshot(query(collection(db, 'sessionFeedback'), orderBy('createdAt','desc')), snap => {
     const tbody = document.getElementById('staffFeedbackTable');
     if (!tbody) return;

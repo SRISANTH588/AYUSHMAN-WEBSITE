@@ -81,8 +81,8 @@
   import { collection, getDocs, addDoc, query, where, orderBy, serverTimestamp }
     from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
-  const SMILEYS = ['😞','😕','😐','🙂','😄'];
-  const LABELS  = ['Poor','Fair','Okay','Good','Great'];
+  const SMILEYS = ['😡','😑','😊'];
+  const LABELS  = ['Bad','Okay','Good'];
   let _bookingData = null;
   let _pendingSessions = []; // session numbers needing feedback
   const _ratings = {};       // { 'session_1_treatment': 3, 'session_1_condition': 4, ... }
@@ -143,14 +143,14 @@
             <div class="smileys" id="treatment_${sNo}">
               ${SMILEYS.map((s,i) => `<span class="smiley" data-key="session_${sNo}_treatment" data-val="${i+1}" onclick="selectSmiley(this)">${s}</span>`).join('')}
             </div>
-            <div class="smiley-labels"><span>Poor</span><span>Fair</span><span>Okay</span><span>Good</span><span>Great</span></div>
+            <div class="smiley-labels"><span>Bad</span><span>Okay</span><span>Good</span></div>
           </div>
           <div class="rating-row">
             <label>💪 How is your Condition / Recovery?</label>
             <div class="smileys" id="condition_${sNo}">
               ${SMILEYS.map((s,i) => `<span class="smiley" data-key="session_${sNo}_condition" data-val="${i+1}" onclick="selectSmiley(this)">${s}</span>`).join('')}
             </div>
-            <div class="smiley-labels"><span>Poor</span><span>Fair</span><span>Okay</span><span>Good</span><span>Great</span></div>
+            <div class="smiley-labels"><span>Bad</span><span>Okay</span><span>Good</span></div>
           </div>
         </div>`);
     });

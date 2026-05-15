@@ -1362,7 +1362,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
     });
 
     // ── SESSION FEEDBACK ─────────────────────────────────────────────────────
-    const SMILEY_MAP = ['','😞','😕','😐','🙂','😄'];
+    const SMILEY_MAP = ['','😡','😑','😊'];
     onSnapshot(query(collection(db, 'sessionFeedback'), orderBy('createdAt', 'desc')), snap => {
       const tbody = document.getElementById('feedbackTable');
       if (!tbody) return;
