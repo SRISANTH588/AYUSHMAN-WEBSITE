@@ -95,7 +95,6 @@
       <a onclick="showSection('notifications', this)">🔔 Notifications</a>
       <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
       <a onclick="showSection('feedback', this)">⭐ Session Feedback</a>
-      <a onclick="showSection('feedbackqr', this)">📲 Feedback QR</a>
       <a onclick="showSection('online_bookings', this)">🎫 Online Bookings</a>
       <a onclick="showSection('online_appts', this)">📋 Online Appointments</a>
       <a onclick="showSection('op_forms', this)">📄 OP Forms</a>
@@ -677,29 +676,6 @@
             <tbody id="feedbackTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
           </table>
         </div>
-      </div>
-    </div>
-
-    <!-- FEEDBACK QR -->
-    <div class="section" id="sec-feedbackqr">
-      <div class="topbar"><div><h1>Feedback QR Code</h1><p>Print &amp; place at reception — patients scan to give session feedback</p></div></div>
-      <div class="section-card" style="text-align:center;">
-        <h2 style="margin-bottom:8px;">📲 Reception QR Code</h2>
-        <p style="font-size:0.85rem;color:#6b7c93;margin-bottom:20px;">Patient scans this QR, enters their Booking ID, and rates previous sessions.</p>
-        <div id="qrCodeBox" style="display:inline-block;padding:16px;background:#fff;border:2px solid #dce8f5;border-radius:16px;margin-bottom:20px;"></div>
-        <p style="font-size:0.82rem;color:#1a4b8c;font-weight:600;margin-bottom:20px;" id="feedbackUrl"></p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn-primary" onclick="printFeedbackQR()">🖨️ Print QR</button>
-        </div>
-      </div>
-      <div class="section-card" style="background:#fffbea;border:1.5px solid #ffe082;">
-        <h2 style="color:#856404;font-size:0.95rem;">📌 How to use</h2>
-        <ol style="font-size:0.85rem;color:#1a2a3a;line-height:2.2;padding-left:20px;">
-          <li>Print this QR code and place it at the reception desk or waiting area</li>
-          <li>When a patient arrives for their <strong>3rd session or later</strong>, ask them to scan the QR</li>
-          <li>Patient enters their <strong>Booking ID</strong> and rates previous sessions with smileys</li>
-          <li>Feedback appears instantly in the <strong>Session Feedback</strong> tab above</li>
-        </ol>
       </div>
     </div>
 
@@ -1406,35 +1382,6 @@ _Ayushman PhysioFIT Rehabilitation Centre_
           </tr>`);
       });
     });
-
-    // ── FEEDBACK QR ───────────────────────────────────────────────────────────
-    (function initFeedbackQR() {
-      const url = window.location.origin + window.location.pathname.replace('admin-dashboard.html','') + 'feedback.html';
-      document.getElementById('feedbackUrl') && (document.getElementById('feedbackUrl').textContent = url);
-      const box = document.getElementById('qrCodeBox');
-      if (!box) return;
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-      script.onload = () => { new QRCode(box, { text: url, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.H }); };
-      document.head.appendChild(script);
-    })();
-
-    window.printFeedbackQR = function() {
-      const url = window.location.origin + window.location.pathname.replace('admin-dashboard.html','') + 'feedback.html';
-      const win = window.open('', '_blank', 'width=500,height=600');
-      win.document.write(`<!DOCTYPE html><html><head><title>Feedback QR</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
-        <style>body{font-family:Arial,sans-serif;text-align:center;padding:40px;}h2{color:#1a4b8c;}p{color:#555;font-size:0.9rem;margin:8px 0;}#qr{display:inline-block;margin:20px 0;}</style>
-      </head><body>
-        <h2>✚ Ayushman PhysioFIT</h2>
-        <p style="font-size:1rem;font-weight:700;">Session Feedback</p>
-        <p>Scan to rate your previous sessions</p>
-        <div id="qr"></div>
-        <p style="font-size:0.75rem;color:#aaa;">${url}</p>
-        <script>new QRCode(document.getElementById('qr'),{text:'${url}',width:220,height:220,correctLevel:QRCode.CorrectLevel.H});setTimeout(()=>{window.print();window.onafterprint=()=>window.close();},600);<\/script>
-      </body></html>`);
-      win.document.close();
-    };
 
     window.saveRzpKeys = async function() {
       const keyId     = document.getElementById('rzpKeyId').value.trim();
