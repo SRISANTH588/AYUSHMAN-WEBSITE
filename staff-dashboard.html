@@ -1152,22 +1152,27 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   };
 
   window.printOP = function() {
-    // Sync Treatment Plan fields from page 1
     document.getElementById('opTpName').value      = document.getElementById('opName').value + ' / ' + document.getElementById('opAge').value;
     document.getElementById('opTpDate').value      = document.getElementById('opDate').value;
     document.getElementById('opTpDiagnosis').value = document.getElementById('opDiagnosis').value;
 
-    // Collect checkbox states
     const area = document.getElementById('opPrintArea');
     const clone = area.cloneNode(true);
-    // Sync checkbox checked state into clone
-    area.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
-      clone.querySelectorAll('input[type="checkbox"]')[i].checked = cb.checked;
+
+    // Bake live values into clone as attributes so innerHTML serializes them
+    area.querySelectorAll('input').forEach((el, i) => {
+      const c = clone.querySelectorAll('input')[i];
+      if (!c) return;
+      if (el.type === 'checkbox') {
+        if (el.checked) c.setAttribute('checked', 'checked');
+        else c.removeAttribute('checked');
+      } else {
+        c.setAttribute('value', el.value);
+      }
     });
-    // Sync all input values into clone
-    area.querySelectorAll('input, textarea').forEach((el, i) => {
-      const c = clone.querySelectorAll('input, textarea')[i];
-      if (c) c.value = el.value;
+    area.querySelectorAll('textarea').forEach((el, i) => {
+      const c = clone.querySelectorAll('textarea')[i];
+      if (c) c.textContent = el.value;
     });
 
     const win = window.open('', '_blank', 'width=900,height=700');
