@@ -1094,11 +1094,59 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
   };
 
   window.printOP = function() {
-    // Sync Treatment Plan name/date from page 1
-    document.getElementById('opTpName').value  = document.getElementById('opName').value + ' / ' + document.getElementById('opAge').value;
-    document.getElementById('opTpDate').value  = document.getElementById('opDate').value;
+    // Sync Treatment Plan fields from page 1
+    document.getElementById('opTpName').value      = document.getElementById('opName').value + ' / ' + document.getElementById('opAge').value;
+    document.getElementById('opTpDate').value      = document.getElementById('opDate').value;
     document.getElementById('opTpDiagnosis').value = document.getElementById('opDiagnosis').value;
-    window.print();
+
+    // Collect checkbox states
+    const area = document.getElementById('opPrintArea');
+    const clone = area.cloneNode(true);
+    // Sync checkbox checked state into clone
+    area.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+      clone.querySelectorAll('input[type="checkbox"]')[i].checked = cb.checked;
+    });
+    // Sync all input values into clone
+    area.querySelectorAll('input, textarea').forEach((el, i) => {
+      const c = clone.querySelectorAll('input, textarea')[i];
+      if (c) c.value = el.value;
+    });
+
+    const win = window.open('', '_blank', 'width=900,height=700');
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+      <title>OP Form – Ayushman PhysioFIT</title>
+      <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Times New Roman',serif; color:#000; background:#fff; }
+        .op-page { background:#fff; padding:28px 36px; max-width:800px; margin:0 auto; }
+        .op-page + .op-page { page-break-before:always; }
+        .op-clinic-header { display:flex; align-items:center; gap:16px; border-bottom:2px solid #1a4b8c; padding-bottom:10px; margin-bottom:14px; }
+        .op-clinic-info { flex:1; }
+        .op-uid-box { border:2px solid #1a4b8c; color:#1a4b8c; padding:6px 14px; border-radius:8px; font-size:0.9rem; font-weight:700; white-space:nowrap; }
+        .op-form-title { text-align:center; font-size:1.15rem; font-weight:900; text-decoration:underline; margin:10px 0 16px; }
+        .op-section { margin-bottom:14px; }
+        .op-section-title { font-weight:700; font-size:0.93rem; margin-bottom:5px; }
+        .op-subsection-title { font-weight:700; font-size:0.85rem; margin:6px 0 3px; }
+        .op-row { display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-bottom:5px; }
+        .op-label { font-size:0.83rem; white-space:nowrap; font-weight:600; }
+        .op-inline { border:none; border-bottom:1px solid #000; outline:none; font-family:'Times New Roman',serif; font-size:0.85rem; padding:1px 3px; background:transparent; min-width:80px; }
+        .op-inline.op-wide { min-width:150px; flex:1; }
+        .op-inline.op-full { width:100%; flex:1; }
+        .op-inline.op-sm { min-width:45px; max-width:65px; }
+        .op-dots { flex:1; border-bottom:1px dotted #000; margin:0 3px; }
+        .op-textarea { width:100%; border:1px solid #ccc; font-family:'Times New Roman',serif; font-size:0.85rem; padding:5px; }
+        .op-checkrow { display:flex; flex-wrap:wrap; gap:10px; font-size:0.83rem; }
+        .op-checkrow label { display:flex; align-items:center; gap:3px; }
+        .op-session-table { width:100%; border-collapse:collapse; font-size:0.72rem; }
+        .op-session-table td { border:1px solid #000; width:38px; height:26px; }
+        .op-session-table th { border:1px solid #000; padding:3px; background:#f0f0f0; font-size:0.7rem; }
+        img { height:55px; }
+        @media print {
+          .op-page + .op-page { page-break-before:always; }
+        }
+      </style>
+    </head><body>${clone.innerHTML}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script></body></html>`);
+    win.document.close();
   };
 </script>
 </body>
