@@ -50,10 +50,10 @@
 
   <!-- STEP 1: Enter Booking ID -->
   <div id="loginArea">
-    <h3>Enter your Booking ID</h3>
+    <h3>Enter your OP / Booking ID</h3>
     <div class="input-group">
-      <label>Booking ID</label>
-      <input type="text" id="bookingIdInput" placeholder="e.g. APF-2025-0001" autocomplete="off"/>
+      <label>OP ID / Booking ID</label>
+      <input type="text" id="bookingIdInput" placeholder="e.g. OP-2024-1234" autocomplete="off"/>
     </div>
     <button class="btn" onclick="loadFeedback()">Continue →</button>
     <p class="err" id="loginErr">Booking ID not found. Please check and try again.</p>
@@ -91,24 +91,35 @@
     const bid = document.getElementById('bookingIdInput').value.trim().toUpperCase();
     const err = document.getElementById('loginErr');
     err.style.display = 'none';
+    err.textContent = 'OP ID not found. Please check and try again.';
     if (!bid) return;
 
-    // Find appointment by bookingId
-    const snap = await getDocs(query(collection(db, 'appointments'), where('bookingId','==', bid)));
-    if (snap.empty) { err.style.display = 'block'; return; }
-
-    const appt = snap.docs[0].data();
-    _bookingData = { bookingId: bid, name: appt.name || appt.patientName || '', ...appt };
-
-    // Count sessions from tokens by bookingId OR phone
-    const phone = appt.phone || appt.patientPhone || '';
+    // Look up tokens by opId (opId = bookingId, they are the same)
     let tokenSnap = await getDocs(query(collection(db, 'tokens'),
-      where('bookingId','==', bid), orderBy('createdAt','asc')));
-    // fallback: match by phone if no tokens found with bookingId
-    if (tokenSnap.empty && phone) {
-      tokenSnap = await getDocs(query(collection(db, 'tokens'),
-        where('patientPhone','==', phone), orderBy('createdAt','asc')));
+      where('opId','==', bid), orderBy('createdAt','asc')));
+
+    // fallback: try bookingId field on appointments (for online bookings)
+    let patientName = '';
+    let patientPhone = '';
+    if (tokenSnap.empty) {
+      const apptSnap = await getDocs(query(collection(db, 'appointments'), where('bookingId','==', bid)));
+      if (apptSnap.empty) { err.style.display = 'block'; return; }
+      const appt = apptSnap.docs[0].data();
+      patientName  = appt.name || appt.patientName || '';
+      patientPhone = appt.phone || appt.patientPhone || '';
+      // now find tokens by phone
+      if (patientPhone) {
+        tokenSnap = await getDocs(query(collection(db, 'tokens'),
+          where('patientPhone','==', patientPhone), orderBy('createdAt','asc')));
+      }
+      if (tokenSnap.empty) { err.style.display = 'block'; return; }
+    } else {
+      const first = tokenSnap.docs[0].data();
+      patientName  = first.patientName || '';
+      patientPhone = first.patientPhone || '';
     }
+
+    _bookingData = { bookingId: bid, name: patientName, phone: patientPhone };
     const sessionCount = tokenSnap.size;
 
     if (sessionCount < 2) {
