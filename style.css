@@ -2114,9 +2114,35 @@ img.loaded { opacity: 1; }
   padding: 120px 60px 60px;
   text-align: center;
   color: #fff;
+  position: relative;
 }
 .page-hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 10px; }
 .page-hero p  { color: rgba(255,255,255,0.65); font-size: 1rem; }
+
+.back-btn {
+  position: absolute;
+  top: 90px;
+  left: 60px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(8px);
+}
+.back-btn:hover { background: rgba(255,255,255,0.22); transform: translateX(-3px); }
+
+@media (max-width: 900px) {
+  .back-btn { top: 76px; left: 24px; font-size: 0.8rem; padding: 8px 16px; }
+}
 
 /* Active nav link */
 .nav-active { color: #7ec8f0 !important; }
