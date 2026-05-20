@@ -27,12 +27,28 @@
       transform: translateY(-8px) scale(1.02);
       box-shadow: 0 20px 48px rgba(26,75,140,0.25);
     }
+    .service-img-card {
+      position: relative;
+    }
     .service-img-card img {
       width: 100%;
       height: auto;
       aspect-ratio: 3/4;
       object-fit: cover;
       display: block;
+    }
+    .service-img-card .card-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(26,75,140,0.85));
+      color: #fff;
+      text-align: center;
+      padding: 24px 8px 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
     }
     @media (max-width: 900px) {
       .service-img-grid {
@@ -72,14 +88,14 @@
 
   <section style="background:#f4f8fc;">
     <div class="service-img-grid">
-      <div class="service-img-card"><img src="images/stroke.jpeg" alt="Stroke"/></div>
-      <div class="service-img-card"><img src="images/bells.jpeg" alt="Bells Palsy"/></div>
-      <div class="service-img-card"><img src="images/nerve.jpeg" alt="Nerve Injuries"/></div>
-      <div class="service-img-card"><img src="images/parkinsons.jpeg" alt="Parkinson's Disease"/></div>
-      <div class="service-img-card"><img src="images/sciatica.jpeg" alt="Sciatica"/></div>
-      <div class="service-img-card"><img src="images/radiculopathy.jpeg" alt="Radiculopathy"/></div>
-      <div class="service-img-card"><img src="images/cognitive.jpeg" alt="Cognitive Therapy"/></div>
-      <div class="service-img-card"><img src="images/cerebral.jpeg" alt="Cerebral Palsy"/></div>
+      <div class="service-img-card"><img src="images/stroke.jpeg" alt="Stroke"/><div class="card-label">Stroke</div></div>
+      <div class="service-img-card"><img src="images/bells.jpeg" alt="Bells Palsy"/><div class="card-label">Bells Palsy</div></div>
+      <div class="service-img-card"><img src="images/nerve.jpeg" alt="Nerve Injuries"/><div class="card-label">Nerve Injuries</div></div>
+      <div class="service-img-card"><img src="images/parkinsons.jpeg" alt="Parkinson's Disease"/><div class="card-label">Parkinsons</div></div>
+      <div class="service-img-card"><img src="images/sciatica.jpeg" alt="Sciatica"/><div class="card-label">Sciatica</div></div>
+      <div class="service-img-card"><img src="images/radiculopathy.jpeg" alt="Radiculopathy"/><div class="card-label">Radiculopathy</div></div>
+      <div class="service-img-card"><img src="images/cognitive.jpeg" alt="Cognitive Therapy"/><div class="card-label">Cognitive Therapy</div></div>
+      <div class="service-img-card"><img src="images/cerebral.jpeg" alt="Cerebral Palsy"/><div class="card-label">Cerebral Palsy</div></div>
     </div>
   </section>
 
