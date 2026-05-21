@@ -396,7 +396,28 @@
       const errEl = document.getElementById('errorMsg');
       errEl.style.display = 'none';
 
-      // Admin/staff login via Firestore (no hardcoded credentials)
+      // Admin/staff login — check hardcoded admin first, then Firestore staff collection
+      const ADMIN_USER = 'ayush@physiofit';
+      const ADMIN_PASS = 'Sowjiraj@3459';
+      if (username === ADMIN_USER && password === ADMIN_PASS) {
+        sessionStorage.setItem('loggedUser', ADMIN_USER);
+        sessionStorage.setItem('loggedName', 'Ayushman Admin');
+        sessionStorage.setItem('loggedRole', 'admin');
+        // Seed into Firestore staff collection if not already there
+        db.collection('staff').where('username', '==', ADMIN_USER).get().then(snap => {
+          if (snap.empty) {
+            db.collection('staff').add({
+              name: 'Ayushman Admin', username: ADMIN_USER,
+              password: ADMIN_PASS, role: 'admin', status: 'Active',
+              createdAt: new Date().toISOString()
+            });
+          }
+        }).catch(() => {});
+        window.location.href = 'admin-dashboard.html';
+        return;
+      }
+
+      // Other staff/admin via Firestore
       try {
         const staffSnap = await db.collection('staff').where('username', '==', username).get();
         if (!staffSnap.empty) {
