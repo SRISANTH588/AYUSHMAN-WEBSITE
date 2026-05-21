@@ -286,31 +286,6 @@
 
 
 
-    <!-- CUSTOMER QUEUE -->
-    <div class="section" id="sec-queue">
-      <div class="topbar"><div><h1>Customer Queue</h1><p>Live walk-in patient queue</p></div></div>
-      <div class="section-card">
-        <h2>➕ Add to Queue</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div class="form-group"><label>Patient Name</label><input type="text" id="qPatient" placeholder="Patient name"/></div>
-          <div class="form-group"><label>Condition</label><input type="text" id="qCondition" placeholder="Condition"/></div>
-        </div>
-        <button class="btn-primary" onclick="addToQueue()">Add to Queue</button>
-        <p class="success-msg" id="qSuccess">✅ Added to queue!</p>
-      </div>
-      <div class="section-card">
-        <h2>👥 Live Queue</h2>
-        <table>
-          <thead><tr><th>Position</th><th>Patient</th><th>Condition</th><th>Wait Time</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="queueTable">
-            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">Queue is empty</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-
     <!-- PENDING / COMPLETED TRACKING -->
     <div class="section" id="sec-tracking">
       <div class="topbar"><div><h1>Pending / Completed</h1><p>Track session status</p></div></div>
