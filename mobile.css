@@ -408,3 +408,105 @@ img { max-width: 100%; height: auto; }
 @media (max-width: 480px) {
   div[style*="display:grid"] { grid-template-columns: 1fr !important; }
 }
+
+/* ══════════════════════════════════════════
+   ENROLLMENT MODAL
+══════════════════════════════════════════ */
+@media (max-width: 520px) {
+  #enrollModal > div {
+    padding: 24px 16px !important;
+    max-height: 95vh !important;
+  }
+  #enrollModal h2 { font-size: 1rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   HOME VISIT CARD (index.html) — inner 2-col
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .oc-card#home-visit {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    padding: 20px 16px !important;
+  }
+}
+
+/* ══════════════════════════════════════════
+   TOKEN MODAL (index.html)
+══════════════════════════════════════════ */
+@media (max-width: 520px) {
+  #tokenModal > div:last-child {
+    padding: 28px 18px !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+  }
+  #genTokenNum, #tokenNum { font-size: 3rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   PATIENT DASHBOARD — inline grids
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  #sec-payment div[style*="grid-template-columns:1fr 1fr"],
+  #sec-profile div[style*="grid-template-columns:1fr 1fr"],
+  #sec-homevisit div[style*="grid-template-columns:1fr 1fr"],
+  #sec-token div[style*="grid-template-columns:1fr 1fr"],
+  #sec-sessions div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ══════════════════════════════════════════
+   ADMIN DASHBOARD — inline grids & tables
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  #sec-homevisit div[style*="grid-template-columns"],
+  #sec-enrollments div[style*="grid-template-columns"],
+  #sec-online_bookings div[style*="grid-template-columns"],
+  #sec-videos div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ══════════════════════════════════════════
+   SERVICE PAGES (ortho, neuro, etc.)
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .service-content,
+  .service-grid,
+  .service-layout {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+  .service-img-card { width: 100% !important; }
+  .page-hero h1 { font-size: 1.5rem !important; }
+}
+
+/* ══════════════════════════════════════════
+   STATS — 5-column admin grid
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .stats[style*="repeat(5"] { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 480px) {
+  .stats[style*="repeat(5"] { grid-template-columns: 1fr !important; }
+}
+
+/* ══════════════════════════════════════════
+   GLOBAL — prevent any horizontal scroll
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  body { overflow-x: hidden !important; }
+  .section-card { overflow-x: auto !important; }
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS — full width on small screens
+══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .btn-primary,
+  button[style*="padding:14px"],
+  button[style*="padding: 14px"] {
+    width: 100% !important;
+  }
+}

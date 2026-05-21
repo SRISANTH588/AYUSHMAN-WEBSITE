@@ -218,21 +218,6 @@
         <h2>🩺 Doctor's Follow-up Feedback</h2>
         <div id="doctorFeedbackList" style="display:flex;flex-direction:column;gap:12px;"></div>
       </div>
-          </div>
-          <div>
-            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
-              <span>✅ Strengthening Exercises — Daily</span><span style="color:#8b2e8b;">70%</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar" style="width:70%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600; margin-bottom:6px;">
-              <span>⏳ Hydrotherapy — Starting next week</span><span style="color:#8b2e8b;">0%</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- CONTACT -->
@@ -253,7 +238,7 @@
           <div class="contact-info">
             <h4>Dr. D. Ramachandra</h4>
             <p>PT · Pain Management Specialist</p>
-            <a href="tel:">📞 </a>
+            <a href="tel:6302478412">📞 6302478412</a>
           </div>
         </div>
       </div>
@@ -313,13 +298,6 @@
       <div class="section-card">
         <h2>🔔 Recent Notifications</h2>
         <div style="display:flex;flex-direction:column;gap:12px;" id="notifList">
-          <p style="color:#6b7c93;font-size:0.88rem;text-align:center;padding:20px;">No notifications yet</p>
-        </div>
-          <div style="background:#f0fff4;border-left:4px solid #2e8b57;border-radius:10px;padding:16px;">
-            <div style="font-size:0.88rem;font-weight:600;color:#1a2a3a;">📦 Membership Active</div>
-            <div style="font-size:0.82rem;color:#6b7c93;margin-top:4px;">Your Standard membership is active until 31 May 2026.</div>
-            <div style="font-size:0.75rem;color:#aab4c0;margin-top:6px;">01 May 2026</div>
-          </div>
           <p style="color:#6b7c93;font-size:0.88rem;text-align:center;padding:20px;">No notifications yet</p>
         </div>
       </div>
@@ -723,15 +701,20 @@
       el.classList.add('active');
     }
 
-    function bookFitnessClass() {
+    async function bookFitnessClass() {
       const cls = document.getElementById('fitClass').value;
       const date = document.getElementById('fitDate').value;
       const time = document.getElementById('fitTime').value;
       if (!cls || !date || !time) return alert('Please fill all fields.');
+      try {
+        await addDoc(collection(db, 'fitnessSlotBookings'), {
+          patientName, patientPhone, cls, date, time,
+          status: 'Confirmed', createdAt: serverTimestamp()
+        });
+      } catch(e) { alert('Booking failed: ' + e.message); return; }
       const tbody = document.getElementById('fitHistory');
       if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
       tbody.insertAdjacentHTML('afterbegin', `<tr><td>${cls}</td><td>${date}</td><td>${time}</td><td><span class="badge confirmed">Confirmed</span></td></tr>`);
-      // Unlock matching video
       const videoRow = document.querySelector(`#videoLibrary tr[data-class="${cls}"]`);
       if (videoRow) {
         videoRow.querySelector('.locked-msg').outerHTML = `<a href="#" style="background:#1a4b8c;color:white;padding:5px 14px;border-radius:8px;text-decoration:none;font-size:0.8rem;font-weight:600;">▶ Watch</a>`;
@@ -767,29 +750,59 @@
       } catch(e) { alert('Booking failed: ' + e.message); }
     }
 
-    window.sendMessage = function() {
+    window.sendMessage = async function() {
+      const to = document.querySelector('#sec-contact select').value;
       const m = document.getElementById('contactMsg').value.trim();
       if (!m) return alert('Please type a message.');
+      try {
+        await addDoc(collection(db, 'patientMessages'), {
+          patientName, patientPhone, to, message: m,
+          createdAt: serverTimestamp()
+        });
+      } catch(e) { alert('Failed to send: ' + e.message); return; }
       document.getElementById('contactMsg').value = '';
       const msg = document.getElementById('msgSuccess');
       msg.style.display = 'block';
       setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    window.makePayment = function() {
+    window.makePayment = async function() {
       const s = document.getElementById('payService').value;
       const a = document.getElementById('payAmt').value.trim();
       const m = document.getElementById('payMode').value;
+      const ref = document.getElementById('payRef').value.trim();
       if (!a) return alert('Enter amount.');
       const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      try {
+        await addDoc(collection(db, 'patientPayments'), {
+          patientName, patientPhone, service: s, amount: a, mode: m, reference: ref,
+          date: today, status: 'Paid', createdAt: serverTimestamp()
+        });
+      } catch(e) { alert('Payment record failed: ' + e.message); return; }
       const row = `<tr><td>${s}</td><td>\u20b9${a}</td><td>${m}</td><td>${today}</td><td><span class="badge confirmed">Paid</span></td></tr>`;
       document.getElementById('payHistTable').insertAdjacentHTML('afterbegin', row);
       document.getElementById('payAmt').value = '';
+      document.getElementById('payRef').value = '';
       const msg = document.getElementById('paySuccess');
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    window.saveProfile = function() {
+    window.saveProfile = async function() {
+      const uid = sessionStorage.getItem('loggedUid');
+      if (!uid) { alert('Please log in again to save profile.'); return; }
+      const data = {
+        name:    document.getElementById('profName').value.trim(),
+        phone:   document.getElementById('profPhone').value.trim(),
+        email:   document.getElementById('profEmail').value.trim(),
+        dob:     document.getElementById('profDob').value,
+        gender:  document.getElementById('profGender').value,
+        blood:   document.getElementById('profBlood').value,
+        address: document.getElementById('profAddr').value.trim()
+      };
+      try {
+        const { doc: fsDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
+        await setDoc(fsDoc(db, 'patients', uid), data, { merge: true });
+      } catch(e) { alert('Save failed: ' + e.message); return; }
       const msg = document.getElementById('profSuccess');
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
@@ -849,7 +862,6 @@ _Sent from Ayushman PhysioFIT Patient Portal_`;
     }
 
     // ── TOKEN GENERATION ──
-    const patientPhone = sessionStorage.getItem('loggedUser') || '';
     const patientUid   = sessionStorage.getItem('loggedUid') || '';
     const todayStr     = new Date().toISOString().split('T')[0];
 

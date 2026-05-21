@@ -191,22 +191,32 @@
 
     <!-- STAFF -->
     <div class="section" id="sec-staff">
-      <div class="topbar"><div><h1>Staff</h1><p>Manage staff members</p></div></div>
+      <div class="topbar"><div><h1>Staff</h1><p>Create staff/admin accounts with login credentials</p></div></div>
       <div class="section-card">
-        <h2>➕ Add Staff</h2>
+        <h2>➕ Create Staff Account</h2>
         <div class="form-row">
-          <div class="form-group"><label>Name</label><input type="text" id="staffName" placeholder="Full name"/></div>
-          <div class="form-group"><label>Role</label><input type="text" id="staffRole" placeholder="e.g. Physiotherapist"/></div>
+          <div class="form-group"><label>Full Name</label><input type="text" id="staffName" placeholder="Full name"/></div>
+          <div class="form-group"><label>Role</label>
+            <select id="staffRole" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;">
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
         </div>
-        <button class="btn-primary" onclick="addStaff()">Add Staff</button>
-        <p class="success-msg" id="staffSuccess">✅ Staff member added!</p>
+        <div class="form-row">
+          <div class="form-group"><label>Username (for login)</label><input type="text" id="staffUsername" placeholder="e.g. staff1" autocomplete="off"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="staffPassword" placeholder="Set a password" autocomplete="new-password"/></div>
+        </div>
+        <button class="btn-primary" onclick="addStaff()">➕ Create Account</button>
+        <p class="success-msg" id="staffSuccess">✅ Staff account created!</p>
+        <p id="staffError" style="color:#e63946;font-size:0.85rem;font-weight:600;margin-top:8px;display:none;"></p>
       </div>
       <div class="section-card">
-        <h2>👨⚕️ Staff List</h2>
+        <h2>👨‍⚕️ Staff List</h2>
         <table>
-          <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="staffTable">
-            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -881,7 +891,7 @@
     import { collection, addDoc, getDocs, onSnapshot, serverTimestamp, query, orderBy, where, updateDoc, doc, deleteDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
     import { ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js';
 
-    if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
+    if (!sessionStorage.getItem('loggedUser') || sessionStorage.getItem('loggedRole') !== 'admin') window.location.href = 'login.html';
     document.getElementById('adminName').textContent = sessionStorage.getItem('loggedName') || 'Admin';
 
     // Load default fitness price early so enrollment table can pre-fill it
@@ -973,7 +983,7 @@
       snap.forEach(d => {
         const s = d.data();
         tbody.insertAdjacentHTML('beforeend',
-          `<tr><td>${s.name||''}</td><td>${s.role||''}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`);
+          `<tr><td>${s.name||''}</td><td>${s.username||'—'}</td><td>${s.role||''}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`);
       });
       document.getElementById('totalStaff') && (document.getElementById('totalStaff').textContent = snap.size);
     });
@@ -1599,22 +1609,33 @@ _Ayushman PhysioFIT Rehabilitation Centre_
     }
 
     async function addStaff() {
-      const n = document.getElementById('staffName').value.trim();
-      const r = document.getElementById('staffRole').value.trim();
-      if (!n || !r) return alert('Please fill all fields.');
+      const n  = document.getElementById('staffName').value.trim();
+      const r  = document.getElementById('staffRole').value;
+      const u  = document.getElementById('staffUsername').value.trim().toLowerCase();
+      const pw = document.getElementById('staffPassword').value.trim();
+      const errEl = document.getElementById('staffError');
+      errEl.style.display = 'none';
+      if (!n || !r || !u || !pw) { errEl.textContent = 'Please fill all fields.'; errEl.style.display = 'block'; return; }
+      if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
+      // Check username not already taken
       try {
+        const existing = await getDocs(query(collection(db, 'staff'), where('username', '==', u)));
+        if (!existing.empty) { errEl.textContent = 'Username already exists. Choose a different one.'; errEl.style.display = 'block'; return; }
         await addDoc(collection(db, 'staff'), {
-          name: n, role: r, status: 'Active', createdAt: serverTimestamp()
+          name: n, role: r, username: u, password: pw, status: 'Active', createdAt: serverTimestamp()
         });
-        const row = `<tr><td>${n}</td><td>${r}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
-        document.getElementById('staffTable').insertAdjacentHTML('beforeend', row);
+        const row = `<tr><td>${n}</td><td>${u}</td><td>${r}</td><td><span class="badge confirmed">Active</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Remove</button></td></tr>`;
+        const tbody = document.getElementById('staffTable');
+        if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+        tbody.insertAdjacentHTML('beforeend', row);
         document.getElementById('staffName').value = '';
-        document.getElementById('staffRole').value = '';
+        document.getElementById('staffUsername').value = '';
+        document.getElementById('staffPassword').value = '';
         updateCounts();
         const msg = document.getElementById('staffSuccess');
         msg.style.display = 'block';
         setTimeout(() => msg.style.display = 'none', 3000);
-      } catch(e) { alert('Error: ' + e.message); }
+      } catch(e) { errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block'; }
     }
 
     async function addPatient() {

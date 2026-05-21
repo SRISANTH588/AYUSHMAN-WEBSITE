@@ -396,18 +396,20 @@
       const errEl = document.getElementById('errorMsg');
       errEl.style.display = 'none';
 
-      const localUsers = [
-        { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin', redirect: 'admin-dashboard.html' },
-        { username: 'staff', password: 'staff123', role: 'staff', name: 'Staff', redirect: 'staff-dashboard.html' }
-      ];
-      const local = localUsers.find(u => u.username === username && u.password === password);
-      if (local) {
-        sessionStorage.setItem('loggedUser', local.username);
-        sessionStorage.setItem('loggedName', local.name);
-        sessionStorage.setItem('loggedRole', local.role);
-        window.location.href = local.redirect;
-        return;
-      }
+      // Admin/staff login via Firestore (no hardcoded credentials)
+      try {
+        const staffSnap = await db.collection('staff').where('username', '==', username).get();
+        if (!staffSnap.empty) {
+          const staffData = staffSnap.docs[0].data();
+          if (staffData.password === password) {
+            sessionStorage.setItem('loggedUser', username);
+            sessionStorage.setItem('loggedName', staffData.name || username);
+            sessionStorage.setItem('loggedRole', staffData.role || 'staff');
+            window.location.href = staffData.role === 'admin' ? 'admin-dashboard.html' : 'staff-dashboard.html';
+            return;
+          }
+        }
+      } catch(ex) { console.warn('Staff lookup:', ex.message); }
 
       const email = username + '@ayushman.patient';
       try {
