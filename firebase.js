@@ -1,4 +1,6 @@
 // Firebase Configuration — Ayushman PhysioFIT
+// SECURITY: Firestore rules are defined in firestore.rules (deploy via: firebase deploy --only firestore:rules)
+// CSP headers are configured in firebase.json under hosting.headers
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";

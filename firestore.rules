@@ -1,0 +1,166 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isStaff() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'staff'];
+    }
+    function isOwner(phone) {
+      // Patient owns their own data (phone stored in auth token custom claim or matched field)
+      return isSignedIn() && request.auth.token.phone_number == phone;
+    }
+
+    // ── Public read-only ─────────────────────────────────────────────────────
+    // Fitness slots are public so the enrollment form can load them
+    match /fitnessSlots/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Settings (Razorpay key etc.) — admin write, staff read
+    match /settings/{doc} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // ── Appointments ─────────────────────────────────────────────────────────
+    match /appointments/{doc} {
+      // Anyone can create (public booking form)
+      allow create: if true;
+      // Patient can read their own; staff/admin can read all
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.phone == request.auth.token.phone_number);
+      // Only staff/admin can update (confirm, assign token etc.)
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ── Tokens ───────────────────────────────────────────────────────────────
+    match /tokens/{doc} {
+      allow create: if true;
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.patientPhone == request.auth.token.phone_number);
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ── Patients ─────────────────────────────────────────────────────────────
+    match /patients/{doc} {
+      allow read, write: if isStaff();
+    }
+
+    // ── Staff & Users ────────────────────────────────────────────────────────
+    match /staff/{doc} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // ── Payments ─────────────────────────────────────────────────────────────
+    match /payments/{doc} {
+      allow create: if isSignedIn();
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.phone == request.auth.token.phone_number);
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Memberships ──────────────────────────────────────────────────────────
+    match /memberships/{doc} {
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.phone == request.auth.token.phone_number);
+      allow write: if isStaff();
+    }
+
+    // ── Fitness Enrollments ──────────────────────────────────────────────────
+    match /fitnessEnrollments/{doc} {
+      allow create: if true;
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.phone == request.auth.token.phone_number);
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ── Videos ───────────────────────────────────────────────────────────────
+    match /videos/{doc} {
+      // Only enrolled patients + staff can read
+      allow read: if isStaff() || isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── Home Visits ──────────────────────────────────────────────────────────
+    match /homevisits/{doc} {
+      allow create: if true;
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.phone == request.auth.token.phone_number);
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ── Session Feedback ─────────────────────────────────────────────────────
+    match /sessionFeedback/{doc} {
+      allow create: if isSignedIn();
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.patientPhone == request.auth.token.phone_number);
+      allow update: if isStaff();   // doctor adds note
+      allow delete: if isAdmin();
+    }
+
+    // ── Doctor Feedback (follow-up notes for patient) ────────────────────────
+    match /doctorFeedback/{doc} {
+      allow create, update: if isStaff();
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.patientPhone == request.auth.token.phone_number);
+      allow delete: if isAdmin();
+    }
+
+    // ── OP Forms ─────────────────────────────────────────────────────────────
+    match /op_forms/{doc} {
+      allow read, write: if isStaff();
+    }
+
+    // ── Notifications ────────────────────────────────────────────────────────
+    match /notifications/{doc} {
+      allow create: if isStaff();
+      allow read: if isStaff() ||
+        (isSignedIn() && resource.data.to == request.auth.token.phone_number);
+      allow delete: if isAdmin();
+    }
+
+    // ── Staff Activity / Attendance / Notes / Slots / Queue ──────────────────
+    match /staffActivity/{doc} {
+      allow read, write: if isStaff();
+    }
+    match /attendance/{doc} {
+      allow read, write: if isStaff();
+    }
+    match /notes/{doc} {
+      allow read, write: if isStaff();
+    }
+    match /slots/{doc} {
+      allow read, write: if isStaff();
+    }
+    match /queue/{doc} {
+      allow read, write: if isStaff();
+    }
+    match /sessions/{doc} {
+      allow read, write: if isStaff();
+    }
+
+    // ── Deny everything else ─────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

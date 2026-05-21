@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient History – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Poppins',sans-serif; background:#f4f8fc; min-height:100vh; }
+
+    .topbar {
+      background: linear-gradient(135deg,#0d2d5e,#1a4b8c);
+      padding: 18px 40px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .topbar a {
+      color: rgba(255,255,255,0.75); text-decoration:none;
+      font-size:0.88rem; font-weight:600;
+      display:flex; align-items:center; gap:6px;
+    }
+    .topbar a:hover { color:#fff; }
+    .topbar h1 { color:#fff; font-size:1.2rem; font-weight:700; margin-left:8px; }
+
+    .container { max-width:960px; margin:36px auto; padding:0 24px; }
+
+    .patient-card {
+      background:#fff; border-radius:20px;
+      padding:32px; box-shadow:0 4px 24px rgba(26,75,140,0.1);
+      border:1.5px solid #dce8f5; margin-bottom:28px;
+      display:flex; align-items:center; gap:24px;
+    }
+    .patient-avatar {
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg,#1a4b8c,#2e7dd1);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.8rem; color:#fff; font-weight:700; flex-shrink:0;
+    }
+    .patient-info h2 { font-size:1.4rem; font-weight:800; color:#1a2a3a; margin-bottom:6px; }
+    .patient-meta { display:flex; gap:20px; flex-wrap:wrap; }
+    .patient-meta span { font-size:0.85rem; color:#6b7c93; display:flex; align-items:center; gap:5px; }
+    .patient-meta strong { color:#1a2a3a; }
+
+    .section-card {
+      background:#fff; border-radius:16px;
+      padding:28px; box-shadow:0 2px 12px rgba(26,75,140,0.07);
+      border:1.5px solid #dce8f5; margin-bottom:24px;
+    }
+    .section-card h3 { font-size:1rem; font-weight:700; color:#1a2a3a; margin-bottom:18px; }
+
+    table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    th { background:#f4f8fc; color:#6b7c93; font-weight:600; padding:11px 14px; text-align:left; }
+    td { padding:11px 14px; border-bottom:1px solid #f0f4f8; color:#1a2a3a; }
+    tr:last-child td { border-bottom:none; }
+
+    .badge { padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+    .badge.confirmed { background:#d4edda; color:#155724; }
+    .badge.pending   { background:#fff3cd; color:#856404; }
+    .badge.completed { background:#d1ecf1; color:#0c5460; }
+
+    .empty { text-align:center; color:#aab4c0; font-size:0.88rem; padding:24px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="javascript:window.close()">&#8592; Close</a>
+    <h1 id="pageTitle">Patient Details &amp; History</h1>
+  </div>
+
+  <div class="container">
+
+    <div class="patient-card">
+      <div class="patient-avatar" id="patientAvatar">?</div>
+      <div class="patient-info">
+        <h2 id="patientName">Loading...</h2>
+        <div class="patient-meta">
+          <span>📞 <strong id="patientPhone">—</strong></span>
+          <span>🩺 <strong id="patientCondition">—</strong></span>
+          <span>📅 <strong id="patientDate">—</strong></span>
+          <span>⏰ <strong id="patientTime">—</strong></span>
+          <span>📋 OP No: <strong id="patientBookingId">—</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>📅 All Visit History</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>OP No</th><th>Condition</th><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th></tr></thead>
+          <tbody id="visitTable"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>📝 Treatment Notes</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Date</th><th>Notes</th></tr></thead>
+          <tbody id="notesTable"><tr><td colspan="2" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>💪 Session Feedback</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Session</th><th>Condition</th><th>Date</th></tr></thead>
+          <tbody id="feedbackTable"><tr><td colspan="3" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>📄 OP Forms</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>OP No</th><th>Diagnosis</th><th>Exercise</th><th>Date</th></tr></thead>
+          <tbody id="opTable"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    const params    = new URLSearchParams(window.location.search);
+    const name      = params.get('name')      || '';
+    const phone     = params.get('phone')     || '';
+    const condition = params.get('condition') || '';
+    const date      = params.get('date')      || '';
+    const time      = params.get('time')      || '';
+    const bookingId = params.get('bookingId') || '';
+
+    document.getElementById('pageTitle').textContent        = (name || 'Patient') + ' – History';
+    document.getElementById('patientAvatar').textContent    = name ? name.charAt(0).toUpperCase() : '?';
+    document.getElementById('patientName').textContent      = name      || '—';
+    document.getElementById('patientPhone').textContent     = phone     || '—';
+    document.getElementById('patientCondition').textContent = condition || '—';
+    document.getElementById('patientDate').textContent      = date      || '—';
+    document.getElementById('patientTime').textContent      = time      || '—';
+    document.getElementById('patientBookingId').textContent = bookingId || '—';
+
+    // Visit History
+    try {
+      const q = phone
+        ? query(collection(db,'appointments'), where('phone','==',phone), orderBy('createdAt','desc'))
+        : query(collection(db,'appointments'), where('name','==',name),   orderBy('createdAt','desc'));
+      const snap = await getDocs(q);
+      const tbody = document.getElementById('visitTable');
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No visit history found</td></tr>'; }
+      else snap.forEach(d => {
+        const a = d.data();
+        const sc = (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : (a.status||'').toLowerCase() === 'completed' ? 'completed' : 'pending';
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td><strong>${a.bookingId||'—'}</strong></td><td>${a.condition||''}</td><td>${a.date||''}</td><td>${a.time||''}</td><td>${a.doctor||'—'}</td><td><span class="badge ${sc}">${a.status||'pending'}</span></td></tr>`);
+      });
+    } catch(e) { document.getElementById('visitTable').innerHTML = '<tr><td colspan="6" class="empty">Could not load visits</td></tr>'; }
+
+    // Treatment Notes
+    try {
+      const snap = await getDocs(query(collection(db,'notes'), where('patient','==',name), orderBy('createdAt','desc')));
+      const tbody = document.getElementById('notesTable');
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="2" class="empty">No notes found</td></tr>'; }
+      else snap.forEach(d => {
+        const n = d.data();
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${n.date||''}</td><td>${n.note||''}</td></tr>`);
+      });
+    } catch(e) { document.getElementById('notesTable').innerHTML = '<tr><td colspan="2" class="empty">Could not load notes</td></tr>'; }
+
+    // Session Feedback
+    const SMILEY = ['','😡','😑','😊'];
+    try {
+      const fbQ = phone
+        ? query(collection(db,'sessionFeedback'), where('patientPhone','==',phone), orderBy('createdAt','desc'))
+        : query(collection(db,'sessionFeedback'), where('patientName','==',name),   orderBy('createdAt','desc'));
+      const snap = await getDocs(fbQ);
+      const tbody = document.getElementById('feedbackTable');
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="3" class="empty">No feedback found</td></tr>'; }
+      else snap.forEach(d => {
+        const f = d.data();
+        const dt = f.createdAt?.toDate ? f.createdAt.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>Session ${f.sessionNo||''}</td><td style="font-size:1.2rem;">${SMILEY[f.conditionRating]||'—'} <span style="font-size:0.78rem;color:#6b7c93;">${f.conditionLabel||''}</span></td><td>${dt}</td></tr>`);
+      });
+    } catch(e) { document.getElementById('feedbackTable').innerHTML = '<tr><td colspan="3" class="empty">Could not load feedback</td></tr>'; }
+
+    // OP Forms
+    try {
+      const snap = await getDocs(query(collection(db,'op_forms'), where('phone','==',phone), orderBy('createdAt','desc')));
+      const tbody = document.getElementById('opTable');
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4" class="empty">No OP forms found</td></tr>'; }
+      else snap.forEach(d => {
+        const f = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td><strong>${f.bookingId||f.opNo||'—'}</strong></td><td>${f.diagnosis||'—'}</td><td>${f.exercise||'—'}</td><td>${f.date||''}</td></tr>`);
+      });
+    } catch(e) { document.getElementById('opTable').innerHTML = '<tr><td colspan="4" class="empty">Could not load OP forms</td></tr>'; }
+  </script>
+
+</body>
+</html>

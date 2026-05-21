@@ -10,19 +10,20 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       background: #060f1e;
+      overflow: hidden;
     }
 
     /* ── LEFT PANEL ── */
     .left-panel {
-      flex: 1;
+      flex: 5;
       background: linear-gradient(135deg, #060f1e 0%, #0d2d5e 50%, #1a4b8c 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 60px;
+      padding: 48px 120px;
       position: relative;
       overflow: hidden;
     }
@@ -30,40 +31,40 @@
     .left-panel::before {
       content: '';
       position: absolute;
-      width: 500px; height: 500px;
+      width: 400px; height: 400px;
       background: radial-gradient(circle, rgba(46,125,209,0.3) 0%, transparent 65%);
-      top: -100px; right: -100px;
+      top: -80px; right: -80px;
       border-radius: 50%;
     }
     .left-panel::after {
       content: '';
       position: absolute;
-      width: 350px; height: 350px;
+      width: 280px; height: 280px;
       background: radial-gradient(circle, rgba(126,200,240,0.15) 0%, transparent 65%);
-      bottom: -80px; left: -60px;
+      bottom: -60px; left: -40px;
       border-radius: 50%;
     }
 
     .left-logo {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 60px;
+      gap: 12px;
+      margin-bottom: 36px;
       position: relative;
       z-index: 1;
     }
-    .left-logo img { height: 52px; width: auto; object-fit: contain; }
-    .left-logo-text .name { font-size: 1.2rem; font-weight: 800; color: #fff; }
+    .left-logo img { height: 64px; width: auto; object-fit: contain; }
+    .left-logo-text .name { font-size: 1.6rem; font-weight: 800; color: #fff; }
     .left-logo-text .name span { color: #7ec8f0; }
-    .left-logo-text .sub { font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
+    .left-logo-text .sub { font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
 
     .left-content { position: relative; z-index: 1; }
     .left-content h1 {
-      font-size: 2.8rem;
+      font-size: 4.5rem;
       font-weight: 900;
       color: #fff;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      line-height: 1.15;
+      margin-bottom: 12px;
       letter-spacing: -0.5px;
     }
     .left-content h1 span {
@@ -79,28 +80,38 @@
       100% { background-position: 200% center; }
     }
     .left-content p {
-      color: rgba(255,255,255,0.55);
-      font-size: 0.95rem;
-      line-height: 1.7;
-      margin-bottom: 40px;
+      color: rgba(255,255,255,0.6);
+      font-size: 1.3rem;
+      line-height: 1.8;
+      margin-bottom: 28px;
+      max-width: 520px;
     }
 
-    .left-features { display: flex; flex-direction: column; gap: 14px; }
+    .left-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      color: rgba(255,255,255,0.75);
-      font-size: 0.88rem;
+      gap: 14px;
+      color: rgba(255,255,255,0.85);
+      font-size: 1.2rem;
       font-weight: 500;
     }
     .feature-dot {
-      width: 8px; height: 8px;
+      width: 10px; height: 10px;
       background: #7ec8f0;
       border-radius: 50%;
       flex-shrink: 0;
-      box-shadow: 0 0 8px #7ec8f0;
+      box-shadow: 0 0 10px #7ec8f0;
     }
+    .left-stats {
+      display: flex;
+      gap: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .left-stat .num { font-size: 2.6rem; font-weight: 800; color: #fff; line-height: 1; }
+    .left-stat .num span { color: #7ec8f0; }
+    .left-stat .lbl { font-size: 0.9rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
 
     /* ── RIGHT PANEL ── */
     .right-panel {
@@ -110,11 +121,11 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 52px 48px;
+      padding: 48px 44px;
       overflow-y: auto;
     }
 
-    .form-header { margin-bottom: 36px; }
+    .form-header { margin-bottom: 24px; }
     .form-header h2 { font-size: 1.7rem; font-weight: 800; color: #1a2a3a; margin-bottom: 6px; }
     .form-header p  { font-size: 0.85rem; color: #6b7c93; }
 
@@ -124,13 +135,13 @@
       background: #f4f8fc;
       border-radius: 12px;
       padding: 4px;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
     .auth-tab {
       flex: 1;
-      padding: 10px;
+      padding: 9px;
       text-align: center;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #6b7c93;
       border-radius: 10px;
@@ -143,12 +154,12 @@
     .auth-tab.active { background: #fff; color: #1a4b8c; box-shadow: 0 2px 8px rgba(26,75,140,0.12); }
 
     /* Form groups */
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #1a2a3a; margin-bottom: 7px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #1a2a3a; margin-bottom: 6px; }
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 13px 16px;
+      padding: 12px 15px;
       border: 1.5px solid #dce8f5;
       border-radius: 12px;
       font-family: 'Poppins', sans-serif;
@@ -164,12 +175,12 @@
       box-shadow: 0 0 0 4px rgba(46,125,209,0.1);
     }
 
-    .forgot { text-align: right; margin-top: -10px; margin-bottom: 22px; }
+    .forgot { text-align: right; margin-top: -6px; margin-bottom: 16px; }
     .forgot a { font-size: 0.78rem; color: #2e7dd1; text-decoration: none; font-weight: 600; }
 
     .btn-submit {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       background: linear-gradient(135deg, #1a4b8c, #2e7dd1);
       color: #fff;
       border: none;
@@ -180,7 +191,7 @@
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(46,125,209,0.35);
       transition: transform 0.2s, box-shadow 0.2s;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,125,209,0.45); }
 
@@ -188,12 +199,12 @@
       background: #fff0f0;
       border: 1.5px solid #f5c6cb;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 9px 14px;
       color: #c0392b;
       font-size: 0.82rem;
       font-weight: 600;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: none;
     }
 
@@ -201,19 +212,19 @@
       background: #e6f9f0;
       border: 1.5px solid #a3e4c1;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 9px 14px;
       color: #1a7a4a;
       font-size: 0.82rem;
       font-weight: 600;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: none;
     }
 
     .divider {
       text-align: center;
       position: relative;
-      margin: 4px 0 16px;
+      margin: 4px 0 12px;
       color: #aab4c0;
       font-size: 0.78rem;
     }
@@ -243,6 +254,7 @@
 
     /* Responsive */
     @media (max-width: 900px) {
+      body { overflow-y: auto; height: auto; }
       .left-panel { display: none; }
       .right-panel { width: 100%; padding: 40px 28px; }
     }
@@ -268,6 +280,12 @@
         <div class="feature-item"><span class="feature-dot"></span>Access your personalised treatment plan</div>
         <div class="feature-item"><span class="feature-dot"></span>Join live online fitness classes</div>
         <div class="feature-item"><span class="feature-dot"></span>Chat with your doctor anytime</div>
+        <div class="feature-item"><span class="feature-dot"></span>View session feedback &amp; progress reports</div>
+        <div class="feature-item"><span class="feature-dot"></span>Home visit booking available</div>
+      </div>
+      <div class="left-stats">
+        <div class="left-stat"><div class="num">10<span>+</span></div><div class="lbl">Years Experience</div></div>
+        <div class="left-stat"><div class="num">2</div><div class="lbl">Expert Doctors</div></div>
       </div>
     </div>
   </div>

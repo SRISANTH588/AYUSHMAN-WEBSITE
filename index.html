@@ -224,6 +224,46 @@
         </form>
         <p class="oc-success" id="enrollSuccess"></p>
       </div>
+
+      <div class="oc-card" id="home-visit">
+        <!-- Left: info -->
+        <div>
+          <div class="oc-card-header">
+            <span class="oc-icon">🏠</span>
+            <div>
+              <h3>Home Visit</h3>
+              <p>Physiotherapist at your doorstep</p>
+            </div>
+          </div>
+          <ul class="oc-info-list" style="margin-top:16px;">
+            <li>📍 We come to you — at your preferred time</li>
+              <li>📅 Choose your date &amp; time slot</li>
+            <li>💬 Instant WhatsApp confirmation</li>
+            <li>🏥 Ideal for post-surgery &amp; elderly patients</li>
+          </ul>
+        </div>
+        <!-- Right: CTA -->
+        <div style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+          <a href="patient-dashboard.html#homevisit"
+             onclick="if(sessionStorage.getItem('loggedRole')!=='patient'){event.preventDefault();window.location.href='login.html';}"
+             style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 0;
+                    background:linear-gradient(135deg,#5c1a5c,#8b2e8b);color:white;border-radius:14px;
+                    text-decoration:none;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;
+                    box-shadow:0 4px 20px rgba(139,46,139,0.4);transition:opacity 0.2s;"
+             onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+            🏠 Book Home Visit
+          </a>
+          <a href="https://wa.me/916302478412?text=Hello%2C+I+want+to+book+a+Home+Visit" target="_blank"
+             style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 0;
+                    background:#25D366;color:white;border-radius:14px;
+                    text-decoration:none;font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:700;
+                    box-shadow:0 4px 16px rgba(37,211,102,0.35);transition:opacity 0.2s;"
+             onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+            💬 WhatsApp Us
+          </a>
+          <p style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-align:center;">📞 6302478412 &nbsp;&middot;&nbsp; Mon–Sat 9AM–9PM</p>
+        </div>
+      </div>
     </div>
   </section>
 

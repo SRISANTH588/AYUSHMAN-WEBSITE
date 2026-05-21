@@ -78,7 +78,7 @@
       <a onclick="showSection('schedule', this)">📅 My Schedule</a>
       <a onclick="showSection('slots', this)">🕐 Slot Assignment</a>
       <a onclick="showSection('queue', this)">👥 Customer Queue</a>
-      <a onclick="showSection('qr', this)">📷 QR Scanner</a>
+      <a onclick="showSection('register', this)">📋 Register Patient</a>
       <a onclick="showSection('patients', this)">🧑 My Patients</a>
       <a onclick="showSection('tracking', this)">📊 Pending/Completed</a>
       <a onclick="showSection('attendance', this)">✅ Attendance</a>
@@ -107,10 +107,15 @@
       </div>
       <div class="section-card">
         <h2>📅 Today's Schedule</h2>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="date" id="dashFilterDate" onchange="filterDashSchedule()" style="padding:9px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/>
+          <button onclick="document.getElementById('dashFilterDate').value='';filterDashSchedule()" style="padding:9px 18px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Clear</button>
+          <span id="dashFilterLabel" style="font-size:0.82rem;color:#6b7c93;"></span>
+        </div>
         <table>
-          <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="scheduleTable">
-            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments today</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">No appointments today</td></tr>
           </tbody>
         </table>
       </div>
@@ -121,55 +126,15 @@
       <div class="topbar"><div><h1>My Schedule</h1><p>Full appointment schedule</p></div></div>
       <div class="section-card">
         <h2>📅 All Scheduled Appointments</h2>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="date" id="scheduleFilterDate" onchange="filterSchedule()" style="padding:9px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;"/>
+          <button onclick="document.getElementById('scheduleFilterDate').value='';filterSchedule()" style="padding:9px 18px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Clear</button>
+          <span id="scheduleFilterLabel" style="font-size:0.82rem;color:#6b7c93;"></span>
+        </div>
         <table>
-          <thead><tr><th>Patient</th><th>Condition</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Patient</th><th>Condition</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="allScheduleTable">
-            <tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments scheduled</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- PATIENTS -->
-    <div class="section" id="sec-patients">
-      <div class="topbar"><div><h1>My Patients</h1><p>Patients assigned to you</p></div></div>
-      <div class="section-card">
-        <h2>🧑 Patient List</h2>
-        <table>
-          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Progress</th></tr></thead>
-          <tbody id="myPatientsTable">
-            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No patients assigned</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- NOTES -->
-    <div class="section" id="sec-notes">
-      <div class="topbar"><div><h1>Treatment Notes</h1><p>Add notes for your patients</p></div></div>
-      <div class="section-card">
-        <h2>📝 Add Note</h2>
-        <div class="form-group">
-          <label>Patient</label>
-          <select id="notePatient"><option value="">Select Patient</option></select>
-        </div>
-        <div class="form-group">
-          <label>Session Date</label>
-          <input type="date" id="noteDate"/>
-        </div>
-        <div class="form-group">
-          <label>Notes</label>
-          <textarea id="noteText" rows="4" placeholder="Enter treatment notes..."></textarea>
-        </div>
-        <button class="btn-primary" onclick="saveNote()">Save Note</button>
-        <p class="success-msg" id="noteSuccess">✅ Note saved successfully!</p>
-      </div>
-      <div class="section-card">
-        <h2>📋 Saved Notes</h2>
-        <table>
-          <thead><tr><th>Patient</th><th>Date</th><th>Notes</th></tr></thead>
-          <tbody id="notesTable">
-            <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">No appointments scheduled</td></tr>
           </tbody>
         </table>
       </div>
@@ -177,7 +142,7 @@
 
     <!-- SLOT ASSIGNMENT -->
     <div class="section" id="sec-slots">
-      <div class="topbar"><div><h1>Slot Assignment</h1><p>Assign time slots to patients</p></div></div>
+      <div class="topbar"><div><h1>Slot Assignment</h1><p>Assign time slots to patients who call or message</p></div></div>
       <div class="section-card">
         <h2>➕ Assign Slot</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
@@ -232,41 +197,128 @@
       </div>
     </div>
 
-    <!-- QR SCANNER -->
-    <div class="section" id="sec-qr">
-      <div class="topbar"><div><h1>QR / Barcode Scanner</h1><p>Scan patient QR to check in</p></div></div>
-      <div class="section-card" style="text-align:center;">
-        <h2>📷 Scan Patient QR</h2>
-        <div style="margin:24px auto;width:220px;height:220px;background:#f4f8fc;border:3px dashed #2e8b57;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
-          <div style="font-size:3rem;">📷</div>
-          <p style="font-size:0.82rem;color:#6b7c93;">Camera QR scan<br/>requires device camera</p>
+    <!-- REGISTER PATIENT -->
+    <div class="section" id="sec-register">
+      <div class="topbar"><div><h1>📋 Register Patient</h1><p>Log new patient details — visible to admin instantly</p></div></div>
+      <div class="section-card">
+        <h2>➕ New Patient Registration</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Full Name</label><input type="text" id="regPatName" placeholder="Patient full name"/></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="regPatPhone" placeholder="Phone number"/></div>
         </div>
-        <p style="color:#6b7c93;font-size:0.85rem;margin:12px 0;">— or enter token manually —</p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <input type="text" id="qrInput" placeholder="Enter Token # (e.g. #007)" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:220px;"/>
-          <button class="btn-primary" onclick="scanQR()">✅ Check In</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Age</label><input type="number" id="regPatAge" placeholder="Age" min="1" max="120"/></div>
+          <div class="form-group"><label>Gender</label>
+            <select id="regPatGender"><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select>
+          </div>
         </div>
-        <p class="success-msg" id="qrSuccess" style="display:none;margin-top:12px;"></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Condition / Reason for Visit</label><input type="text" id="regPatCondition" placeholder="e.g. Knee Pain, Stroke"/></div>
+          <div class="form-group"><label>Assigned Doctor</label>
+            <select id="regPatDoctor"><option>Dr. Durga Sowjanya</option><option>Dr. D. Ramachandra</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Occupation</label><input type="text" id="regPatOccupation" placeholder="Occupation"/></div>
+          <div class="form-group"><label>Visit Date</label><input type="date" id="regPatDate"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;"><label>Address</label>
+          <textarea id="regPatAddress" rows="2" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;resize:none;" placeholder="Patient full address"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;"><label>Additional Notes</label>
+          <textarea id="regPatNotes" rows="2" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;resize:none;" placeholder="Any additional notes..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="registerPatient()">Register Patient</button>
+        <p class="success-msg" id="regPatSuccess">✅ Patient registered! Admin has been notified.</p>
       </div>
       <div class="section-card">
-        <h2>📋 Today's Check-ins</h2>
+        <h2>📊 Recently Registered Patients</h2>
         <table>
-          <thead><tr><th>Token</th><th>Patient</th><th>Check-in Time</th><th>Status</th></tr></thead>
-          <tbody id="checkinTable">
-            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No check-ins yet</td></tr>
+          <thead><tr><th>Name</th><th>Phone</th><th>Age</th><th>Condition</th><th>Doctor</th><th>Date</th><th>Registered By</th></tr></thead>
+          <tbody id="regPatTable"><tr><td colspan="7" style="text-align:center;color:#6b7c93;">No patients registered yet</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section" id="sec-patients">
+      <div class="topbar"><div><h1>My Patients</h1><p>Patients assigned to you</p></div></div>
+      <div class="section-card">
+        <h2>🧑 Patient List</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Condition</th><th>Progress</th></tr></thead>
+          <tbody id="myPatientsTable">
+            <tr><td colspan="4" style="text-align:center;color:#6b7c93;">No patients assigned</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- NOTES -->
+    <div class="section" id="sec-notes">
+      <div class="topbar"><div><h1>Treatment Notes</h1><p>Add notes for your patients</p></div></div>
+      <div class="section-card">
+        <h2>📝 Add Note</h2>
+        <div class="form-group">
+          <label>Patient</label>
+          <select id="notePatient"><option value="">Select Patient</option></select>
+        </div>
+        <div class="form-group">
+          <label>Session Date</label>
+          <input type="date" id="noteDate"/>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="noteText" rows="4" placeholder="Enter treatment notes..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="saveNote()">Save Note</button>
+        <p class="success-msg" id="noteSuccess">✅ Note saved successfully!</p>
+      </div>
+      <div class="section-card">
+        <h2>📋 Saved Notes</h2>
+        <table>
+          <thead><tr><th>Patient</th><th>Date</th><th>Notes</th></tr></thead>
+          <tbody id="notesTable">
+            <tr><td colspan="3" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+    <!-- CUSTOMER QUEUE -->
+    <div class="section" id="sec-queue">
+      <div class="topbar"><div><h1>Customer Queue</h1><p>Live walk-in patient queue</p></div></div>
+      <div class="section-card">
+        <h2>➕ Add to Queue</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label>Patient Name</label><input type="text" id="qPatient" placeholder="Patient name"/></div>
+          <div class="form-group"><label>Condition</label><input type="text" id="qCondition" placeholder="Condition"/></div>
+        </div>
+        <button class="btn-primary" onclick="addToQueue()">Add to Queue</button>
+        <p class="success-msg" id="qSuccess">✅ Added to queue!</p>
+      </div>
+      <div class="section-card">
+        <h2>👥 Live Queue</h2>
+        <table>
+          <thead><tr><th>Position</th><th>Patient</th><th>Condition</th><th>Wait Time</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="queueTable">
+            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">Queue is empty</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
     <!-- PENDING / COMPLETED TRACKING -->
     <div class="section" id="sec-tracking">
       <div class="topbar"><div><h1>Pending / Completed</h1><p>Track session status</p></div></div>
       <div class="stats">
-        <div class="stat-card"><div class="icon">⏳</div><h3 id="pendingCount">3</h3><p>Pending</p></div>
-        <div class="stat-card"><div class="icon">✅</div><h3 id="doneCount">1</h3><p>Completed</p></div>
-        <div class="stat-card"><div class="icon">📅</div><h3>4</h3><p>Total Today</p></div>
-        <div class="stat-card"><div class="icon">📊</div><h3>25%</h3><p>Completion Rate</p></div>
+        <div class="stat-card"><div class="icon">⏳</div><h3 id="pendingCount">0</h3><p>Pending</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="doneCount">0</h3><p>Completed</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="totalTodayTracking">0</h3><p>Total Today</p></div>
+        <div class="stat-card"><div class="icon">📊</div><h3 id="completionRate">0%</h3><p>Completion Rate</p></div>
       </div>
       <div class="section-card">
         <h2>⏳ Pending Sessions</h2>
@@ -555,6 +607,13 @@
             </div>
 
             <h2 class="op-form-title">Treatment Plan</h2>
+            <!-- OP Details block -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#f0f7ff;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-family:'Poppins',sans-serif;">
+              <div><span style="font-size:0.72rem;color:#6b7c93;font-weight:600;display:block;">OP No</span><span id="tpOpNo" style="font-weight:700;color:#1a4b8c;font-size:0.88rem;">—</span></div>
+              <div><span style="font-size:0.72rem;color:#6b7c93;font-weight:600;display:block;">Patient</span><span id="tpPatientName" style="font-weight:700;color:#1a2a3a;font-size:0.88rem;">—</span></div>
+              <div><span style="font-size:0.72rem;color:#6b7c93;font-weight:600;display:block;">Doctor</span><span id="tpDoctor" style="font-weight:700;color:#1a2a3a;font-size:0.88rem;">—</span></div>
+              <div><span style="font-size:0.72rem;color:#6b7c93;font-weight:600;display:block;">Condition</span><span id="tpCondition" style="font-weight:700;color:#1a2a3a;font-size:0.88rem;">—</span></div>
+            </div>
             <div class="op-row">
               <span class="op-label">PT Name/G/Age:</span><input class="op-inline" id="opTpName" readonly/>
               <span class="op-label">Diagnosis:</span><input class="op-inline op-wide" id="opTpDiagnosis"/>
@@ -653,7 +712,8 @@
       const d = document.getElementById('noteDate').value;
       const n = document.getElementById('noteText').value.trim();
       if (!d || !n) return alert('Please fill all fields.');
-      await addDoc(collection(db, 'notes'), { patient: p, date: d, note: n, createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'notes'), { patient: p, date: d, note: n, staffName: sessionStorage.getItem('loggedName')||'Staff', createdAt: serverTimestamp() });
+      await logActivity('note', `Added note for ${p} on ${d}`);
       document.getElementById('noteText').value = '';
       document.getElementById('noteDate').value = '';
       const msg = document.getElementById('noteSuccess');
@@ -667,7 +727,8 @@
       const t = document.getElementById('slotTime').value;
       const c = document.getElementById('slotCondition').value.trim();
       if (!p || !d || !c) return alert('Please fill all fields.');
-      await addDoc(collection(db, 'slots'), { patient: p, date: d, time: t, condition: c, status: 'Pending', createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'slots'), { patient: p, date: d, time: t, condition: c, status: 'Pending', staffName: sessionStorage.getItem('loggedName')||'Staff', createdAt: serverTimestamp() });
+      await logActivity('slot', `Assigned slot for ${p} on ${d} at ${t}`);
       document.getElementById('slotPatient').value = '';
       document.getElementById('slotCondition').value = '';
       document.getElementById('slotDate').value = '';
@@ -684,7 +745,8 @@
       const p = document.getElementById('qPatient').value.trim();
       const c = document.getElementById('qCondition').value.trim();
       if (!p || !c) return alert('Please fill all fields.');
-      await addDoc(collection(db, 'queue'), { patient: p, condition: c, status: 'Pending', createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'queue'), { patient: p, condition: c, status: 'Pending', staffName: sessionStorage.getItem('loggedName')||'Staff', createdAt: serverTimestamp() });
+      await logActivity('queue', `Added ${p} to walk-in queue (${c})`);
       document.getElementById('qPatient').value = '';
       document.getElementById('qCondition').value = '';
       const msg = document.getElementById('qSuccess');
@@ -726,7 +788,8 @@
       const s = document.getElementById('attSession').value.trim();
       const st = document.getElementById('attStatus').value;
       if (!d || !s) return alert('Please fill all fields.');
-      await addDoc(collection(db, 'attendance'), { patient: p, session: s, date: d, status: st, createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'attendance'), { patient: p, session: s, date: d, status: st, staffName: sessionStorage.getItem('loggedName')||'Staff', createdAt: serverTimestamp() });
+      await logActivity('attendance', `Marked ${p} as ${st} for ${s} on ${d}`);
       document.getElementById('attDate').value = '';
       document.getElementById('attSession').value = '';
       const msg = document.getElementById('attSuccess');
@@ -752,7 +815,8 @@
       const ti = document.getElementById('sesTime').value;
       const l = document.getElementById('sesLink').value.trim();
       if (!t || !d || !ti) return alert('Please fill all fields.');
-      await addDoc(collection(db, 'sessions'), { title: t, type: ty, date: d, time: ti, link: l || null, createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'sessions'), { title: t, type: ty, date: d, time: ti, link: l || null, staffName: sessionStorage.getItem('loggedName')||'Staff', createdAt: serverTimestamp() });
+      await logActivity('session', `Scheduled ${ty} session: ${t} on ${d} at ${ti}`);
       document.getElementById('sesTitle').value = '';
       document.getElementById('sesDate').value = '';
       document.getElementById('sesTime').value = '';
@@ -784,6 +848,7 @@
 
       // Auto send WhatsApp to patient
       notifyPatient(phone, name, date, time, doctor);
+      logActivity('homevisit', `Assigned home visit for ${name} on ${date} at ${time} – Dr. ${doctor}`);
 
       document.getElementById('hvStaffName').value = '';
       document.getElementById('hvStaffPhone').value = '';
@@ -839,42 +904,229 @@ _We keep you moving..._`;
             <td>${t.condition || '—'}</td>
             <td><span style="background:${t.source==='online'?'#d4edda':'#fff3cd'};color:${t.source==='online'?'#155724':'#856404'};padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${t.source === 'online' ? '🌐 Online' : '🏥 Clinic'}</span></td>
             <td><span class="badge ${statusClass}">${t.status || 'waiting'}</span></td>
-            <td style="display:flex;gap:6px;">
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
               <button onclick="updateStaffToken('${d.id}','called')" style="padding:4px 10px;background:#2e7dd1;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Call</button>
               <button onclick="updateStaffToken('${d.id}','completed')" style="padding:4px 10px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Done</button>
+              ${(t.status === 'called' || t.status === 'in-session') ? `<button onclick="openOPFromToken(${JSON.stringify({name:t.patientName||'',phone:t.patientPhone||'',condition:t.condition||'',doctor:t.doctor||'',bookingId:t.bookingId||''}).replace(/"/g,'&quot;')})" style="padding:4px 10px;background:#8e44ad;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">📋 OP Form</button>` : ''}
             </td>
           </tr>`);
       });
       if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#6b7c93;">No tokens today</td></tr>';
     });
 
+    window.registerPatient = async function() {
+      const name       = document.getElementById('regPatName').value.trim();
+      const phone      = document.getElementById('regPatPhone').value.trim();
+      const age        = document.getElementById('regPatAge').value.trim();
+      const gender     = document.getElementById('regPatGender').value;
+      const condition  = document.getElementById('regPatCondition').value.trim();
+      const doctor     = document.getElementById('regPatDoctor').value;
+      const occupation = document.getElementById('regPatOccupation').value.trim();
+      const date       = document.getElementById('regPatDate').value;
+      const address    = document.getElementById('regPatAddress').value.trim();
+      const notes      = document.getElementById('regPatNotes').value.trim();
+      const staffName  = sessionStorage.getItem('loggedName') || 'Staff';
+      if (!name || !phone || !condition || !date) return alert('Please fill Name, Phone, Condition and Date.');
+      try {
+        await addDoc(collection(db, 'patients'), {
+          name, phone, age, gender, condition, doctor,
+          occupation, address, notes,
+          visitDate: date,
+          registeredBy: staffName,
+          createdAt: serverTimestamp()
+        });
+        await logActivity('register', `Registered new patient: ${name} (${condition}) – Dr. ${doctor}`);
+        document.getElementById('regPatName').value = '';
+        document.getElementById('regPatPhone').value = '';
+        document.getElementById('regPatAge').value = '';
+        document.getElementById('regPatGender').value = '';
+        document.getElementById('regPatCondition').value = '';
+        document.getElementById('regPatOccupation').value = '';
+        document.getElementById('regPatDate').value = '';
+        document.getElementById('regPatAddress').value = '';
+        document.getElementById('regPatNotes').value = '';
+        const msg = document.getElementById('regPatSuccess');
+        msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 4000);
+      } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // Load registered patients
+    // Load Pending/Completed from real appointments
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
+      const pendingTbody   = document.getElementById('pendingTable');
+      const completedTbody = document.getElementById('completedTable');
+      if (!pendingTbody || !completedTbody) return;
+      pendingTbody.innerHTML = '';
+      completedTbody.innerHTML = '';
+      let pending = 0, completed = 0, total = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        if (!a.date) return;
+        if (a.date !== todayStr) return;
+        total++;
+        const isCompleted = (a.status||'').toLowerCase() === 'completed';
+        if (isCompleted) {
+          completed++;
+          completedTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.time||''}</td><td><span class="badge completed">Completed</span></td></tr>`);
+        } else {
+          pending++;
+          pendingTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.time||''}</td><td><button class="btn-done" onclick="completeSess(this)">Mark Done</button></td></tr>`);
+        }
+      });
+      if (!pendingTbody.innerHTML)   pendingTbody.innerHTML   = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No pending sessions</td></tr>';
+      if (!completedTbody.innerHTML) completedTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No completed sessions yet</td></tr>';
+      document.getElementById('pendingCount').textContent      = pending;
+      document.getElementById('doneCount').textContent         = completed;
+      document.getElementById('totalTodayTracking').textContent = total;
+      document.getElementById('completionRate').textContent    = total > 0 ? Math.round((completed/total)*100) + '%' : '0%';
+    });
+
+    onSnapshot(query(collection(db, 'patients'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('regPatTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7c93;">No patients registered yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const p = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td><strong>${p.name||''}</strong></td><td>${p.phone||''}</td><td>${p.age||''}</td><td>${p.condition||''}</td><td>${p.doctor||''}</td><td>${p.visitDate||''}</td><td style="font-size:0.78rem;color:#6b7c93;">${p.registeredBy||'Staff'}</td></tr>`);
+      });
+    });
+
+    async function logActivity(type, details) {
+      const staffName = sessionStorage.getItem('loggedName') || 'Staff';
+      const date = new Date().toISOString().slice(0,10);
+      try {
+        await addDoc(collection(db, 'staffActivity'), { type, details, staffName, date, createdAt: serverTimestamp() });
+      } catch(e) {}
+    }
+
     window.updateStaffToken = async function(id, status) {
       await updateDoc(doc(db, 'tokens', id), { status });
+      await logActivity('token', `Token ${id} marked as ${status}`);
+    };
+
+    window.openOPFromToken = function(patientData) {
+      // Switch to OP Form section
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById('sec-opform').classList.add('active');
+      document.querySelector('[onclick*="opform"]')?.classList.add('active');
+      // Find matching appointment or create a temp entry
+      const match = _opDocs.findIndex(a =>
+        (a.phone && a.phone === patientData.phone) ||
+        (a.bookingId && a.bookingId === patientData.bookingId)
+      );
+      if (match >= 0) {
+        window.openOPForm(match);
+      } else {
+        // No online appointment — open blank OP form pre-filled with token data
+        const opNo = 'OP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('opUniqueNo').textContent = opNo;
+        document.getElementById('opBookingId').value      = patientData.bookingId || '';
+        document.getElementById('opName').value           = patientData.name || '';
+        document.getElementById('opAge').value            = '';
+        document.getElementById('opPhone').value          = patientData.phone || '';
+        document.getElementById('opOccupation').value     = '';
+        document.getElementById('opAddress').value        = '';
+        document.getElementById('opCondition').value      = patientData.condition || '';
+        document.getElementById('opDate').value           = new Date().toLocaleDateString('en-IN');
+        document.getElementById('opTpName').value         = patientData.name || '';
+        document.getElementById('opTpDate').value         = new Date().toISOString().slice(0,10);
+        const _tpOpNo2 = document.getElementById('tpOpNo'); if(_tpOpNo2) _tpOpNo2.textContent = patientData.bookingId || '—';
+        const _tpPt2   = document.getElementById('tpPatientName'); if(_tpPt2) _tpPt2.textContent = patientData.name || '—';
+        const _tpDr2   = document.getElementById('tpDoctor'); if(_tpDr2) _tpDr2.textContent = patientData.doctor || '—';
+        const _tpCond2 = document.getElementById('tpCondition'); if(_tpCond2) _tpCond2.textContent = patientData.condition || '—';
+        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        ['opSessionTable1','opSessionTable2'].forEach(id => {
+          const t = document.getElementById(id);
+          t.innerHTML = '<tr>' + days.map(d => `<th>${d}</th>`).join('') + '</tr>';
+          for (let r = 0; r < 5; r++) t.innerHTML += '<tr>' + days.map(() => '<td></td>').join('') + '</tr>';
+        });
+        document.getElementById('opFormWrap').classList.add('show');
+        document.getElementById('opFormWrap').scrollIntoView({ behavior: 'smooth' });
+      }
     };
 
     // Load today's appointments assigned to this staff/doctor
+    let _allAppointments = [];
+
+    window.filterDashSchedule = function() {
+      const filterDate = document.getElementById('dashFilterDate').value;
+      const tbody = document.getElementById('scheduleTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const filtered = filterDate
+        ? _allAppointments.filter(a => (a.date||'').trim() === filterDate.trim())
+        : _allAppointments.filter(a => (a.date||'').trim() === todayStr);
+      const label = document.getElementById('dashFilterLabel');
+      label.textContent = filterDate
+        ? `Showing ${filtered.length} appointment(s) for ${new Date(filterDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}`
+        : `Today: ${filtered.length} appointment(s)`;
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No appointments found</td></tr>'; return; }
+      filtered.forEach(a => {
+        const isCompleted = (a.status||'').toLowerCase() === 'completed';
+        const statusClass = isCompleted ? 'completed' : (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : 'pending';
+        const encoded = encodeURIComponent(JSON.stringify({name:a.name||a.patientName||'',phone:a.phone||'',condition:a.condition||'',date:a.date||'',time:a.time||'',bookingId:a.bookingId||''}));
+        const viewBtn = `<button onclick="viewPatient('${encoded}')" style="margin-left:6px;padding:4px 10px;background:#1a4b8c;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">&#128065; View</button>`;
+        const actionCell = isCompleted ? `<td>${viewBtn}</td>` : `<td><button class="btn-done" onclick="markDone(this)">Mark Done</button>${viewBtn}</td>`;
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.date||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td>${actionCell}</tr>`);
+      });
+    };
+
+    window.viewPatient = function(encoded) {
+      const data = JSON.parse(decodeURIComponent(encoded));
+      const params = new URLSearchParams(data);
+      window.open('patient-history.html?' + params.toString(), '_blank');
+    };
+
+    window.filterSchedule = function() {
+      const filterDate = document.getElementById('scheduleFilterDate').value;
+      const allTbody = document.getElementById('allScheduleTable');
+      if (!allTbody) return;
+      allTbody.innerHTML = '';
+      const filtered = filterDate
+        ? _allAppointments.filter(a => (a.date || '').trim() === filterDate.trim())
+        : _allAppointments;
+      const label = document.getElementById('scheduleFilterLabel');
+      label.textContent = filterDate
+        ? `Showing ${filtered.length} appointment(s) for ${new Date(filterDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}`
+        : `Showing all ${_allAppointments.length} appointment(s)`;
+      if (!filtered.length) {
+        allTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No appointments found for this date</td></tr>';
+        return;
+      }
+      filtered.forEach(a => {
+        const isCompleted = (a.status||'').toLowerCase() === 'completed';
+        const statusClass = isCompleted ? 'completed' : (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : 'pending';
+        const encoded2 = encodeURIComponent(JSON.stringify({name:a.name||a.patientName||'',phone:a.phone||'',condition:a.condition||'',date:a.date||'',time:a.time||'',bookingId:a.bookingId||''}));
+        const viewBtn2 = `<button onclick="viewPatient('${encoded2}')" style="margin-left:6px;padding:4px 10px;background:#1a4b8c;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">&#128065; View</button>`;
+        const actionCell2 = isCompleted ? `<td>${viewBtn2}</td>` : `<td><button class="btn-done" onclick="markDone(this)">Mark Done</button>${viewBtn2}</td>`;
+        allTbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.date||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td>${actionCell2}</tr>`);
+      });
+    };
+
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {
       const schedTbody = document.getElementById('scheduleTable');
       const allTbody   = document.getElementById('allScheduleTable');
       if (!schedTbody) return;
-      schedTbody.innerHTML = '';
-      if (allTbody) allTbody.innerHTML = '';
+      _allAppointments = [];
       let total = 0, completed = 0;
       snap.forEach(d => {
         const a = d.data();
         if (!a.date) return;
+        _allAppointments.push(a);
         total++;
         const isCompleted = (a.status||'').toLowerCase() === 'completed';
         if (isCompleted) completed++;
-        const statusClass = isCompleted ? 'completed' : (a.status||'').toLowerCase() === 'confirmed' ? 'confirmed' : 'pending';
-        const actionBtn = isCompleted ? '<td>—</td>' : '<td><button class="btn-done" onclick="markDone(this)">Mark Done</button></td>';
-        const row = `<tr><td>${a.name||a.patientName||''}</td><td>${a.condition||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td>${actionBtn}</tr>`;
-        if (a.date === todayStr) schedTbody.insertAdjacentHTML('beforeend', row);
-        if (allTbody) allTbody.insertAdjacentHTML('beforeend', row);
       });
-      if (!schedTbody.innerHTML) schedTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments today</td></tr>';
-      if (allTbody && !allTbody.innerHTML) allTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments scheduled</td></tr>';
-      document.getElementById('totalToday').textContent  = document.querySelectorAll('#scheduleTable tr').length;
+      filterDashSchedule();
+      filterSchedule();
+      document.getElementById('totalToday').textContent = _allAppointments.filter(a => a.date === todayStr).length;
       document.getElementById('completedCount').textContent = completed;
       document.getElementById('remainingCount').textContent = total - completed;
     });
@@ -1083,6 +1335,11 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
     document.getElementById('opDate').value            = (a.date || '') + ' ' + (a.time || '');
     document.getElementById('opTpName').value          = (a.name || '') + ' / ' + (a.age || '');
     document.getElementById('opTpDate').value          = a.date || '';
+    // Populate OP details block in Treatment Plan
+    const _tpOpNo = document.getElementById('tpOpNo'); if(_tpOpNo) _tpOpNo.textContent = a.bookingId || '—';
+    const _tpPt   = document.getElementById('tpPatientName'); if(_tpPt) _tpPt.textContent = a.name || '—';
+    const _tpDr   = document.getElementById('tpDoctor'); if(_tpDr) _tpDr.textContent = a.doctor || '—';
+    const _tpCond = document.getElementById('tpCondition'); if(_tpCond) _tpCond.textContent = a.condition || '—';
     // Build session tables
     const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     ['opSessionTable1','opSessionTable2'].forEach(id => {
@@ -1168,7 +1425,9 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
         await addDoc(collection(db, 'op_forms'), collectOPData('draft'));
       }
       const m = document.getElementById('opSaveMsg');
-      m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);
+      m.style.display = 'block';
+      logActivity('op_form', `Saved OP draft for booking ${bookingId}`);
+      setTimeout(() => m.style.display = 'none', 3000);
     } catch(e) { alert('Save failed: ' + e.message); }
   };
 
@@ -1182,6 +1441,7 @@ function doLogout(){sessionStorage.clear();window.location.href='login.html';}
       const snap = await getDocs(q(collection(db, 'op_forms'), where('bookingId','==',data.bookingId), where('status','==','draft')));
       snap.forEach(async d => await deleteDoc(doc(db, 'op_forms', d.id)));
       await addDoc(collection(db, 'op_forms'), data);
+      logActivity('op_form', `Submitted OP form for booking ${data.bookingId} – Patient: ${data.name}`);
       alert('✅ OP Form sent to Admin successfully!');
       window.closeOPForm();
     } catch(e) { alert('Failed to send: ' + e.message); }

@@ -201,10 +201,22 @@
     <!-- TREATMENT -->
     <div class="section" id="sec-treatment">
       <div class="topbar"><div><h1>Treatment Plan</h1><p>Your personalized recovery plan</p></div></div>
+      <div class="section-card" id="opDetailsCard" style="display:none;">
+        <h2>📋 OP Details</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:0.88rem;">
+          <div><span style="color:#6b7c93;font-weight:600;">OP No</span><br/><span id="treatOpNo" style="font-weight:700;color:#8b2e8b;">—</span></div>
+          <div><span style="color:#6b7c93;font-weight:600;">Doctor</span><br/><span id="treatDoctor">—</span></div>
+          <div><span style="color:#6b7c93;font-weight:600;">Condition</span><br/><span id="treatCondition">—</span></div>
+        </div>
+      </div>
       <div class="section-card">
         <h2>💊 Current Treatment Plan</h2>
         <p style="color:#6b7c93; font-size:0.88rem; margin-bottom:20px;">Assigned by Dr. Durga Sowjanya</p>
         <p style="color:#6b7c93;font-size:0.88rem;margin-top:12px;">No treatment plan assigned yet. Please contact your doctor.</p>
+      </div>
+      <div class="section-card" id="doctorFeedbackCard" style="display:none;">
+        <h2>🩺 Doctor's Follow-up Feedback</h2>
+        <div id="doctorFeedbackList" style="display:flex;flex-direction:column;gap:12px;"></div>
       </div>
           </div>
           <div>
@@ -420,6 +432,14 @@
     <!-- SESSIONS -->
     <div class="section" id="sec-sessions">
       <div class="topbar"><div><h1>Sessions</h1><p>Online & offline class schedule</p></div></div>
+      <div class="section-card" id="sessOpDetailsCard" style="display:none;">
+        <h2>📋 OP Details</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:0.88rem;">
+          <div><span style="color:#6b7c93;font-weight:600;">OP No</span><br/><span id="sessOpNo" style="font-weight:700;color:#8b2e8b;">—</span></div>
+          <div><span style="color:#6b7c93;font-weight:600;">Doctor</span><br/><span id="sessDoctor">—</span></div>
+          <div><span style="color:#6b7c93;font-weight:600;">Condition</span><br/><span id="sessCondition">—</span></div>
+        </div>
+      </div>
       <div class="section-card">
         <h2>💻 Upcoming Online Sessions</h2>
         <table><thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Doctor</th><th>Join</th></tr></thead>
@@ -630,6 +650,40 @@
     }
 
     checkEnrollmentAndLoadVideos();
+
+    // Load latest confirmed appointment OP details
+    (async function loadOpDetails() {
+      const snap = await getDocs(query(collection(db, 'appointments'),
+        where('phone', '==', patientPhone), where('status', '==', 'confirmed')));
+      if (snap.empty) return;
+      // pick most recent
+      let latest = null;
+      snap.forEach(d => { const a = d.data(); if (!latest || (a.createdAt > latest.createdAt)) latest = a; });
+      if (!latest || !latest.bookingId) return;
+      ['treatOpNo','sessOpNo'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=latest.bookingId; });
+      ['treatDoctor','sessDoctor'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=latest.doctor||''; });
+      ['treatCondition','sessCondition'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=latest.condition||''; });
+      ['opDetailsCard','sessOpDetailsCard'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='block'; });
+    })();
+
+    // Load doctor follow-up feedback for this patient
+    onSnapshot(query(collection(db, 'doctorFeedback'), where('patientPhone','==',patientPhone)), snap => {
+      if (snap.empty) return;
+      const card = document.getElementById('doctorFeedbackCard');
+      const list = document.getElementById('doctorFeedbackList');
+      if (!card || !list) return;
+      list.innerHTML = '';
+      snap.forEach(d => {
+        const fb = d.data();
+        const date = fb.createdAt && fb.createdAt.toDate ? fb.createdAt.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
+        list.insertAdjacentHTML('beforeend',
+          `<div style="background:#f9f0f9;border-left:4px solid #8b2e8b;border-radius:10px;padding:14px 16px;">`+
+          `<div style="font-size:0.82rem;font-weight:700;color:#8b2e8b;margin-bottom:4px;">Session ${fb.sessionNo||''} — ${date}</div>`+
+          `<div style="font-size:0.88rem;color:#1a2a3a;">${fb.note||''}</div>`+
+          `<div style="font-size:0.78rem;color:#6b7c93;margin-top:4px;">🧑‍⚕️ ${fb.doctorName||'Doctor'}</div></div>`);
+      });
+      card.style.display = 'block';
+    });
 
     // Load real appointments for this patient
     onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt', 'desc')), snap => {

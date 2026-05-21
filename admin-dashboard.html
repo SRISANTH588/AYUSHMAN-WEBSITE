@@ -37,7 +37,7 @@
     .topbar p { font-size: 0.85rem; color: #6b7c93; margin-top: 4px; }
     .welcome-badge { background: #1a4b8c; color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
 
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 32px; }
     .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(26,75,140,0.08); }
     .stat-card .icon { font-size: 2rem; margin-bottom: 12px; }
     .stat-card h3 { font-size: 1.8rem; font-weight: 700; color: #1a4b8c; }
@@ -100,6 +100,10 @@
       <a onclick="showSection('op_forms', this)">📄 OP Forms</a>
       <a onclick="showSection('enrollments', this)">🏋️ Fitness Enrollments</a>
       <a onclick="showSection('slots', this)">🕐 Manage Slots</a>
+      <a onclick="showSection('staff_activity', this)">🕵️ Staff Activity Log</a>
+      <a onclick="showSection('staff_attendance', this)">✅ Staff Attendance</a>
+      <a onclick="showSection('staff_notes', this)">📝 Staff Notes</a>
+      <a onclick="showSection('staff_queue', this)">👥 Staff Queue Log</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
     </nav>
   </div>
@@ -124,6 +128,7 @@
         <div class="stat-card"><div class="icon">🧑</div><h3 id="totalPatients">0</h3><p>Total Patients</p></div>
         <div class="stat-card"><div class="icon">👨⚕️</div><h3 id="totalStaff">0</h3><p>Active Staff</p></div>
         <div class="stat-card"><div class="icon">✅</div><h3 id="completedToday">0</h3><p>Completed Today</p></div>
+        <div class="stat-card"><div class="icon">🔁</div><h3 id="totalFollowUps">0</h3><p>Total Follow-ups</p></div>
       </div>
       <div class="section-card">
         <h2>📅 Recent Appointments</h2>
@@ -178,7 +183,7 @@
         <table>
           <thead><tr><th>Patient</th><th>Condition</th><th>Doctor</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="apptTable">
-            <tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:#6b7c93;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -672,14 +677,103 @@
         <h2>⭐ All Feedback</h2>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>OP No</th><th>Patient</th><th>Session</th><th>🩺 Treatment</th><th>💪 Condition</th><th>Date</th></tr></thead>
+            <thead><tr><th>OP No</th><th>Patient</th><th>Session</th><th>🩺 Treatment</th><th>💪 Condition</th><th>Date</th><th>Doctor Note</th></tr></thead>
             <tbody id="feedbackTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- RAZORPAY / PAYMENTS CONFIG -->
+    <!-- STAFF ACTIVITY LOG -->
+    <div class="section" id="sec-staff_activity">
+      <div class="topbar"><div><h1>🕵️ Staff Activity Log</h1><p>Every action performed by staff — real-time monitoring</p></div></div>
+      <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="icon">📝</div><h3 id="actTotal">0</h3><p>Total Actions</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="actToday">0</h3><p>Today's Actions</p></div>
+        <div class="stat-card"><div class="icon">👤</div><h3 id="actStaff">0</h3><p>Active Staff</p></div>
+      </div>
+      <div class="section-card">
+        <h2>📋 All Staff Actions</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <select id="actFilterStaff" onchange="filterActivity()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Staff</option>
+          </select>
+          <select id="actFilterType" onchange="filterActivity()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Actions</option>
+            <option value="token">Token</option>
+            <option value="attendance">Attendance</option>
+            <option value="note">Treatment Note</option>
+            <option value="slot">Slot Assignment</option>
+            <option value="queue">Queue</option>
+            <option value="homevisit">Home Visit</option>
+            <option value="op_form">OP Form</option>
+            <option value="session">Session</option>
+            <option value="register">Patient Registration</option>
+          </select>
+          <input type="date" id="actFilterDate" onchange="filterActivity()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;"/>
+          <button onclick="document.getElementById('actFilterDate').value='';document.getElementById('actFilterStaff').value='all';document.getElementById('actFilterType').value='all';filterActivity()" style="padding:8px 16px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Clear</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Staff</th><th>Action</th><th>Details</th><th>Time</th></tr></thead>
+            <tbody id="activityTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF ATTENDANCE -->
+    <div class="section" id="sec-staff_attendance">
+      <div class="topbar"><div><h1>✅ Staff Attendance Records</h1><p>All patient attendance marked by staff</p></div></div>
+      <div class="section-card">
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="date" id="attAdminFilter" onchange="filterAdminAtt()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;"/>
+          <button onclick="document.getElementById('attAdminFilter').value='';filterAdminAtt()" style="padding:8px 16px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Clear</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient</th><th>Session</th><th>Date</th><th>Status</th><th>Marked By</th></tr></thead>
+            <tbody id="adminAttTable"><tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF NOTES -->
+    <div class="section" id="sec-staff_notes">
+      <div class="topbar"><div><h1>📝 Staff Treatment Notes</h1><p>All treatment notes added by staff</p></div></div>
+      <div class="section-card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient</th><th>Date</th><th>Notes</th><th>Added By</th></tr></thead>
+            <tbody id="adminNotesTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF QUEUE LOG -->
+    <div class="section" id="sec-staff_queue">
+      <div class="topbar"><div><h1>👥 Staff Queue &amp; Slot Log</h1><p>All walk-in queue and slot assignments by staff</p></div></div>
+      <div class="section-card">
+        <h2>🕐 Slot Assignments</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient</th><th>Condition</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+            <tbody id="adminSlotTable"><tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <h2>👥 Walk-in Queue</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient</th><th>Condition</th><th>Status</th><th>Added At</th></tr></thead>
+            <tbody id="adminQueueTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
     <div class="section" id="sec-payments-config">
       <div class="topbar"><div><h1>Razorpay Keys</h1><p>Configure live Razorpay credentials used for real payments</p></div></div>
       <div class="section-card">
@@ -856,19 +950,21 @@
       const dashTbody = document.getElementById('dashRecentAppts');
       tbody.innerHTML = '';
       const todayStr = new Date().toISOString().slice(0,10);
-      let todayCount = 0, completedCount = 0, recentRows = '';
+      let todayCount = 0, completedCount = 0, followUpCount = 0, recentRows = '';
       snap.forEach(d => {
         const a = d.data();
         const statusClass = (a.status||'pending').toLowerCase() === 'confirmed' ? 'confirmed' : (a.status||'').toLowerCase() === 'completed' ? 'completed' : 'pending';
         tbody.insertAdjacentHTML('beforeend',
           `<tr><td>${a.patientName||a.name||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td><td><button class="btn-danger" onclick="deleteRow(this)">Delete</button></td></tr>`);
         if (a.date === todayStr) { todayCount++; if ((a.status||'').toLowerCase() === 'completed') completedCount++; }
+        if ((a.status||'').toLowerCase() === 'follow-up' || a.followUp === true) followUpCount++;
         if (recentRows.split('<tr>').length <= 6) recentRows += `<tr><td>${a.patientName||a.name||''}</td><td>${a.condition||''}</td><td>${a.doctor||''}</td><td>${a.time||''}</td><td><span class="badge ${statusClass}">${a.status||'Pending'}</span></td></tr>`;
       });
       if (dashTbody) dashTbody.innerHTML = recentRows || '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No appointments yet</td></tr>';
       document.getElementById('todayAppts') && (document.getElementById('todayAppts').textContent = todayCount);
       document.getElementById('completedToday') && (document.getElementById('completedToday').textContent = completedCount);
       document.getElementById('totalPatients') && (document.getElementById('totalPatients').textContent = snap.size);
+      document.getElementById('totalFollowUps') && (document.getElementById('totalFollowUps').textContent = followUpCount);
     });
 
     onSnapshot(collection(db, 'staff'), (snap) => {
@@ -1379,9 +1475,22 @@ _Ayushman PhysioFIT Rehabilitation Centre_
             <td style="text-align:center;font-size:1.4rem;" title="${f.treatmentLabel||''}">${ SMILEY_MAP[f.treatmentRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.treatmentLabel||''}</span></td>
             <td style="text-align:center;font-size:1.4rem;" title="${f.conditionLabel||''}">${ SMILEY_MAP[f.conditionRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.conditionLabel||''}</span></td>
             <td style="font-size:0.82rem;color:#6b7c93;">${date}</td>
+            <td><div style="display:flex;gap:6px;align-items:center;"><input type="text" id="dfb-${d.id}" value="${f.doctorNote||\'\'}" placeholder="Add note..." style="padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;width:140px;"/><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" data-id="${d.id}" data-phone="${f.patientPhone||\'\'}" data-name="${f.patientName||\'\'}" data-session="${f.sessionNo||0}" onclick="saveDoctorNote(this.dataset.id,this.dataset.phone,this.dataset.name,this.dataset.session)">Save</button></div></td>
           </tr>`);
       });
     });
+
+    window.saveDoctorNote = async function(docId, patientPhone, patientName, sessionNo) {
+      const note = document.getElementById('dfb-' + docId).value.trim();
+      if (!note) return alert('Enter a note.');
+      await updateDoc(doc(db, 'sessionFeedback', docId), { doctorNote: note });
+      const existing = await getDocs(query(collection(db,'doctorFeedback'),where('feedbackDocId','==',docId)));
+      const payload = { feedbackDocId:docId, patientPhone, patientName, sessionNo,
+        note, doctorName: sessionStorage.getItem('loggedName')||'Doctor', createdAt: serverTimestamp() };
+      if (existing.empty) await addDoc(collection(db,'doctorFeedback'), payload);
+      else await updateDoc(doc(db,'doctorFeedback',existing.docs[0].id), { note, doctorName: payload.doctorName });
+      alert('Note saved.');
+    };
 
     window.saveRzpKeys = async function() {
       const keyId     = document.getElementById('rzpKeyId').value.trim();
@@ -1809,6 +1918,108 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       try { await signOut(auth); } catch(e) {}
       sessionStorage.clear(); window.location.href = 'login.html';
     }
+
+    // ── STAFF ACTIVITY MONITORING ─────────────────────────────────────────
+    let _actDocs = [];
+    const todayStr2 = new Date().toISOString().slice(0,10);
+
+    window.filterActivity = function() {
+      const staffF = document.getElementById('actFilterStaff').value;
+      const typeF  = document.getElementById('actFilterType').value;
+      const dateF  = document.getElementById('actFilterDate').value;
+      const tbody  = document.getElementById('activityTable');
+      if (!tbody) return;
+      let filtered = _actDocs;
+      if (staffF !== 'all') filtered = filtered.filter(d => d.staffName === staffF);
+      if (typeF  !== 'all') filtered = filtered.filter(d => d.type === typeF);
+      if (dateF)            filtered = filtered.filter(d => (d.date||'') === dateF);
+      tbody.innerHTML = '';
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No activity found</td></tr>'; return; }
+      filtered.forEach(d => {
+        const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('en-IN') : '—';
+        const typeBadge = `<span style="background:#e8f0fb;color:#1a4b8c;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">${d.type||''}</span>`;
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td><strong>${d.staffName||'Staff'}</strong></td><td>${typeBadge}</td><td>${d.details||''}</td><td style="font-size:0.78rem;color:#6b7c93;">${time}</td></tr>`);
+      });
+    };
+
+    onSnapshot(query(collection(db, 'staffActivity'), orderBy('createdAt', 'desc')), snap => {
+      _actDocs = [];
+      const staffSet = new Set();
+      let todayCount = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        _actDocs.push(a);
+        if (a.staffName) staffSet.add(a.staffName);
+        if ((a.date||'') === todayStr2) todayCount++;
+      });
+      document.getElementById('actTotal') && (document.getElementById('actTotal').textContent = _actDocs.length);
+      document.getElementById('actToday') && (document.getElementById('actToday').textContent = todayCount);
+      document.getElementById('actStaff') && (document.getElementById('actStaff').textContent = staffSet.size);
+      const sel = document.getElementById('actFilterStaff');
+      if (sel) {
+        const cur = sel.value;
+        sel.innerHTML = '<option value="all">All Staff</option>' + [...staffSet].map(s => `<option value="${s}">${s}</option>`).join('');
+        sel.value = cur;
+      }
+      filterActivity();
+    });
+
+    let _adminAttDocs = [];
+    window.filterAdminAtt = function() {
+      const dateF = document.getElementById('attAdminFilter').value;
+      const tbody = document.getElementById('adminAttTable');
+      if (!tbody) return;
+      const filtered = dateF ? _adminAttDocs.filter(d => d.date === dateF) : _adminAttDocs;
+      tbody.innerHTML = '';
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No records found</td></tr>'; return; }
+      filtered.forEach(d => {
+        const badge = d.status === 'Present' ? 'confirmed' : 'pending';
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${d.patient||''}</td><td>${d.session||''}</td><td>${d.date||''}</td><td><span class="badge ${badge}">${d.status||''}</span></td><td>${d.staffName||'Staff'}</td></tr>`);
+      });
+    };
+    onSnapshot(query(collection(db, 'attendance'), orderBy('createdAt', 'desc')), snap => {
+      _adminAttDocs = snap.docs.map(d => d.data());
+      filterAdminAtt();
+    });
+
+    onSnapshot(query(collection(db, 'notes'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('adminNotesTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const n = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${n.patient||''}</td><td>${n.date||''}</td><td>${n.note||''}</td><td>${n.staffName||'Staff'}</td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'slots'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('adminSlotTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7c93;">No slots yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const s = d.data();
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${s.patient||''}</td><td>${s.condition||''}</td><td>${s.date||''}</td><td>${s.time||''}</td><td><span class="badge pending">${s.status||'Pending'}</span></td></tr>`);
+      });
+    });
+
+    onSnapshot(query(collection(db, 'queue'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('adminQueueTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">Queue is empty</td></tr>'; return; }
+      snap.forEach(d => {
+        const q = d.data();
+        const time = q.createdAt?.toDate ? q.createdAt.toDate().toLocaleString('en-IN') : '—';
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr><td>${q.patient||''}</td><td>${q.condition||''}</td><td><span class="badge pending">${q.status||'Pending'}</span></td><td style="font-size:0.78rem;color:#6b7c93;">${time}</td></tr>`);
+      });
+    });
   </script><script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
 <script>
 function toggleSidebar(){
