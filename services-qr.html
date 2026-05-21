@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Online Services – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 50%, #0d1b2a 100%);
+      min-height: 100vh; color: white;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center; padding: 36px 20px 24px;
+    }
+    .header img { height: 56px; margin-bottom: 10px; }
+    .header h1 { font-size: 1.5rem; font-weight: 800; }
+    .header h1 span { color: #7ec8f0; }
+    .header p { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+    /* CARDS GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .card:nth-child(1)::before { background: linear-gradient(90deg,#2e7dd1,#7ec8f0); }
+    .card:nth-child(2)::before { background: linear-gradient(90deg,#27ae60,#7ec8f0); }
+    .card:nth-child(3)::before { background: linear-gradient(90deg,#8b2e8b,#e040fb); }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+
+    .card-icon {
+      font-size: 2.2rem;
+      width: 58px; height: 58px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card h2 { font-size: 1.05rem; font-weight: 700; }
+    .card p  { font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+    .card ul {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 7px;
+      font-size: 0.82rem; color: rgba(255,255,255,0.8);
+    }
+
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 0; border-radius: 12px;
+      text-decoration: none; font-weight: 700; font-size: 0.92rem;
+      margin-top: auto; transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-blue  { background: linear-gradient(135deg,#1a4b8c,#2e7dd1); color: white; }
+    .btn-green { background: linear-gradient(135deg,#1a7a3c,#27ae60); color: white; }
+    .btn-purple{ background: linear-gradient(135deg,#5c1a5c,#8b2e8b); color: white; }
+
+    /* FOOTER NOTE */
+    .foot {
+      text-align: center; padding: 0 20px 40px;
+      font-size: 0.78rem; color: rgba(255,255,255,0.35);
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; padding: 0 16px 48px; gap: 16px; }
+      .header { padding: 28px 16px 20px; }
+      .header h1 { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT"/>
+    <h1>Ayushman <span>PhysioFIT</span></h1>
+    <p>Rehabilitation Centre · Vijayawada &nbsp;·&nbsp; 📞 6302478412</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1. Online Appointment -->
+    <div class="card">
+      <div class="card-icon">🗓️</div>
+      <h2>Online Appointment</h2>
+      <p>Book your physio session with our specialists from anywhere</p>
+      <ul>
+        <li>📅 Choose your preferred date &amp; time</li>
+        <li>🩺 Certified physiotherapists</li>
+        <li>✅ Instant confirmation via phone</li>
+        <li>📋 OP No &amp; Token assigned by admin</li>
+      </ul>
+      <a href="index.html#online-classes" class="btn btn-blue">🗓️ Book Appointment</a>
+    </div>
+
+    <!-- 2. Online Fitness Classes -->
+    <div class="card">
+      <div class="card-icon">🏋️</div>
+      <h2>Online Fitness Classes</h2>
+      <p>Expert-led physiotherapy fitness program — join from home</p>
+      <ul>
+        <li>🎯 Personalised for your condition</li>
+        <li>📅 3 Classes/week — Mon, Wed, Fri</li>
+        <li>💰 Monthly Plan: ₹2,400</li>
+        <li>🎥 Premium video library access</li>
+      </ul>
+      <a href="index.html#online-classes" class="btn btn-green">🏋️ Enroll Now</a>
+    </div>
+
+    <!-- 3. Home Visit -->
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h2>Home Visit</h2>
+      <p>Our physiotherapist comes to you at your preferred time &amp; place</p>
+      <ul>
+        <li>📍 We come to your doorstep</li>
+        <li>📅 Choose your date &amp; time slot</li>
+        <li>💬 Instant WhatsApp confirmation</li>
+        <li>🏥 Ideal for elderly &amp; post-surgery</li>
+      </ul>
+      <a href="home-visit.html" class="btn btn-purple">🏠 Book Home Visit</a>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    📍 D. No: 41-14-1/1, SowjiRaj Homes, Krishnalanka, Vijayawada – 520013 &nbsp;·&nbsp; Mon–Sat 9AM–9PM
+  </div>
+
+</body>
+</html>

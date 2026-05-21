@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f8fc;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; padding: 40px 20px;
+    }
+
+    .qr-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 40px rgba(26,75,140,0.12);
+      padding: 40px 48px;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .clinic-logo { height: 60px; margin-bottom: 12px; }
+
+    .clinic-name {
+      font-size: 1.3rem; font-weight: 800; color: #1a4b8c; margin-bottom: 2px;
+    }
+    .clinic-sub { font-size: 0.78rem; color: #6b7c93; margin-bottom: 24px; }
+
+    .qr-box {
+      background: white;
+      border: 3px solid #1a4b8c;
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    #qrcode canvas, #qrcode img { display: block; }
+
+    .scan-label {
+      font-size: 1rem; font-weight: 700; color: #1a2a3a; margin-bottom: 6px;
+    }
+    .scan-sub { font-size: 0.8rem; color: #6b7c93; line-height: 1.6; margin-bottom: 20px; }
+
+    .services-list {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 24px; text-align: left;
+    }
+    .svc-item {
+      display: flex; align-items: center; gap: 10px;
+      background: #f4f8fc; border-radius: 10px; padding: 10px 14px;
+      font-size: 0.85rem; font-weight: 600; color: #1a2a3a;
+    }
+
+    .btn-print {
+      padding: 12px 32px;
+      background: linear-gradient(135deg,#1a4b8c,#2e7dd1);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+      font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    }
+    .url-note { font-size: 0.72rem; color: #aab4c0; word-break: break-all; }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .qr-card { box-shadow: none; border: 2px solid #dce8f5; }
+      .btn-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="qr-card">
+    <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="clinic-logo"/>
+    <div class="clinic-name">Ayushman PhysioFIT</div>
+    <div class="clinic-sub">Rehabilitation Centre · Vijayawada</div>
+
+    <div class="qr-box">
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="scan-label">📱 Scan to Book Online</div>
+    <div class="scan-sub">Point your phone camera at the QR code<br/>to access all our online services instantly</div>
+
+    <div class="services-list">
+      <div class="svc-item">🗓️ Online Appointment Booking</div>
+      <div class="svc-item">🏋️ Online Fitness Classes</div>
+      <div class="svc-item">🏠 Home Visit Booking</div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">🖨️ Print QR Code</button>
+    <div class="url-note" id="urlNote"></div>
+  </div>
+
+  <script>
+    // Build the URL pointing to services-qr.html
+    const base = window.location.href.replace('qr-print.html', '');
+    const url  = base + 'services-qr.html';
+
+    document.getElementById('urlNote').textContent = url;
+
+    new QRCode(document.getElementById('qrcode'), {
+      text:          url,
+      width:         240,
+      height:        240,
+      colorDark:     '#1a4b8c',
+      colorLight:    '#ffffff',
+      correctLevel:  QRCode.CorrectLevel.H
+    });
+  </script>
+
+</body>
+</html>
