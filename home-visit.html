@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Home Visit – Ayushman PhysioFIT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="mobile.css"/>
+  <style>
+    body { background: #f4f8fc; font-family: 'Poppins', sans-serif; }
+    .hv-wrap {
+      max-width: 620px; margin: 48px auto 80px; background: white;
+      border-radius: 24px; box-shadow: 0 8px 40px rgba(26,75,140,0.10);
+      padding: 40px 44px;
+    }
+    .hv-header { text-align: center; margin-bottom: 32px; }
+    .hv-header .icon { font-size: 3rem; margin-bottom: 10px; }
+    .hv-header h1 { font-size: 1.6rem; font-weight: 800; color: #1a2a3a; margin-bottom: 6px; }
+    .hv-header p { font-size: 0.88rem; color: #6b7c93; }
+    .how-it-works {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+      background: linear-gradient(135deg,#5c1a5c,#8b2e8b);
+      border-radius: 16px; padding: 20px 16px; margin-bottom: 32px; text-align: center;
+    }
+    .how-step { color: white; }
+    .how-step .num { font-size: 1.4rem; font-weight: 800; opacity: 0.7; }
+    .how-step p { font-size: 0.72rem; opacity: 0.9; margin-top: 4px; line-height: 1.4; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: #1a2a3a; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 11px 14px; border: 1.5px solid #dce8f5; border-radius: 10px;
+      font-family: 'Poppins', sans-serif; font-size: 0.88rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #8b2e8b; }
+    .form-full { grid-column: 1 / -1; }
+    .btn-wa {
+      width: 100%; padding: 15px; background: #25D366; color: white; border: none;
+      border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 1rem;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 10px; margin-top: 8px;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.35); transition: opacity 0.2s;
+    }
+    .btn-wa:hover { opacity: 0.88; }
+    .success-box {
+      display: none; background: #f0fff4; border: 1.5px solid #27ae60;
+      border-radius: 12px; padding: 16px; text-align: center;
+      color: #1a6b3a; font-weight: 600; font-size: 0.9rem; margin-top: 16px;
+    }
+    .note { font-size: 0.75rem; color: #6b7c93; text-align: center; margin-top: 14px; }
+    @media (max-width: 640px) {
+      .hv-wrap { margin: 24px 16px; padding: 28px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .how-it-works { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-brand">
+      <img src="images/logo_transparent.png" alt="Ayushman PhysioFIT" class="nav-logo"/>
+      <div class="nav-brand-text">
+        <span class="nav-name">Ayushman PhysioFIT</span>
+        <span class="nav-sub">Rehabilitation Centre · Vijayawada</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Doctors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="hv-wrap">
+
+    <div class="hv-header">
+      <div class="icon">🏠</div>
+      <h1>Book a Home Visit</h1>
+      <p>Our physiotherapist comes to you — at your preferred time &amp; place</p>
+    </div>
+
+    <div class="how-it-works">
+      <div class="how-step"><div class="num">1️⃣</div><p>Fill the form below</p></div>
+      <div class="how-step"><div class="num">2️⃣</div><p>Send via WhatsApp</p></div>
+      <div class="how-step"><div class="num">3️⃣</div><p>Staff confirms slot</p></div>
+      <div class="how-step"><div class="num">4️⃣</div><p>Doctor visits home</p></div>
+    </div>
+
+    <form id="hvForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="hvName" placeholder="Your full name" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="hvPhone" placeholder="WhatsApp number" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" id="hvAge" placeholder="Age" min="1" max="120"/>
+        </div>
+        <div class="form-group">
+          <label>Condition / Problem *</label>
+          <input type="text" id="hvCondition" placeholder="e.g. Knee Pain" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preferred Date *</label>
+          <input type="date" id="hvDate" required/>
+        </div>
+        <div class="form-group">
+          <label>Preferred Time *</label>
+          <select id="hvTime">
+            <option value="9:00 AM">9:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="2:00 PM">2:00 PM</option>
+            <option value="3:00 PM">3:00 PM</option>
+            <option value="4:00 PM">4:00 PM</option>
+            <option value="5:00 PM">5:00 PM</option>
+            <option value="6:00 PM">6:00 PM</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Doctor Preference</label>
+          <select id="hvDoctor">
+            <option value="Any Available">Any Available</option>
+            <option value="Dr. Durga Sowjanya">Dr. Durga Sowjanya</option>
+            <option value="Dr. D. Ramachandra">Dr. D. Ramachandra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select id="hvGender">
+            <option value="">Prefer not to say</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Full Address *</label>
+          <textarea id="hvAddress" rows="3" placeholder="House No, Street, Area, City, Pincode..." required></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="btn-wa" onclick="submitHV()">
+        💬 Request Home Visit via WhatsApp
+      </button>
+    </form>
+
+    <div class="success-box" id="hvSuccess">
+      ✅ Request sent! Our staff will confirm your slot on WhatsApp shortly.
+    </div>
+
+    <p class="note">📞 6302478412 &nbsp;·&nbsp; Mon–Sat 9AM–9PM &nbsp;·&nbsp; Krishnalanka, Vijayawada</p>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">© 2026 Ayushman PhysioFIT Rehabilitation Centre. All rights reserved.</div>
+  </footer>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    window.submitHV = async function() {
+      const name      = document.getElementById('hvName').value.trim();
+      const phone     = document.getElementById('hvPhone').value.trim();
+      const age       = document.getElementById('hvAge').value.trim();
+      const condition = document.getElementById('hvCondition').value.trim();
+      const date      = document.getElementById('hvDate').value;
+      const time      = document.getElementById('hvTime').value;
+      const doctor    = document.getElementById('hvDoctor').value;
+      const gender    = document.getElementById('hvGender').value;
+      const address   = document.getElementById('hvAddress').value.trim();
+
+      if (!name || !phone || !condition || !date || !address) {
+        alert('Please fill all required fields (*).');
+        return;
+      }
+
+      // Save to Firestore
+      try {
+        await addDoc(collection(db, 'homevisits'), {
+          name, phone, age, gender, condition,
+          date, time, doctor, address,
+          status: 'Pending', source: 'public',
+          createdAt: serverTimestamp()
+        });
+      } catch(e) { console.log('Firestore:', e.message); }
+
+      // Send WhatsApp to clinic
+      const msg =
+`🏠 *HOME VISIT REQUEST – Ayushman PhysioFIT*
+
+👤 Name: ${name}
+📞 Phone: ${phone}${age ? '\n🎂 Age: ' + age : ''}${gender ? '\n⚧ Gender: ' + gender : ''}
+🩺 Condition: ${condition}
+📅 Date: ${date}
+⏰ Time: ${time}
+👨‍⚕️ Doctor: ${doctor}
+📍 Address: ${address}
+
+_Sent from Ayushman PhysioFIT Home Visit Page_`;
+
+      window.open('https://wa.me/916302478412?text=' + encodeURIComponent(msg), '_blank');
+
+      document.getElementById('hvForm').reset();
+      document.getElementById('hvSuccess').style.display = 'block';
+      setTimeout(() => document.getElementById('hvSuccess').style.display = 'none', 6000);
+    };
+  </script>
+
+  <script>
+    // Set min date to today
+    document.getElementById('hvDate').min = new Date().toISOString().split('T')[0];
+
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+    }
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+
+</body>
+</html>
