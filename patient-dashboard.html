@@ -578,11 +578,33 @@
   <script type="module">
     import { auth, db } from './firebase.js';
     import { signOut } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
-    import { collection, addDoc, getDocs, onSnapshot, query, where, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs, onSnapshot, query, where, orderBy, serverTimestamp, setDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
     if (!sessionStorage.getItem('loggedUser')) window.location.href = 'login.html';
     const patientName = sessionStorage.getItem('loggedName') || 'Patient';
     const patientPhone = sessionStorage.getItem('loggedUser') || '';
+
+    // Load fitness time slots from Firestore
+    (async function loadFitSlots() {
+      const sel = document.getElementById('fitTime');
+      if (!sel) return;
+      const defaultSlots = [
+        '7:00 AM – 8:00 AM','8:00 AM – 9:00 AM','9:00 AM – 10:00 AM',
+        '10:00 AM – 11:00 AM','11:00 AM – 12:00 PM','12:00 PM – 1:00 PM',
+        '1:00 PM – 2:00 PM','2:00 PM – 3:00 PM','3:00 PM – 4:00 PM',
+        '4:00 PM – 5:00 PM','5:00 PM – 6:00 PM','6:00 PM – 7:00 PM',
+        '7:00 PM – 8:00 PM','8:00 PM – 9:00 PM'
+      ];
+      try {
+        const snap = await getDocs(collection(db, 'fitnessSlots'));
+        sel.innerHTML = '<option value="">Select Time Slot</option>';
+        if (snap.empty) {
+          defaultSlots.forEach(s => sel.insertAdjacentHTML('beforeend', `<option value="${s}">${s}</option>`));
+        } else {
+          snap.forEach(d => { const o = document.createElement('option'); o.value = o.textContent = d.data().slot; sel.appendChild(o); });
+        }
+      } catch { sel.innerHTML = '<option value="">Could not load slots</option>'; }
+    })();
     document.getElementById('patientName').textContent = patientName;
 
     // ── CHECK ENROLLMENT & LOAD PREMIUM VIDEOS ──────────────────────────────
@@ -701,7 +723,7 @@
       el.classList.add('active');
     }
 
-    async function bookFitnessClass() {
+    window.bookFitnessClass = async function bookFitnessClass() {
       const cls = document.getElementById('fitClass').value;
       const date = document.getElementById('fitDate').value;
       const time = document.getElementById('fitTime').value;
@@ -726,7 +748,7 @@
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    async function bookAppointment() {
+    window.bookAppointment = async function bookAppointment() {
       const d = document.getElementById('bookDate').value;
       const t = document.getElementById('bookTime').value;
       const c = document.getElementById('bookCondition').value;
@@ -800,14 +822,14 @@
         address: document.getElementById('profAddr').value.trim()
       };
       try {
-        const { doc: fsDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js');
-        await setDoc(fsDoc(db, 'patients', uid), data, { merge: true });
+        await setDoc(doc(db, 'patients', uid), data, { merge: true });
+        if (data.name) { sessionStorage.setItem('loggedName', data.name); document.getElementById('patientName').textContent = data.name; }
       } catch(e) { alert('Save failed: ' + e.message); return; }
       const msg = document.getElementById('profSuccess');
       msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
     }
 
-    async function requestHomeVisit() {
+    window.requestHomeVisit = async function requestHomeVisit() {
       const name = document.getElementById('hvName').value.trim() || sessionStorage.getItem('loggedName');
       const phone = document.getElementById('hvPhone').value.trim();
       const condition = document.getElementById('hvCondition').value.trim();
@@ -928,7 +950,7 @@ _Sent from Ayushman PhysioFIT Patient Portal_`;
       } catch(e) { errEl.textContent = 'Failed: ' + e.message; errEl.style.display = 'block'; }
     };
 
-  </script><script>function doLogout(){sessionStorage.clear();window.location.href="login.html";}</script></body>
+  </script>
 <script>
 function toggleSidebar(){
   var s=document.querySelector('.sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
