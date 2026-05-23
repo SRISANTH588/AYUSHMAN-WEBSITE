@@ -510,3 +510,14 @@ img { max-width: 100%; height: auto; }
     width: 100% !important;
   }
 }
+
+/* ── HERO RIGHT IMAGE ── */
+@media (max-width: 900px) {
+  .hero-right-img { display: none !important; }
+}
+@media (max-width: 900px) {
+  .hero-right-img2 { display: none !important; }
+}
+@media (max-width: 900px) {
+  .hero-right-img3 { display: none !important; }
+}

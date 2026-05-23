@@ -1654,19 +1654,39 @@ img.loaded { opacity: 1; }
   overflow: hidden;
 }
 
-/* Hero left background image */
-.hero-left-img {
+/* Hero left images */
+.hero-right-img {
   position: absolute;
   left: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 620px;
-  height: 680px;
-  background: url('images/background.png') center/contain no-repeat;
-  opacity: 0.9;
+  top: 160px;
+  width: 520px;
+  max-width: 45%;
+  height: auto;
+  opacity: 0.95;
   pointer-events: none;
   z-index: 0;
-  filter: hue-rotate(0deg) saturate(3) brightness(1.2);
+}
+.hero-right-img2 {
+  position: absolute;
+  left: 40px;
+  top: 250px;
+  width: 460px;
+  max-width: 42%;
+  height: auto;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-right-img3 {
+  position: absolute;
+  left: 80px;
+  top: 660px;
+  width: 460px;
+  max-width: 42%;
+  height: auto;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Orbs */
