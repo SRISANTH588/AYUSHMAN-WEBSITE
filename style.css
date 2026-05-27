@@ -23,10 +23,10 @@
   --amber: #ffe0b2;
 
   /* Neutrals */
-  --white: #ffffff;
+  --white: #fdf6e3;
   --text: #1a2a3a;
   --text-muted: #6b7c93;
-  --gray: #f4f8fc;
+  --gray: #fdf6e3;
   --border: #BBDEFB;
 
   /* Gradients (reusable) */
@@ -40,7 +40,7 @@
 body {
   font-family: 'Poppins', sans-serif;
   color: var(--text);
-  background: var(--white);
+  background: #fdf6e3;
 }
 
 /* NAVBAR */
@@ -176,7 +176,7 @@ body {
 .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
 
 .btn-primary {
-  background: var(--white);
+  background: #fdf6e3;
   color: var(--blue);
   padding: 14px 32px;
   border-radius: 30px;
@@ -265,8 +265,8 @@ body {
 
 /* SERVICES */
 .services {
-  padding: 90px 60px;
-  background: var(--gray);
+  padding: 60px 20px;
+  background: #fdf6e3;
   text-align: center;
 }
 
@@ -292,7 +292,7 @@ h2 {
 }
 
 .service-card {
-  background: var(--white);
+  background: #fdf6e3;
   border: 2px solid var(--blue);
   border-radius: 12px;
   padding: 20px 16px;
@@ -327,7 +327,7 @@ h2 {
 .doctors {
   padding: 90px 60px;
   text-align: center;
-  background: var(--white);
+  background: #fdf6e3;
 }
 
 .doctors-grid {
@@ -339,7 +339,7 @@ h2 {
 }
 
 .doctor-card {
-  background: var(--gray);
+  background: #fdf6e3;
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 40px 50px;
@@ -426,7 +426,7 @@ h2 {
 /* CONTACT */
 .contact {
   padding: 90px 60px;
-  background: var(--gray);
+  background: #fdf6e3;
   text-align: center;
 }
 
@@ -467,7 +467,7 @@ h2 {
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   color: var(--text);
-  background: white;
+  background: #fdf6e3;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -539,7 +539,7 @@ h2 {
 /* SERVICE SLIDER */
 .service-slider-section {
   padding: 80px 60px 60px;
-  background: white;
+  background: #fdf6e3;
   text-align: center;
 }
 
@@ -624,7 +624,7 @@ h2 {
   height: 48px;
   border-radius: 50%;
   border: 2px solid var(--blue);
-  background: var(--white);
+  background: #fdf6e3;
   color: var(--blue);
   font-size: 1.8rem;
   cursor: pointer;
@@ -678,7 +678,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: var(--white);
+  background: #fdf6e3;
   border-radius: 16px;
   padding: 24px 20px;
   box-shadow: 0 2px 16px rgba(21,101,192,0.1);
@@ -783,7 +783,7 @@ h2 {
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(26,75,140,0.13);
   border: 2px solid #dce8f5;
-  background: white;
+  background: #fdf6e3;
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
@@ -815,7 +815,7 @@ h2 {
 html { scroll-behavior: smooth; }
 ::selection { background: var(--blue); color: var(--white); }
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--gray); }
+::-webkit-scrollbar-track { background: #fdf6e3; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(var(--blue), var(--green)); border-radius: 10px; }
 
 /* FADE IN ANIMATION */
@@ -1041,7 +1041,7 @@ html { scroll-behavior: smooth; }
   display: block;
   height: 100%;
   width: 40%;
-  background: white;
+  background: #fdf6e3;
   border-radius: 4px;
   animation: shimmer 1s ease infinite;
   background: linear-gradient(90deg, transparent, white, transparent);
@@ -1078,7 +1078,7 @@ html { scroll-behavior: smooth; }
 .hamburger span {
   display: block;
   width: 24px; height: 2px;
-  background: var(--white);
+  background: #fdf6e3;
   border-radius: 2px;
   transition: transform 0.3s, opacity 0.3s;
 }
@@ -1212,7 +1212,7 @@ img.loaded { opacity: 1; }
 /* ONLINE CLASSES SECTION */
 .online-classes {
   padding: 90px 60px;
-  background: var(--gray);
+  background: #fdf6e3;
   text-align: center;
 }
 
@@ -1226,7 +1226,7 @@ img.loaded { opacity: 1; }
 }
 
 .oc-card {
-  background: var(--white);
+  background: #fdf6e3;
   border-radius: 20px;
   padding: 40px 36px;
   box-shadow: 0 4px 24px rgba(26,75,140,0.1);
@@ -1301,7 +1301,7 @@ img.loaded { opacity: 1; }
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   color: var(--text);
-  background: white;
+  background: #fdf6e3;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -1362,7 +1362,7 @@ img.loaded { opacity: 1; }
 }
 
 .doc-card {
-  background: var(--gray);
+  background: #fdf6e3;
   border: 1.5px solid var(--border);
   border-radius: 24px;
   padding: 40px 36px;
@@ -1457,7 +1457,7 @@ img.loaded { opacity: 1; }
 /* ── CONTACT ─────────────────────────────────────────────── */
 .contact-section {
   padding: 90px 60px;
-  background: var(--gray);
+  background: #fdf6e3;
   text-align: center;
 }
 
@@ -1480,7 +1480,7 @@ img.loaded { opacity: 1; }
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  background: var(--white);
+  background: #fdf6e3;
   border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 18px 20px;
@@ -1968,7 +1968,7 @@ img.loaded { opacity: 1; }
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(26,75,140,0.09);
   border: 1.5px solid var(--border);
-  background: var(--white);
+  background: #fdf6e3;
   transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
 }
 .svc-card-item:hover {
