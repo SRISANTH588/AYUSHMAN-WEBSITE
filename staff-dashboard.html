@@ -85,7 +85,7 @@
       <a onclick="showSection('notes', this)">📝 Treatment Notes</a>
       <a onclick="showSection('token', this)">🎫 Token Queue</a>
       <a onclick="showSection('sessions', this)">🎥 Sessions</a>
-      <a onclick="showSection('homevisit', this)">🏠 Home Visits</a>
+      <a onclick="showSection('homevisit', this)">🏠 Home Physio Visits</a>
       <a onclick="showSection('opform', this)">📋 OP Form</a>
       <a onclick="showSection('feedback', this)">💪 Patient Condition</a>
       <a onclick="doLogout()" style="color:rgba(255,100,100,0.85);margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">🚪 Logout</a>
@@ -419,7 +419,7 @@
 
     <!-- HOME VISITS -->
     <div class="section" id="sec-homevisit">
-      <div class="topbar"><div><h1>Home Visit Requests</h1><p>Manage patient home visit bookings</p></div></div>
+      <div class="topbar"><div><h1>Home Physio Visit Requests</h1><p>Manage patient home physio visit bookings</p></div></div>
       <div class="section-card">
         <h2>📥 Incoming Requests</h2>
         <table>
@@ -430,7 +430,7 @@
         </table>
       </div>
       <div class="section-card">
-        <h2>➕ Add Manual Home Visit Request</h2>
+        <h2>➕ Add Manual Home Physio Visit Request</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
           <div class="form-group"><label>Patient Name</label><input type="text" id="hvStaffName" placeholder="Patient name"/></div>
           <div class="form-group"><label>Phone (WhatsApp)</label><input type="tel" id="hvStaffPhone" placeholder="Patient WhatsApp number"/></div>
@@ -826,7 +826,7 @@
 
       // Auto send WhatsApp to patient
       notifyPatient(phone, name, date, time, doctor);
-      logActivity('homevisit', `Assigned home visit for ${name} on ${date} at ${time} – Dr. ${doctor}`);
+      logActivity('homevisit', `Assigned home physio visit for ${name} on ${date} at ${time} – Dr. ${doctor}`);
 
       document.getElementById('hvStaffName').value = '';
       document.getElementById('hvStaffPhone').value = '';
@@ -842,7 +842,7 @@
 
 Dear ${name},
 
-Your home visit has been confirmed!
+Your home physio visit has been confirmed!
 
 📅 Date: ${date}
 ⏰ Time: ${time}
