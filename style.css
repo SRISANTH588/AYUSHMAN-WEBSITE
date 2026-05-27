@@ -2045,18 +2045,17 @@ img.loaded { opacity: 1; }
   text-align: left;
   align-items: stretch;
 }
-/* Top two cards equal height */
-.oc-grid > .oc-card:not(#home-visit) {
-  height: 100%;
-}
-/* Home Visit: full-width landscape row below */
-.oc-card#home-visit {
+/* PhysioFIT Classes: full width second row */
+.oc-card#physiofit-classes {
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  align-items: center;
-  padding: 28px 36px;
+}
+/* Home Visit: same size as appointment card */
+.oc-card#home-visit {
+  grid-column: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px;
 }
 
 /* Cards */

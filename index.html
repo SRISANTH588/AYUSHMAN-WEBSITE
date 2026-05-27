@@ -129,7 +129,7 @@
     <p class="section-sub">Book an appointment or enroll in our fitness program — from anywhere</p>
     <div class="oc-grid">
 
-      <div class="oc-card">
+            <div class="oc-card">
         <div class="oc-card-header">
           <span class="oc-icon">🗓️</span>
           <div>
@@ -196,34 +196,6 @@
         <p class="oc-success" id="apptSuccess">✅ Submitted! Admin will assign your OP No &amp; Token.</p>
       </div>
 
-      <div class="oc-card">
-        <div class="oc-card-header">
-          <span class="oc-icon">🏋️</span>
-          <div>
-            <h3>Online PhysioFIT Classes</h3>
-            <p>Join our expert-led physiotherapy fitness program</p>
-          </div>
-        </div>
-        <img src="images/family.png" alt="Online PhysioFIT Classes" style="width:100%;border-radius:12px;margin:12px 0;object-fit:cover;"/>
-        <ul class="oc-info-list">
-          <li>🎯 Personalized for your condition &amp; fitness level</li>
-          <li>📅 3 Classes per week (Mon / Wed / Fri)</li>
-          <li>💰 Monthly Plan: <strong>&#8377;2,400</strong></li>
-          <li>🔒 Access to premium video library after enrollment</li>
-        </ul>
-        <form id="enrollForm" class="oc-form" onsubmit="showEnrollModal(event)">
-          <input type="text"   id="enName"   placeholder="Full Name"    required/>
-          <input type="number" id="enAge"    placeholder="Age"          min="5"  max="100" required/>
-          <input type="tel"    id="enPhone"  placeholder="Phone Number" required/>
-          <input type="number" id="enWeight" placeholder="Weight (kg)"  min="10" max="300" required/>
-          <select id="enSlot" required>
-            <option value="">Loading slots...</option>
-          </select>
-          <button type="submit" id="enrollBtn">Enroll Now</button>
-        </form>
-        <p class="oc-success" id="enrollSuccess"></p>
-      </div>
-
       <div class="oc-card" id="home-visit">
         <!-- Left: info -->
         <div>
@@ -261,6 +233,34 @@
           </a>
           <p style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-align:center;">📞 6302478412 &nbsp;&middot;&nbsp; Mon–Sat 9AM–9PM</p>
         </div>
+      </div>
+
+      <div class="oc-card" id="physiofit-classes">
+        <div class="oc-card-header">
+          <span class="oc-icon">🏋️</span>
+          <div>
+            <h3>Online PhysioFIT Classes</h3>
+            <p>Join our expert-led physiotherapy fitness program</p>
+          </div>
+        </div>
+        <img src="images/family.png" alt="Online PhysioFIT Classes" style="width:100%;border-radius:12px;margin:12px 0;object-fit:cover;"/>
+        <ul class="oc-info-list">
+          <li>🎯 Personalized for your condition &amp; fitness level</li>
+          <li>📅 3 Classes per week (Mon / Wed / Fri)</li>
+          <li>💰 Monthly Plan: <strong>&#8377;2,400</strong></li>
+          <li>🔒 Access to premium video library after enrollment</li>
+        </ul>
+        <form id="enrollForm" class="oc-form" onsubmit="showEnrollModal(event)">
+          <input type="text"   id="enName"   placeholder="Full Name"    required/>
+          <input type="number" id="enAge"    placeholder="Age"          min="5"  max="100" required/>
+          <input type="tel"    id="enPhone"  placeholder="Phone Number" required/>
+          <input type="number" id="enWeight" placeholder="Weight (kg)"  min="10" max="300" required/>
+          <select id="enSlot" required>
+            <option value="">Loading slots...</option>
+          </select>
+          <button type="submit" id="enrollBtn">Enroll Now</button>
+        </form>
+        <p class="oc-success" id="enrollSuccess"></p>
       </div>
     </div>
   </section>
