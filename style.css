@@ -1993,7 +1993,7 @@ img.loaded { opacity: 1; }
 /* ── ONLINE SERVICES — PREMIUM ───────────── */
 .online-classes {
   padding: 100px 60px;
-  background: var(--grad-dark);
+  background: #fdf6e3;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -2013,7 +2013,7 @@ img.loaded { opacity: 1; }
 .online-classes h2 {
   font-size: 2.4rem;
   font-weight: 800;
-  color: #fff;
+  color: #5c3317;
   letter-spacing: -0.3px;
   margin-bottom: 8px;
   position: relative;
@@ -2029,7 +2029,7 @@ img.loaded { opacity: 1; }
 }
 
 .online-classes .section-sub {
-  color: rgba(255,255,255,0.6);
+  color: #7b4a2a;
   font-size: 1rem;
   margin-bottom: 52px;
 }
@@ -2060,8 +2060,8 @@ img.loaded { opacity: 1; }
 
 /* Cards */
 .oc-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(139,80,40,0.07);
+  border: 1px solid rgba(139,80,40,0.2);
   backdrop-filter: blur(16px);
   border-radius: 24px;
   padding: 20px 28px;
@@ -2090,8 +2090,8 @@ img.loaded { opacity: 1; }
 .oc-icon {
   font-size: 1.8rem;
   width: 54px; height: 54px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(139,80,40,0.1);
+  border: 1px solid rgba(139,80,40,0.2);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -2101,10 +2101,10 @@ img.loaded { opacity: 1; }
 .oc-card-header h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: #5c3317;
   margin-bottom: 4px;
 }
-.oc-card-header p { font-size: 0.84rem; color: rgba(255,255,255,0.55); }
+.oc-card-header p { font-size: 0.84rem; color: #7b4a2a; }
 
 /* Info list */
 .oc-info-list {
@@ -2112,29 +2112,29 @@ img.loaded { opacity: 1; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(139,80,40,0.07);
+  border: 1px solid rgba(139,80,40,0.18);
   border-radius: 14px;
   padding: 16px 18px;
 }
-.oc-info-list li { font-size: 0.88rem; color: rgba(255,255,255,0.8); font-weight: 500; }
+.oc-info-list li { font-size: 0.88rem; color: #5c3317; font-weight: 500; }
 
 /* Form inputs */
 .oc-form { display: flex; flex-direction: column; gap: 12px; }
 .oc-form input,
 .oc-form select {
   padding: 13px 16px;
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(139,80,40,0.2);
   border-radius: 12px;
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
-  color: #fff;
-  background: rgba(255,255,255,0.08);
+  color: #5c3317;
+  background: rgba(139,80,40,0.06);
   outline: none;
   transition: border-color 0.2s, background 0.2s;
 }
-.oc-form input::placeholder { color: rgba(255,255,255,0.4); }
-.oc-form select { color: rgba(255,255,255,0.75); }
+.oc-form input::placeholder { color: rgba(92,51,23,0.45); }
+.oc-form select { color: #5c3317; }
 .oc-form select option { background: #0d2d5e; color: #fff; }
 .oc-form input:focus,
 .oc-form select:focus {
