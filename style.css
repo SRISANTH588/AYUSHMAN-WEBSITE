@@ -1228,12 +1228,12 @@ img.loaded { opacity: 1; }
 .oc-card {
   background: #fdf6e3;
   border-radius: 20px;
-  padding: 40px 36px;
+  padding: 24px 28px;
   box-shadow: 0 4px 24px rgba(26,75,140,0.1);
   border: 1.5px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .oc-card-header {
@@ -1285,7 +1285,7 @@ img.loaded { opacity: 1; }
 .oc-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .oc-form select,
@@ -1295,7 +1295,7 @@ img.loaded { opacity: 1; }
 
 .oc-form input,
 .oc-form select {
-  padding: 13px 16px;
+  padding: 9px 12px;
   border: 1.5px solid var(--border);
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;

@@ -129,6 +129,9 @@
     <p class="section-sub">Book an appointment or enroll in our fitness program — from anywhere</p>
     <div class="oc-grid">
 
+      <!-- LEFT COLUMN: Appointment + Home Physio Visit -->
+      <div style="display:flex;flex-direction:column;gap:28px;">
+
             <div class="oc-card">
         <div class="oc-card-header">
           <span class="oc-icon">🗓️</span>
@@ -137,12 +140,6 @@
             <p>Schedule your physio session with our specialists</p>
           </div>
         </div>
-        <ul class="oc-info-list">
-          <li>📅 Book appointments from the comfort of your home</li>
-          <li>⏰ Choose your preferred date &amp; time slot</li>
-          <li>🩺 Consult with certified physiotherapists</li>
-          <li>✅ Instant confirmation via phone</li>
-        </ul>
         <form id="apptForm" class="oc-form" onsubmit="submitAppointment(event)">
           <input type="text" id="apptName" placeholder="Full Name" required/>
           <input type="number" id="apptAge" placeholder="Age" min="1" max="120" required/>
@@ -235,6 +232,10 @@
         </div>
       </div>
 
+      </div><!-- END LEFT COLUMN -->
+
+      <!-- RIGHT COLUMN: PhysioFIT Classes -->
+      <div>
       <div class="oc-card" id="physiofit-classes">
         <div class="oc-card-header">
           <span class="oc-icon">🏋️</span>
