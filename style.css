@@ -2372,3 +2372,15 @@ body.dark-mode .oc-file-upload input[type="file"] {
   background: rgba(255,255,255,0.06);
   color: #e0e0e0;
 }
+
+@media (max-width: 768px) {
+  .side-images-row {
+    flex-direction: column !important;
+  }
+  .side-images-row img {
+    width: 100% !important;
+    height: 300px !important;
+    flex-shrink: unset !important;
+    min-width: unset !important;
+  }
+}
