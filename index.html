@@ -41,6 +41,7 @@
       <li id="navOnlineClasses" style="display:none;"><a href="videos.html">Online Classes</a></li>
     </ul>
     <div class="nav-right">
+      <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
       <div id="navAuthArea">
         <a href="login.html" class="btn-nav-login" id="navLoginBtn">Login</a>
         <div id="navProfileBtn" style="display:none;position:relative;">
@@ -619,6 +620,18 @@
     window.addEventListener('scroll', () => {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
     });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      const btn = document.getElementById("darkToggle");
+      const isDark = document.body.classList.contains("dark-mode");
+      btn.textContent = isDark ? "☀️" : "🌙";
+      localStorage.setItem("darkMode", isDark ? "on" : "off");
+    }
+    if (localStorage.getItem("darkMode") === "on") {
+      document.body.classList.add("dark-mode");
+      document.getElementById("darkToggle").textContent = "☀️";
+    }
 
     function toggleMenu() {
       document.getElementById('hamburger').classList.toggle('open');
