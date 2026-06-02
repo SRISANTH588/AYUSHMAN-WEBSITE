@@ -243,7 +243,7 @@
              onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
             💬 WhatsApp Us
           </a>
-          <p style="font-size:0.75rem;color:#7b4a2a;text-align:center;">📞 6302478412 &nbsp;&middot;&nbsp; Mon–Sat 9AM–9PM</p>
+          <p style="font-size:0.75rem;color:#000000;text-align:center;">📞 6302478412 &nbsp;&middot;&nbsp; Mon–Sat 9AM–9PM</p>
         </div>
       </div>
 
@@ -720,19 +720,21 @@
     function toggleToken(e) {
       e.preventDefault();
       const m = document.getElementById('tokenModal');
-      const isOpen = m.classList.contains('token-open');
+      const isOpen = m.style.display === 'flex';
       if (isOpen) {
-        m.classList.remove('token-open');
+        m.style.display = 'none';
       } else {
-        m.classList.add('token-open');
+        m.style.display = 'flex';
         document.getElementById('tokenResult').style.display = 'none';
         document.getElementById('tokenError').style.display  = 'none';
+        document.getElementById('genResult').style.display   = 'none';
+        document.getElementById('genError').style.display    = 'none';
         document.getElementById('tokenBookingId').value = '';
         document.getElementById('tokenPhone').value = '';
       }
     }
     function closeToken() {
-      document.getElementById('tokenModal').classList.remove('token-open');
+      document.getElementById('tokenModal').style.display = 'none';
     }
     window.toggleToken = toggleToken;
     window.closeToken  = closeToken;

@@ -2012,7 +2012,7 @@ img.loaded { opacity: 1; }
 /* ── ONLINE SERVICES — PREMIUM ───────────── */
 .online-classes {
   padding: 100px 60px;
-  background: #fdf6e3;
+  background: url('images/image11.png') center center / cover no-repeat;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -2075,9 +2075,10 @@ img.loaded { opacity: 1; }
 
 /* Cards */
 .oc-card {
-  background: rgba(139,80,40,0.07);
+  background: rgba(255,255,255,0.82);
   border: none;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 20px 28px;
   display: flex;
@@ -2121,10 +2122,10 @@ img.loaded { opacity: 1; }
 .oc-card-header h3 {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #5c3317;
+  color: #000000;
   margin-bottom: 4px;
 }
-.oc-card-header p { font-size: 0.84rem; color: #7b4a2a; }
+.oc-card-header p { font-size: 0.84rem; color: rgba(0,0,0,0.65); }
 
 /* Info list */
 .oc-info-list {
@@ -2132,12 +2133,12 @@ img.loaded { opacity: 1; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: rgba(139,80,40,0.07);
-  border: 1px solid rgba(139,80,40,0.18);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: 14px;
   padding: 16px 18px;
 }
-.oc-info-list li { font-size: 0.88rem; color: #5c3317; font-weight: 500; }
+.oc-info-list li { font-size: 0.88rem; color: #000000; font-weight: 500; }
 
 /* Form inputs */
 .oc-form { display: flex; flex-direction: column; gap: 12px; }
@@ -2145,22 +2146,22 @@ img.loaded { opacity: 1; }
 .oc-form textarea,
 .oc-form select {
   padding: 13px 16px;
-  border: 1px solid rgba(139,80,40,0.2);
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 12px;
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
-  color: #5c3317;
-  background: rgba(139,80,40,0.06);
+  color: #000000;
+  background: rgba(0,0,0,0.06);
   outline: none;
   transition: border-color 0.2s, background 0.2s;
 }
-.oc-form input::placeholder { color: rgba(92,51,23,0.45); }
-.oc-form select { color: #5c3317; }
+.oc-form input::placeholder { color: rgba(0,0,0,0.4); }
+.oc-form select { color: #000000; }
 .oc-form select option { background: #0d2d5e; color: #fff; }
 .oc-form input:focus,
 .oc-form select:focus {
   border-color: var(--sky);
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.18);
 }
 
 /* Submit button */

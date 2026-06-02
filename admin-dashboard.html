@@ -101,6 +101,7 @@
       <a onclick="showSection('enrollments', this)">🏋️ Fitness Enrollments</a>
       <a onclick="showSection('slots', this)">🕐 Manage Slots</a>
       <a onclick="showSection('staff_activity', this)">🕵️ Staff Activity Log</a>
+      <a onclick="showSection('biometric', this)">🖐️ Biometric Attendance</a>
       <a onclick="showSection('staff_attendance', this)">✅ Staff Attendance</a>
       <a onclick="showSection('staff_notes', this)">📝 Staff Notes</a>
       <a onclick="showSection('staff_queue', this)">👥 Staff Queue Log</a>
@@ -627,7 +628,8 @@
           <table>
             <thead>
               <tr>
-                <th>#</th><th>Name</th><th>Phone</th><th>Age</th><th>Weight</th>
+                <th>#</th><th>Name</th><th>Phone</th><th>Age</th><th>Weight</th><th>Height</th><th>Gender</th>
+                <th>Goal / Target</th><th>Medical History</th><th>Medical Files</th>
                 <th>Slot</th><th>Submitted</th><th>Amount (₹)</th><th>Status</th><th>Action</th>
               </tr>
             </thead>
@@ -727,6 +729,88 @@
           <table>
             <thead><tr><th>Staff</th><th>Action</th><th>Details</th><th>Time</th></tr></thead>
             <tbody id="activityTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIOMETRIC ATTENDANCE -->
+    <div class="section" id="sec-biometric">
+      <div class="topbar">
+        <div><h1>🖐️ Biometric Attendance</h1><p>Staff check-in &amp; check-out via Mantra MFS100 fingerprint scanner</p></div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span id="deviceStatus" style="padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;background:#fff3cd;color:#856404;">⏳ Checking device...</span>
+          <button onclick="checkDevice()" style="padding:8px 16px;background:#1a4b8c;color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="icon">👥</div><h3 id="bioTotalStaff">0</h3><p>Total Staff</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 id="bioCheckedIn">0</h3><p>Checked In Today</p></div>
+        <div class="stat-card"><div class="icon">🚪</div><h3 id="bioCheckedOut">0</h3><p>Checked Out Today</p></div>
+        <div class="stat-card"><div class="icon">⏰</div><h3 id="bioAvgHours">0h</h3><p>Avg Hours Today</p></div>
+      </div>
+
+      <!-- Device Info -->
+      <div class="section-card" style="background:#f0f7ff;border:1.5px solid #dce8f5;">
+        <h2>🔌 Device Setup Instructions</h2>
+        <ol style="font-size:0.85rem;color:#1a2a3a;line-height:2.2;padding-left:20px;">
+          <li>Connect <strong>Mantra MFS100</strong> fingerprint scanner to the clinic computer via USB</li>
+          <li>Download &amp; install <a href="https://www.mantratec.com/RDService" target="_blank" style="color:#2e7dd1;font-weight:600;">Mantra RD Service</a> (free middleware)</li>
+          <li>Start the RD Service — it runs on <code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;">http://localhost:11100</code></li>
+          <li>Come back here and click <strong>"Refresh"</strong> — status will turn green</li>
+          <li>Register each staff member's fingerprint below</li>
+        </ol>
+        <div style="margin-top:12px;padding:12px 16px;background:#fff3cd;border-radius:10px;font-size:0.82rem;color:#856404;font-weight:600;">
+          ⚠️ Device not available? Use <strong>Simulator Mode</strong> below to test the full system.
+        </div>
+      </div>
+
+      <!-- Register Fingerprint -->
+      <div class="section-card">
+        <h2>🖐️ Register Staff Fingerprint</h2>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="form-group" style="flex:1;min-width:160px;margin:0;">
+            <label>Select Staff</label>
+            <select id="bioStaffSelect" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;">
+              <option value="">Loading staff...</option>
+            </select>
+          </div>
+          <button onclick="registerFingerprint()" style="padding:12px 24px;background:linear-gradient(135deg,#1a4b8c,#2e7dd1);color:#fff;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🖐️ Register Fingerprint</button>
+          <button onclick="registerFingerprint(true)" style="padding:12px 24px;background:#6c757d;color:#fff;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🧪 Simulate Register</button>
+        </div>
+        <div id="registerStatus" style="margin-top:12px;font-size:0.88rem;font-weight:600;display:none;"></div>
+      </div>
+
+      <!-- Mark Attendance -->
+      <div class="section-card">
+        <h2>⏱️ Mark Attendance (Check In / Check Out)</h2>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="form-group" style="flex:1;min-width:160px;margin:0;">
+            <label>Select Staff</label>
+            <select id="bioAttStaff" style="padding:11px 14px;border:1.5px solid #dce8f5;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.88rem;outline:none;width:100%;">
+              <option value="">Loading staff...</option>
+            </select>
+          </div>
+          <button onclick="markAttendance('checkin')" style="padding:12px 24px;background:#27ae60;color:#fff;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">✅ Check In (Fingerprint)</button>
+          <button onclick="markAttendance('checkout')" style="padding:12px 24px;background:#e63946;color:#fff;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🚪 Check Out (Fingerprint)</button>
+          <button onclick="markAttendance('checkin', true)" style="padding:12px 24px;background:#6c757d;color:#fff;border:none;border-radius:10px;font-family:Poppins,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">🧪 Simulate</button>
+        </div>
+        <div id="attendanceStatus" style="margin-top:12px;font-size:0.88rem;font-weight:600;display:none;"></div>
+      </div>
+
+      <!-- Today's Log -->
+      <div class="section-card">
+        <h2>📋 Today's Attendance Log</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="date" id="bioDateFilter" onchange="filterBioAtt()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;"/>
+          <button onclick="document.getElementById('bioDateFilter').value='';filterBioAtt()" style="padding:8px 16px;background:#f4f8fc;color:#1a2a3a;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Clear</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Staff</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours Worked</th><th>Method</th><th>Status</th></tr></thead>
+            <tbody id="bioAttTable"><tr><td colspan="7" style="text-align:center;color:#6b7c93;">No records yet</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1313,6 +1397,11 @@ _We keep you moving..._`;
             <td>${d.phone || ''}</td>
             <td>${d.age || ''}</td>
             <td>${d.weight ? d.weight + 'kg' : ''}</td>
+            <td>${d.height ? d.height + 'cm' : '—'}</td>
+            <td>${d.gender || '—'}</td>
+            <td>${d.target || '—'}</td>
+            <td style="font-size:0.78rem;max-width:140px;">${d.medicalHistory || '—'}</td>
+            <td>${d.medicalFiles && d.medicalFiles.length ? d.medicalFiles.map(f => '<a href="'+f.url+'" target="_blank" style="display:block;color:#2e7dd1;font-size:0.75rem;font-weight:600;">📎 '+f.name+'</a>').join('') : '—'}</td>
             <td>${d.slot || ''}</td>
             <td style="font-size:0.78rem;color:#6b7c93;">${submitted}</td>
             <td>${d.amountSent ? '<strong>₹' + d.amountSent + '</strong>' : '—'}</td>
@@ -1946,7 +2035,207 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       sessionStorage.clear(); window.location.href = 'login.html';
     }
 
-    // ── STAFF ACTIVITY MONITORING ─────────────────────────────────────────
+    // ── BIOMETRIC ATTENDANCE ──────────────────────────────────────────────
+    const MANTRA_URL = 'http://localhost:11100';
+    let _bioStaff = [];
+    let _bioAttDocs = [];
+    let _deviceConnected = false;
+
+    // Load staff into biometric dropdowns
+    onSnapshot(collection(db, 'staff'), snap => {
+      _bioStaff = [];
+      snap.forEach(d => _bioStaff.push({ id: d.id, ...d.data() }));
+      const opts = '<option value="">Select Staff</option>' + _bioStaff.map(s => `<option value="${s.id}">${s.name} (${s.role})</option>`).join('');
+      const sel1 = document.getElementById('bioStaffSelect');
+      const sel2 = document.getElementById('bioAttStaff');
+      if (sel1) sel1.innerHTML = opts;
+      if (sel2) sel2.innerHTML = opts;
+      document.getElementById('bioTotalStaff') && (document.getElementById('bioTotalStaff').textContent = _bioStaff.length);
+    });
+
+    // Check if Mantra RD Service is running
+    window.checkDevice = async function() {
+      const statusEl = document.getElementById('deviceStatus');
+      try {
+        const res = await fetch(MANTRA_URL + '/rd/info', { method: 'RDSERVICE' }).catch(() => null);
+        if (res && res.ok) {
+          _deviceConnected = true;
+          statusEl.textContent = '✅ Device Connected';
+          statusEl.style.background = '#d4edda'; statusEl.style.color = '#155724';
+        } else throw new Error();
+      } catch {
+        _deviceConnected = false;
+        statusEl.textContent = '❌ Device Not Found — Use Simulator';
+        statusEl.style.background = '#f8d7da'; statusEl.style.color = '#721c24';
+      }
+    };
+    checkDevice();
+
+    // Capture fingerprint from Mantra device
+    async function captureFingerprint() {
+      const xml = '<?xml version="1.0"?><PidOptions ver="1.0"><Opts fCount="1" fType="2" iCount="0" pCount="0" format="0" pidVer="2.0" timeout="10000" posh="UNKNOWN" env="P" /></PidOptions>';
+      const res = await fetch(MANTRA_URL + '/rd/capture', {
+        method: 'CAPTURE',
+        headers: { 'Content-Type': 'text/xml' },
+        body: xml
+      });
+      const text = await res.text();
+      // Extract errCode from response
+      const errMatch = text.match(/errCode="(\d+)"/);
+      if (errMatch && errMatch[1] !== '0') throw new Error('Fingerprint capture failed. Please try again.');
+      return text; // PID block XML
+    }
+
+    // Register fingerprint
+    window.registerFingerprint = async function(simulate = false) {
+      const staffId = document.getElementById('bioStaffSelect').value;
+      const staff = _bioStaff.find(s => s.id === staffId);
+      const statusEl = document.getElementById('registerStatus');
+      if (!staff) { alert('Please select a staff member.'); return; }
+
+      statusEl.style.display = 'block';
+      statusEl.style.color = '#1a4b8c';
+      statusEl.textContent = simulate ? '🧪 Simulating fingerprint capture...' : '🔄 Place finger on scanner...';
+
+      try {
+        let fingerprintData;
+        if (simulate) {
+          await new Promise(r => setTimeout(r, 1500));
+          fingerprintData = 'SIMULATED_FP_' + staffId + '_' + Date.now();
+        } else {
+          const pid = await captureFingerprint();
+          fingerprintData = btoa(pid); // base64 encode the PID block
+        }
+
+        await setDoc(doc(db, 'staffFingerprints', staffId), {
+          staffId, staffName: staff.name,
+          fingerprint: fingerprintData,
+          method: simulate ? 'simulated' : 'mantra_mfs100',
+          registeredAt: serverTimestamp()
+        });
+
+        statusEl.style.color = '#27ae60';
+        statusEl.textContent = `✅ Fingerprint registered for ${staff.name}!`;
+      } catch(e) {
+        statusEl.style.color = '#e63946';
+        statusEl.textContent = '❌ ' + e.message;
+      }
+    };
+
+    // Mark attendance (check in / check out)
+    window.markAttendance = async function(type, simulate = false) {
+      const staffId = document.getElementById('bioAttStaff').value;
+      const staff = _bioStaff.find(s => s.id === staffId);
+      const statusEl = document.getElementById('attendanceStatus');
+      if (!staff) { alert('Please select a staff member.'); return; }
+
+      statusEl.style.display = 'block';
+      statusEl.style.color = '#1a4b8c';
+      statusEl.textContent = simulate ? '🧪 Simulating...' : '🔄 Place finger on scanner...';
+
+      try {
+        if (!simulate) await captureFingerprint();
+        else await new Promise(r => setTimeout(r, 1200));
+
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const timeStr  = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        // Check if record exists for today
+        const existing = await getDocs(query(
+          collection(db, 'biometricAttendance'),
+          where('staffId', '==', staffId),
+          where('date', '==', todayStr)
+        ));
+
+        if (type === 'checkin') {
+          if (!existing.empty) {
+            statusEl.style.color = '#856404';
+            statusEl.textContent = `⚠️ ${staff.name} already checked in today at ${existing.docs[0].data().checkIn}`;
+            return;
+          }
+          await addDoc(collection(db, 'biometricAttendance'), {
+            staffId, staffName: staff.name,
+            date: todayStr, checkIn: timeStr,
+            checkOut: null, hoursWorked: null,
+            method: simulate ? 'simulated' : 'mantra_mfs100',
+            status: 'checked-in', createdAt: serverTimestamp()
+          });
+          statusEl.style.color = '#27ae60';
+          statusEl.textContent = `✅ ${staff.name} checked in at ${timeStr}`;
+        } else {
+          if (existing.empty) {
+            statusEl.style.color = '#e63946';
+            statusEl.textContent = `❌ ${staff.name} has not checked in today.`;
+            return;
+          }
+          const rec = existing.docs[0];
+          const checkInTime = rec.data().checkIn;
+          // Calculate hours worked
+          const [inH, inM] = checkInTime.replace(/ AM| PM/, '').split(':').map(Number);
+          const [outH, outM] = timeStr.replace(/ AM| PM/, '').split(':').map(Number);
+          const inMins  = (checkInTime.includes('PM') && inH !== 12 ? inH + 12 : inH) * 60 + inM;
+          const outMins = (timeStr.includes('PM') && outH !== 12 ? outH + 12 : outH) * 60 + outM;
+          const diff = outMins - inMins;
+          const hoursWorked = diff > 0 ? `${Math.floor(diff/60)}h ${diff%60}m` : '—';
+
+          await updateDoc(doc(db, 'biometricAttendance', rec.id), {
+            checkOut: timeStr, hoursWorked, status: 'checked-out'
+          });
+          statusEl.style.color = '#e63946';
+          statusEl.textContent = `🚪 ${staff.name} checked out at ${timeStr} — Hours: ${hoursWorked}`;
+        }
+      } catch(e) {
+        statusEl.style.color = '#e63946';
+        statusEl.textContent = '❌ ' + e.message;
+      }
+    };
+
+    // Load biometric attendance records
+    let _bioAttAllDocs = [];
+    window.filterBioAtt = function() {
+      const dateF = document.getElementById('bioDateFilter').value;
+      const filtered = dateF ? _bioAttAllDocs.filter(d => d.date === dateF) : _bioAttAllDocs;
+      const tbody = document.getElementById('bioAttTable');
+      tbody.innerHTML = '';
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7c93;">No records found</td></tr>'; return; }
+      let checkedIn = 0, checkedOut = 0, totalMins = 0, count = 0;
+      filtered.forEach(d => {
+        if (d.status === 'checked-in' || d.status === 'checked-out') checkedIn++;
+        if (d.status === 'checked-out') checkedOut++;
+        const statusBadge = d.status === 'checked-out'
+          ? '<span class="badge confirmed">✅ Done</span>'
+          : '<span class="badge pending">🟢 In</span>';
+        const methodBadge = d.method === 'simulated'
+          ? '<span style="background:#e8f0fb;color:#1a4b8c;padding:3px 8px;border-radius:10px;font-size:0.72rem;">🧪 Simulated</span>'
+          : '<span style="background:#d4edda;color:#155724;padding:3px 8px;border-radius:10px;font-size:0.72rem;">🔐 Biometric</span>';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${d.staffName}</strong></td>
+            <td>${d.date}</td>
+            <td style="color:#27ae60;font-weight:600;">${d.checkIn || '—'}</td>
+            <td style="color:#e63946;font-weight:600;">${d.checkOut || '—'}</td>
+            <td><strong>${d.hoursWorked || '—'}</strong></td>
+            <td>${methodBadge}</td>
+            <td>${statusBadge}</td>
+          </tr>`);
+      });
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayRecs = _bioAttAllDocs.filter(d => d.date === todayStr);
+      document.getElementById('bioCheckedIn')  && (document.getElementById('bioCheckedIn').textContent  = todayRecs.filter(d => d.checkIn).length);
+      document.getElementById('bioCheckedOut') && (document.getElementById('bioCheckedOut').textContent = todayRecs.filter(d => d.checkOut).length);
+    };
+
+    onSnapshot(query(collection(db, 'biometricAttendance'), orderBy('createdAt', 'desc')), snap => {
+      _bioAttAllDocs = snap.docs.map(d => d.data());
+      filterBioAtt();
+    });
+
+    // Set today as default date filter
+    const bioDateEl = document.getElementById('bioDateFilter');
+    if (bioDateEl) bioDateEl.value = new Date().toISOString().split('T')[0];
+
+
     let _actDocs = [];
     const todayStr2 = new Date().toISOString().slice(0,10);
 
