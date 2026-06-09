@@ -5,67 +5,110 @@ const axios = require("axios");
 admin.initializeApp();
 const db = admin.firestore();
 
-const VERIFY_TOKEN = "ayushman_physiofit_webhook";
-const WHATSAPP_TOKEN = "EAAWHPvzPZCZBcBRR03822GiWhVlxowd15UaAJNoBlj2WhR4GtfoHO6wz6CilehggZAghcUAw2YBWiD1oNWRZAu9jzRn4enDz1m2f76ExmDyGAeS4wZCSzJNN57eIGerbZB6PXAZCQJaGZAR1ZBdnfXSXVnkxXCGWpIMFAeHSqXRhRlx1CP3qlth7iLccF1JdfqdGh02WmWN6dgqMvC8VdU2IkJg7dcqBcBY7r8OSFsPlrDWemDaqZCpJWZBABGIhFqrIYUEIPjltICw6Ha68mgpXH4CJtkZD";
-const PHONE_NUMBER_ID = "1102187382984050";
+const VERIFY_TOKEN   = "ayushman_physiofit_2026";
+const WHATSAPP_TOKEN = "EAAWHPvzPZCZBcBRuKunu9F0v7Cqpik4QPOpftH48ZB0mc6UnEPsOf6PqgsMKDuQV5sBZB53QoJxdTSRPyjTcFGCYaiTeD9iFcw9PU4ZANBjTBqe6ZCCm8j9XqImyj24CIFPZCGFFGZBwLoAyVVK5MZAU2FKHfHyukGcwcnxQLeeU4ZCv1kM7Nsp0V6iEft59eMTihHA4AghgXhOI05elgrHQZBUXZC7jFFJns0XP65OXX8xYSfn0pHmft5B7iKLSrWi8ukY8VVMyYRxMYmZCZBtRijdHDs";
+const PHONE_NUMBER_ID = "1104497396082962";
 
-// Webhook verification
+// ── WEBHOOK ───────────────────────────────────────────────────────────────────
 exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
-  if (req.method === "GET") {
-    const mode = req.query["hub.mode"];
-    const token = req.query["hub.verify_token"];
-    const challenge = req.query["hub.challenge"];
 
-    if (mode === "subscribe" && token === VERIFY_TOKEN) {
+  // Verification handshake
+  if (req.method === "GET") {
+    const mode      = req.query["hub.mode"];
+    const token     = req.query["hub.verify_token"];
+    const challenge = req.query["hub.challenge"];
+    if (mode === "subscribe" && token === VERIFY_TOKEN)
       return res.status(200).send(challenge);
-    }
     return res.sendStatus(403);
   }
 
   if (req.method === "POST") {
-    const body = req.body;
-
     try {
-      const entry = body.entry?.[0];
+      const entry   = req.body.entry?.[0];
       const changes = entry?.changes?.[0];
-      const message = changes?.value?.messages?.[0];
+      const value   = changes?.value;
+      const message = value?.messages?.[0];
+      const contact = value?.contacts?.[0];
 
       if (message) {
-        const from = message.from;
-        const text = message.text?.body?.toLowerCase().trim();
+        const from    = message.from;
+        const name    = contact?.profile?.name || "Unknown";
+        const msgBody = message.text?.body || "";
+        const text    = msgBody.toLowerCase().trim();
+        const ts      = new Date().toISOString();
 
-        // Save message to Firestore
-        await db.collection("whatsapp_messages").add({
-          from,
-          message: message.text?.body,
-          timestamp: admin.firestore.FieldValue.serverTimestamp()
-        });
+        // ── Detect intent ────────────────────────────────────────────────────
+        let intent = "general";
+        let bookingData = null;
 
-        // Auto reply logic
-        let replyText = "";
-
-        if (text.includes("appointment") || text.includes("book")) {
-          replyText = "Hello! 👋 To book an appointment at Ayushman PhysioFIT, please visit our website or call us. Our team will assist you shortly!";
-        } else if (text.includes("hi") || text.includes("hello") || text.includes("hey")) {
-          replyText = "Hello! Welcome to Ayushman PhysioFIT 🏥\n\nHow can we help you today?\n1. Book Appointment\n2. Services Info\n3. Contact Us";
+        if (text.includes("appointment") || text.includes("book") || text.includes("booking")) {
+          intent = "appointment";
+        } else if (text.includes("home visit") || text.includes("home physio")) {
+          intent = "home_visit";
+        } else if (text.includes("class") || text.includes("fitness") || text.includes("enroll")) {
+          intent = "fitness";
+        } else if (text.includes("hi") || text.includes("hello") || text.includes("hey") || text.includes("start")) {
+          intent = "greeting";
         } else if (text === "1") {
-          replyText = "To book an appointment, please share your:\n- Name\n- Preferred date & time\n- Type of treatment needed";
+          intent = "book_appointment";
         } else if (text === "2") {
-          replyText = "We offer:\n✅ Ortho & Sports Physiotherapy\n✅ Neurology\n✅ Cardio Pulmonary\n✅ Women & Pediatric\n✅ General Fitness\n✅ Post Surgery Rehab";
+          intent = "services";
         } else if (text === "3") {
-          replyText = "📍 Visit us at Ayushman PhysioFIT\n📞 Contact our front desk for more info\n🌐 Check our website for details";
-        } else {
-          replyText = "Thank you for contacting Ayushman PhysioFIT! 🏥\nOur team will get back to you shortly.\n\nReply with:\n1. Book Appointment\n2. Services Info\n3. Contact Us";
+          intent = "contact";
+        } else if (text === "4") {
+          intent = "home_visit_info";
         }
 
-        // Send reply
+        // ── Save to Firestore ─────────────────────────────────────────────────
+        await db.collection("whatsapp_messages").add({
+          from,
+          name,
+          message: msgBody,
+          intent,
+          status: "unread",
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: ts
+        });
+
+        // ── If booking intent → create pending booking ────────────────────────
+        if (intent === "appointment" || intent === "book_appointment") {
+          await db.collection("whatsapp_bookings").add({
+            phone: from,
+            name,
+            message: msgBody,
+            status: "pending",
+            source: "whatsapp",
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        // ── Auto reply ────────────────────────────────────────────────────────
+        let reply = "";
+
+        if (intent === "greeting") {
+          reply = `Hello ${name}! 👋 Welcome to *Ayushman PhysioFIT* 🏥\n\nHow can we help you today?\n\n1️⃣ Book Appointment\n2️⃣ Our Services\n3️⃣ Contact & Location\n4️⃣ Home Physio Visit\n\nReply with a number or type your query.`;
+        } else if (intent === "appointment" || intent === "book_appointment") {
+          reply = `✅ *Appointment Request Received!*\n\nDear ${name}, your request has been noted.\n\nOur team will confirm your appointment shortly.\n\nPlease share:\n📅 Preferred Date\n⏰ Preferred Time\n🩺 Your Condition\n\nOr book directly: https://ayushman-physiofit-218ae.web.app`;
+        } else if (intent === "home_visit" || intent === "home_visit_info") {
+          reply = `🏠 *Home Physio Visit*\n\nWe provide home physiotherapy services!\n\n📍 Available in Vijayawada & NTR District\n⏰ Mon–Sat: 9AM–9PM\n\nTo book a home visit, please share:\n- Your Name\n- Address\n- Condition\n- Preferred Date & Time\n\nOr visit: https://ayushman-physiofit-218ae.web.app/#online-classes`;
+        } else if (intent === "services") {
+          reply = `🏥 *Our Services:*\n\n✅ Ortho & Sports Physiotherapy\n✅ Neurology Rehabilitation\n✅ Cardio Pulmonary\n✅ Women & Pediatric Physio\n✅ Post Surgery Recovery\n✅ General Fitness (Online Classes)\n✅ Home Physio Visit\n\nFor more: https://ayushman-physiofit-218ae.web.app/#services`;
+        } else if (intent === "contact") {
+          reply = `📍 *Ayushman PhysioFIT*\n\nD. No: 41-14-1/1, SowjiRaj Homes,\nKrishnalanka, Vijayawada – 520013\n\n📞 6302478412\n🕘 Mon–Sat: 9:00 AM – 9:00 PM\n\n🌐 https://ayushman-physiofit-218ae.web.app`;
+        } else if (intent === "fitness") {
+          reply = `🏋️ *Online PhysioFIT Classes*\n\n📅 3 Classes/week (Mon, Wed, Fri)\n💰 ₹2,400/month\n🎥 Premium video access included\n\nEnroll now: https://ayushman-physiofit-218ae.web.app/#online-classes`;
+        } else {
+          reply = `Thank you for contacting *Ayushman PhysioFIT* 🏥\n\nOur team will get back to you shortly.\n\nReply with:\n1️⃣ Book Appointment\n2️⃣ Our Services\n3️⃣ Contact & Location\n4️⃣ Home Physio Visit`;
+        }
+
+        // ── Send reply via WhatsApp API ────────────────────────────────────────
         await axios.post(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
+          `https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`,
           {
             messaging_product: "whatsapp",
             to: from,
             type: "text",
-            text: { body: replyText }
+            text: { body: reply }
           },
           {
             headers: {
@@ -76,7 +119,7 @@ exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
         );
       }
     } catch (err) {
-      console.error("Error:", err.message);
+      console.error("WhatsApp Webhook Error:", err.message);
     }
 
     return res.sendStatus(200);

@@ -101,6 +101,7 @@
       <a onclick="showSection('enrollments', this)">🏋️ Fitness Enrollments</a>
       <a onclick="showSection('slots', this)">🕐 Manage Slots</a>
       <a onclick="showSection('staff_activity', this)">🕵️ Staff Activity Log</a>
+      <a onclick="showSection('whatsapp', this)">💬 WhatsApp Messages</a>
       <a onclick="showSection('biometric', this)">🖐️ Biometric Attendance</a>
       <a onclick="showSection('staff_attendance', this)">✅ Staff Attendance</a>
       <a onclick="showSection('staff_notes', this)">📝 Staff Notes</a>
@@ -729,6 +730,57 @@
           <table>
             <thead><tr><th>Staff</th><th>Action</th><th>Details</th><th>Time</th></tr></thead>
             <tbody id="activityTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHATSAPP MESSAGES -->
+    <div class="section" id="sec-whatsapp">
+      <div class="topbar">
+        <div><h1>💬 WhatsApp Messages</h1><p>All incoming WhatsApp messages & booking requests</p></div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span id="waMsgBadge" style="padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;background:#d4edda;color:#155724;">0 Unread</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="icon">💬</div><h3 id="waTotalMsgs">0</h3><p>Total Messages</p></div>
+        <div class="stat-card"><div class="icon">📥</div><h3 id="waUnread">0</h3><p>Unread</p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 id="waBookings">0</h3><p>Booking Requests</p></div>
+        <div class="stat-card"><div class="icon">👥</div><h3 id="waUniquePatients">0</h3><p>Unique Patients</p></div>
+      </div>
+
+      <!-- Messages Table -->
+      <div class="section-card">
+        <h2>📩 Incoming Messages</h2>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <select id="waFilter" onchange="filterWAMessages()" style="padding:8px 14px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;outline:none;">
+            <option value="all">All Messages</option>
+            <option value="unread">Unread</option>
+            <option value="appointment">Appointments</option>
+            <option value="home_visit">Home Visits</option>
+            <option value="fitness">Fitness</option>
+            <option value="general">General</option>
+          </select>
+          <button onclick="markAllRead()" style="padding:8px 16px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">✅ Mark All Read</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Phone</th><th>Message</th><th>Intent</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="waMsgTable"><tr><td colspan="7" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Booking Requests from WhatsApp -->
+      <div class="section-card">
+        <h2>📅 WhatsApp Booking Requests</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Phone</th><th>Message</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="waBookingsTable"><tr><td colspan="6" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -2034,6 +2086,132 @@ _Assigned by Admin — Ayushman PhysioFIT_`;
       try { await signOut(auth); } catch(e) {}
       sessionStorage.clear(); window.location.href = 'login.html';
     }
+
+    // ── WHATSAPP MESSAGES ─────────────────────────────────────────────────
+    let _waMsgDocs = [];
+
+    const INTENT_BADGE = {
+      appointment:      '<span style="background:#d4edda;color:#155724;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">📅 Appointment</span>',
+      book_appointment: '<span style="background:#d4edda;color:#155724;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">📅 Appointment</span>',
+      home_visit:       '<span style="background:#cce5ff;color:#004085;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">🏠 Home Visit</span>',
+      home_visit_info:  '<span style="background:#cce5ff;color:#004085;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">🏠 Home Visit</span>',
+      fitness:          '<span style="background:#fff3cd;color:#856404;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">🏋️ Fitness</span>',
+      greeting:         '<span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">👋 Greeting</span>',
+      general:          '<span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">💬 General</span>',
+      services:         '<span style="background:#e8f0fb;color:#1a4b8c;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">🏥 Services</span>',
+      contact:          '<span style="background:#e8f0fb;color:#1a4b8c;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">📍 Contact</span>',
+    };
+
+    window.filterWAMessages = function() {
+      const filter = document.getElementById('waFilter').value;
+      const tbody  = document.getElementById('waMsgTable');
+      if (!tbody) return;
+      const filtered = filter === 'all' ? _waMsgDocs : _waMsgDocs.filter(d => {
+        if (filter === 'unread') return d.status === 'unread';
+        return d.intent === filter || d.intent === filter + '_info';
+      });
+      tbody.innerHTML = '';
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7c93;">No messages found</td></tr>'; return; }
+      filtered.forEach(d => {
+        const time = d.timestamp?.toDate ? d.timestamp.toDate().toLocaleString('en-IN') : '—';
+        const unread = d.status === 'unread';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr style="${unread ? 'background:#f0f7ff;font-weight:600;' : ''}">
+            <td>${d.name || '—'}</td>
+            <td><a href="https://wa.me/${d.from}" target="_blank" style="color:#25D366;font-weight:600;">📞 ${d.from}</a></td>
+            <td style="max-width:200px;font-size:0.85rem;">${d.message || ''}</td>
+            <td>${INTENT_BADGE[d.intent] || INTENT_BADGE['general']}</td>
+            <td style="font-size:0.78rem;color:#6b7c93;">${time}</td>
+            <td>${unread ? '<span class="badge pending">🔵 Unread</span>' : '<span class="badge confirmed">✅ Read</span>'}</td>
+            <td style="display:flex;gap:6px;">
+              <button onclick="replyWA('${d.from}')" style="padding:5px 10px;background:#25D366;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;">💬 Reply</button>
+              <button onclick="markReadWA('${d._id}')" style="padding:5px 10px;background:#2e7dd1;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;">✅ Read</button>
+              ${ (d.intent === 'appointment' || d.intent === 'book_appointment') ? `<button onclick="convertToBooking('${d._id}','${d.from}','${d.name}')" style="padding:5px 10px;background:#1a4b8c;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;">📅 Book</button>` : ''}
+            </td>
+          </tr>`);
+      });
+    };
+
+    window.replyWA = function(phone) {
+      window.open('https://wa.me/' + phone, '_blank');
+    };
+
+    window.markReadWA = async function(id) {
+      await updateDoc(doc(db, 'whatsapp_messages', id), { status: 'read' });
+    };
+
+    window.markAllRead = async function() {
+      const unread = _waMsgDocs.filter(d => d.status === 'unread');
+      for (const d of unread) {
+        await updateDoc(doc(db, 'whatsapp_messages', d._id), { status: 'read' });
+      }
+    };
+
+    window.convertToBooking = async function(id, phone, name) {
+      await addDoc(collection(db, 'appointments'), {
+        name, phone, source: 'whatsapp',
+        status: 'pending', condition: 'Via WhatsApp',
+        createdAt: serverTimestamp()
+      });
+      await updateDoc(doc(db, 'whatsapp_messages', id), { status: 'converted' });
+      alert(`✅ Booking created for ${name}! Check Online Bookings section.`);
+    };
+
+    onSnapshot(query(collection(db, 'whatsapp_messages'), orderBy('timestamp', 'desc')), snap => {
+      _waMsgDocs = [];
+      let unread = 0;
+      const phones = new Set();
+      snap.forEach(d => {
+        _waMsgDocs.push({ _id: d.id, ...d.data() });
+        if (d.data().status === 'unread') unread++;
+        if (d.data().from) phones.add(d.data().from);
+      });
+      document.getElementById('waTotalMsgs')     && (document.getElementById('waTotalMsgs').textContent     = _waMsgDocs.length);
+      document.getElementById('waUnread')        && (document.getElementById('waUnread').textContent        = unread);
+      document.getElementById('waUniquePatients') && (document.getElementById('waUniquePatients').textContent = phones.size);
+      document.getElementById('waMsgBadge')      && (document.getElementById('waMsgBadge').textContent      = unread + ' Unread');
+      filterWAMessages();
+    });
+
+    onSnapshot(query(collection(db, 'whatsapp_bookings'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('waBookingsTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      document.getElementById('waBookings') && (document.getElementById('waBookings').textContent = snap.size);
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6b7c93;">No booking requests yet</td></tr>'; return; }
+      snap.forEach(d => {
+        const b = d.data();
+        const time = b.createdAt?.toDate ? b.createdAt.toDate().toLocaleString('en-IN') : '—';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td><strong>${b.name || '—'}</strong></td>
+            <td><a href="https://wa.me/${b.phone}" target="_blank" style="color:#25D366;font-weight:600;">📞 ${b.phone}</a></td>
+            <td style="font-size:0.85rem;max-width:200px;">${b.message || ''}</td>
+            <td style="font-size:0.78rem;color:#6b7c93;">${time}</td>
+            <td><span class="badge ${b.status === 'confirmed' ? 'confirmed' : 'pending'}">${b.status || 'pending'}</span></td>
+            <td style="display:flex;gap:6px;">
+              <button onclick="replyWA('${b.phone}')" style="padding:5px 10px;background:#25D366;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;">💬 Reply</button>
+              <button onclick="confirmWABooking('${d.id}','${b.phone}','${b.name}')" style="padding:5px 10px;background:#1a4b8c;color:#fff;border:none;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;">✅ Confirm</button>
+            </td>
+          </tr>`);
+      });
+    });
+
+    window.confirmWABooking = async function(id, phone, name) {
+      await updateDoc(doc(db, 'whatsapp_bookings', id), { status: 'confirmed' });
+      const msg = `✅ *BOOKING CONFIRMED – Ayushman PhysioFIT*
+
+Dear ${name},
+
+Your booking request has been confirmed! Our team will contact you shortly to finalize the appointment time.
+
+🏥 Ayushman PhysioFIT Rehabilitation Centre
+📍 Krishnalanka, Vijayawada – 520013
+📞 6302478412
+
+_We keep you moving..._`;
+      window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+    };
 
     // ── BIOMETRIC ATTENDANCE ──────────────────────────────────────────────
     const MANTRA_URL = 'http://localhost:11100';
