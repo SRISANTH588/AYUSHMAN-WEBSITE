@@ -1,23 +1,20 @@
-// Firebase Configuration — Ayushman PhysioFIT
-// SECURITY: Firestore rules are defined in firestore.rules (deploy via: firebase deploy --only firestore:rules)
-// CSP headers are configured in firebase.json under hosting.headers
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDC3xGBni7Hl59c1UWeLw87-ng-PlLWSUg",
-  authDomain: "ayushman-physiofit-218ae.firebaseapp.com",
-  projectId: "ayushman-physiofit-218ae",
-  storageBucket: "ayushman-physiofit-218ae.firebasestorage.app",
-  messagingSenderId: "797309711753",
-  appId: "1:797309711753:web:a2489fdccdf9a88b12dd58"
+  apiKey: "AIzaSyA5O2Wjgqsz0haLLDTyn0aR9XoaHybVDFQ",
+  authDomain: "ayushman-physiofit-5b6ad.firebaseapp.com",
+  projectId: "ayushman-physiofit-5b6ad",
+  storageBucket: "ayushman-physiofit-5b6ad.firebasestorage.app",
+  messagingSenderId: "803515776402",
+  appId: "1:803515776402:web:8f96c6a1c02aa91620954b"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app     = initializeApp(firebaseConfig);
+const auth    = getAuth(app);
+const db      = getFirestore(app);
 const storage = getStorage(app);
 
 export { auth, db, storage };

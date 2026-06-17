@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ayushman-whatsapp-bot
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: VERIFY_TOKEN
+        value: ayushman_physiofit_webhook
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: PHONE_NUMBER_ID
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false

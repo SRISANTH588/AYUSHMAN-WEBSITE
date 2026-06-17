@@ -88,7 +88,7 @@
       <div class="stats">
         <div class="stat-card"><div class="icon">💰</div><h3>₹42,800</h3><p>Total Revenue 2026 <span class="badge up">↑ 18%</span></p></div>
         <div class="stat-card"><div class="icon">🧑</div><h3>142</h3><p>Total Patients <span class="badge up">↑ 12%</span></p></div>
-        <div class="stat-card"><div class="icon">📅</div><h3>486</h3><p>Total Appointments <span class="badge up">↑ 9%</span></p></div>
+        <div class="stat-card"><div class="icon">📅</div><h3 class="stat-total-appts">Loading...</h3><p>Total Appointments</p></div>
         <div class="stat-card"><div class="icon">📦</div><h3>12</h3><p>Active Memberships <span class="badge up">↑ 4%</span></p></div>
       </div>
 
@@ -121,7 +121,7 @@
       <div class="section-card">
         <h2>📋 Monthly Summary</h2>
         <table>
-          <thead><tr><th>Month</th><th>New Patients</th><th>Appointments</th><th>Revenue</th><th>Memberships</th><th>Growth</th></tr></thead>
+          <thead><tr><th>Month</th><th>Appointments</th><th>Completed</th><th>Growth</th></tr></thead>
           <tbody>
             <tr><td>May 2026</td><td>38</td><td>142</td><td>₹12,400</td><td>12</td><td><span class="badge up">↑ 18%</span></td></tr>
             <tr><td>Apr 2026</td><td>31</td><td>118</td><td>₹9,800</td><td>10</td><td><span class="badge up">↑ 8%</span></td></tr>
@@ -187,7 +187,7 @@
       <div class="section-card">
         <h2>🩺 Condition-wise Patient Count</h2>
         <table>
-          <thead><tr><th>Condition</th><th>Patients</th><th>Avg Sessions</th><th>Recovery Rate</th></tr></thead>
+          <thead><tr><th>Condition</th><th>Patients</th><th>% Share</th></tr></thead>
           <tbody>
             <tr><td>Knee & Foot Pain</td><td>53</td><td>8</td><td>82%</td></tr>
             <tr><td>Spine Problems</td><td>34</td><td>10</td><td>75%</td></tr>
@@ -254,29 +254,23 @@
         <button class="btn-print" onclick="window.print()">🖨️ Print</button>
       </div>
       <div class="stats">
-        <div class="stat-card"><div class="icon">👨‍⚕️</div><h3>2</h3><p>Active Doctors</p></div>
-        <div class="stat-card"><div class="icon">✅</div><h3>118</h3><p>Sessions Completed</p></div>
-        <div class="stat-card"><div class="icon">⭐</div><h3>4.8</h3><p>Avg Patient Rating</p></div>
-        <div class="stat-card"><div class="icon">📝</div><h3>86</h3><p>Treatment Notes</p></div>
+        <div class="stat-card"><div class="icon">👨‍⚕️</div><h3 class="stat-active-staff">Loading...</h3><p>Active Staff</p></div>
+        <div class="stat-card"><div class="icon">✅</div><h3 class="stat-appts-completed">Loading...</h3><p>Sessions Completed</p></div>
+        <div class="stat-card"><div class="icon">⭐</div><h3 class="stat-avg-rating">Loading...</h3><p>Avg Patient Rating</p></div>
+        <div class="stat-card"><div class="icon">📝</div><h3 class="stat-notes">Loading...</h3><p>Treatment Notes</p></div>
       </div>
       <div class="section-card">
         <h2>👨‍⚕️ Staff Performance</h2>
         <table>
           <thead><tr><th>Doctor</th><th>Patients</th><th>Sessions</th><th>Notes</th><th>Rating</th></tr></thead>
-          <tbody>
-            <tr><td>Dr. Durga Sowjanya</td><td>82</td><td>68</td><td>52</td><td>⭐ 4.9</td></tr>
-            <tr><td>Dr. D. Ramachandra</td><td>60</td><td>50</td><td>34</td><td>⭐ 4.7</td></tr>
-          </tbody>
+          <tbody id="staffNoteTable"><tr><td colspan="5" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
         </table>
       </div>
       <div class="section-card">
         <h2>📅 Staff Attendance This Month</h2>
         <table>
           <thead><tr><th>Doctor</th><th>Days Present</th><th>Days Absent</th><th>Attendance %</th></tr></thead>
-          <tbody>
-            <tr><td>Dr. Durga Sowjanya</td><td>22</td><td>1</td><td>96%</td></tr>
-            <tr><td>Dr. D. Ramachandra</td><td>20</td><td>3</td><td>87%</td></tr>
-          </tbody>
+          <tbody id="staffAttTable"><tr><td colspan="4" style="text-align:center;color:#6b7c93;">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -290,6 +284,266 @@
       document.getElementById('sec-' + name).classList.add('active');
       el.classList.add('active');
     }
+  </script>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, query, orderBy, onSnapshot, where } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    const now      = new Date();
+    const thisMonth = now.toISOString().slice(0,7); // e.g. 2026-05
+    const todayStr  = now.toISOString().slice(0,10);
+
+    // ── OVERVIEW STATS ──────────────────────────────────────────────────────
+    // Total patients
+    onSnapshot(collection(db, 'patients'), snap => {
+      const total = snap.size;
+      document.querySelectorAll('.stat-total-patients').forEach(el => el.textContent = total);
+      // New this month
+      let newThisMonth = 0;
+      snap.forEach(d => { if ((d.data().createdAt?.toDate?.()?.toISOString().slice(0,7) || '') === thisMonth) newThisMonth++; });
+      document.querySelectorAll('.stat-new-patients').forEach(el => el.textContent = newThisMonth);
+      document.querySelectorAll('.stat-returning-patients').forEach(el => el.textContent = total - newThisMonth);
+
+      // Condition breakdown
+      const condMap = {};
+      snap.forEach(d => {
+        const c = (d.data().condition || 'Others').trim();
+        condMap[c] = (condMap[c] || 0) + 1;
+      });
+      const sorted = Object.entries(condMap).sort((a,b) => b[1]-a[1]).slice(0,5);
+      const condTbody = document.getElementById('condTable');
+      if (condTbody) {
+        condTbody.innerHTML = '';
+        sorted.forEach(([cond, count]) => {
+          const pct = total > 0 ? Math.round((count/total)*100) : 0;
+          condTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${cond}</td><td><strong>${count}</strong></td><td>${pct}%</td></tr>`);
+        });
+      }
+
+      // Age group
+      const ageGroups = {'18–30':0,'31–45':0,'46–60':0,'60+':0,'Unknown':0};
+      snap.forEach(d => {
+        const age = parseInt(d.data().age || 0);
+        if (age >= 18 && age <= 30) ageGroups['18–30']++;
+        else if (age >= 31 && age <= 45) ageGroups['31–45']++;
+        else if (age >= 46 && age <= 60) ageGroups['46–60']++;
+        else if (age > 60) ageGroups['60+']++;
+        else ageGroups['Unknown']++;
+      });
+      const ageTbody = document.getElementById('ageTable');
+      if (ageTbody) {
+        ageTbody.innerHTML = '';
+        Object.entries(ageGroups).forEach(([grp, cnt]) => {
+          const pct = total > 0 ? Math.round((cnt/total)*100) : 0;
+          ageTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${grp} years</td><td>${cnt}</td><td>${pct}%</td></tr>`);
+        });
+      }
+    });
+
+    // ── APPOINTMENTS ────────────────────────────────────────────────────────
+    onSnapshot(query(collection(db, 'appointments'), orderBy('createdAt','desc')), snap => {
+      let thisMonthTotal = 0, completed = 0, cancelled = 0, pending = 0;
+      const doctorMap = {};
+      const hourMap   = {'9:00 AM–11:00 AM':0,'11:00 AM–1:00 PM':0,'2:00 PM–4:00 PM':0,'4:00 PM–7:00 PM':0};
+      const monthMap  = {};
+
+      snap.forEach(d => {
+        const a     = d.data();
+        const month = (a.date || a.createdAt?.toDate?.()?.toISOString().slice(0,7) || '');
+        const status = (a.status || 'pending').toLowerCase();
+
+        // monthly counts
+        if (!monthMap[month]) monthMap[month] = { appts: 0, completed: 0 };
+        monthMap[month].appts++;
+        if (status === 'completed') monthMap[month].completed++;
+
+        if (month === thisMonth) {
+          thisMonthTotal++;
+          if (status === 'completed') completed++;
+          else if (status === 'cancelled') cancelled++;
+          else pending++;
+        }
+
+        // doctor map
+        const doc = a.doctor || a.patientDoctor || 'Unknown';
+        if (!doctorMap[doc]) doctorMap[doc] = { total:0, completed:0, cancelled:0, pending:0 };
+        doctorMap[doc].total++;
+        if (status === 'completed') doctorMap[doc].completed++;
+        else if (status === 'cancelled') doctorMap[doc].cancelled++;
+        else doctorMap[doc].pending++;
+
+        // hour map
+        const time = a.time || '';
+        if (time.includes('9:') || time.includes('10:')) hourMap['9:00 AM–11:00 AM']++;
+        else if (time.includes('11:') || time.includes('12:')) hourMap['11:00 AM–1:00 PM']++;
+        else if (time.includes('2:') || time.includes('3:')) hourMap['2:00 PM–4:00 PM']++;
+        else if (time.includes('4:') || time.includes('5:') || time.includes('6:')) hourMap['4:00 PM–7:00 PM']++;
+      });
+
+      document.querySelectorAll('.stat-appts-month').forEach(el => el.textContent = thisMonthTotal);
+      document.querySelectorAll('.stat-appts-completed').forEach(el => el.textContent = completed);
+      document.querySelectorAll('.stat-appts-cancelled').forEach(el => el.textContent = cancelled);
+      document.querySelectorAll('.stat-appts-pending').forEach(el => el.textContent = pending);
+      document.querySelectorAll('.stat-total-appts').forEach(el => el.textContent = snap.size);
+
+      // Doctor table
+      const docTbody = document.getElementById('doctorApptTable');
+      if (docTbody) {
+        docTbody.innerHTML = '';
+        Object.entries(doctorMap).forEach(([doc, v]) => {
+          docTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${doc}</td><td>${v.total}</td><td>${v.completed}</td><td>${v.cancelled}</td><td>${v.pending}</td></tr>`);
+        });
+      }
+
+      // Hour table
+      const hourTbody = document.getElementById('hourTable');
+      if (hourTbody) {
+        hourTbody.innerHTML = '';
+        Object.entries(hourMap).forEach(([slot, cnt]) => {
+          const pct = thisMonthTotal > 0 ? Math.round((cnt/thisMonthTotal)*100) : 0;
+          hourTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${slot}</td><td>${cnt}</td><td>${pct}%</td></tr>`);
+        });
+      }
+
+      // Monthly summary table
+      const summaryTbody = document.getElementById('monthlySummaryTable');
+      if (summaryTbody) {
+        summaryTbody.innerHTML = '';
+        const months = Object.keys(monthMap).sort().reverse().slice(0,6);
+        months.forEach((m, i) => {
+          const v    = monthMap[m];
+          const prev = months[i+1] ? monthMap[months[i+1]] : null;
+          const growth = prev ? Math.round(((v.appts - prev.appts)/prev.appts)*100) : null;
+          const badge  = growth === null ? '—' : growth >= 0
+            ? `<span class="badge up">↑ ${growth}%</span>`
+            : `<span class="badge down">↓ ${Math.abs(growth)}%</span>`;
+          summaryTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${m}</td><td>${v.appts}</td><td>${v.completed}</td><td>${badge}</td></tr>`);
+        });
+      }
+    });
+
+    // ── PAYMENTS / REVENUE ───────────────────────────────────────────────────
+    onSnapshot(query(collection(db, 'payments'), orderBy('createdAt','desc')), snap => {
+      let totalRev = 0, thisMonthRev = 0, upi = 0, cash = 0, card = 0, online = 0;
+      const serviceMap = {};
+      snap.forEach(d => {
+        const p   = d.data();
+        const amt = parseInt(p.amount || 0);
+        const month = p.date ? p.date.slice(0,7) : (p.createdAt?.toDate?.()?.toISOString().slice(0,7) || '');
+        totalRev += amt;
+        if (month === thisMonth) {
+          thisMonthRev += amt;
+          const mode = (p.mode || '').toLowerCase();
+          if (mode === 'upi') upi += amt;
+          else if (mode === 'cash') cash += amt;
+          else if (mode === 'card') card += amt;
+          else online += amt;
+        }
+        const svc = p.service || p.description || 'General';
+        if (!serviceMap[svc]) serviceMap[svc] = { sessions:0, revenue:0 };
+        serviceMap[svc].sessions++;
+        serviceMap[svc].revenue += amt;
+      });
+
+      document.querySelectorAll('.stat-rev-month').forEach(el => el.textContent = '\u20B9' + thisMonthRev.toLocaleString('en-IN'));
+      document.querySelectorAll('.stat-rev-total').forEach(el => el.textContent = '\u20B9' + totalRev.toLocaleString('en-IN'));
+      document.querySelectorAll('.stat-rev-upi').forEach(el => el.textContent = '\u20B9' + upi.toLocaleString('en-IN'));
+      document.querySelectorAll('.stat-rev-cash').forEach(el => el.textContent = '\u20B9' + cash.toLocaleString('en-IN'));
+      document.querySelectorAll('.stat-rev-card').forEach(el => el.textContent = '\u20B9' + (card+online).toLocaleString('en-IN'));
+
+      // Payment mode table
+      const modeTbody = document.getElementById('payModeTable');
+      if (modeTbody) {
+        const modes = { UPI: upi, Cash: cash, Card: card, Online: online };
+        modeTbody.innerHTML = '';
+        Object.entries(modes).forEach(([mode, amt]) => {
+          const pct = thisMonthRev > 0 ? Math.round((amt/thisMonthRev)*100) : 0;
+          modeTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${mode}</td><td>\u20B9${amt.toLocaleString('en-IN')}</td><td>${pct}%</td></tr>`);
+        });
+      }
+
+      // Service revenue table
+      const svcTbody = document.getElementById('serviceRevTable');
+      if (svcTbody) {
+        svcTbody.innerHTML = '';
+        Object.entries(serviceMap).sort((a,b)=>b[1].revenue-a[1].revenue).forEach(([svc,v]) => {
+          const pct = totalRev > 0 ? Math.round((v.revenue/totalRev)*100) : 0;
+          svcTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${svc}</td><td>${v.sessions}</td><td>\u20B9${v.revenue.toLocaleString('en-IN')}</td><td>${pct}%</td></tr>`);
+        });
+        if (!Object.keys(serviceMap).length) svcTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No payment data yet</td></tr>';
+      }
+    });
+
+    // ── MEMBERSHIPS ──────────────────────────────────────────────────────────
+    onSnapshot(collection(db, 'memberships'), snap => {
+      document.querySelectorAll('.stat-memberships').forEach(el => el.textContent = snap.size);
+    });
+
+    // ── STAFF REPORT ─────────────────────────────────────────────────────────
+    onSnapshot(collection(db, 'staff'), snap => {
+      document.querySelectorAll('.stat-active-staff').forEach(el => el.textContent = snap.size);
+    });
+
+    onSnapshot(query(collection(db, 'notes'), orderBy('createdAt','desc')), snap => {
+      document.querySelectorAll('.stat-notes').forEach(el => el.textContent = snap.size);
+      const staffNoteMap = {};
+      snap.forEach(d => {
+        const n = d.data();
+        const s = n.staffName || 'Staff';
+        staffNoteMap[s] = (staffNoteMap[s] || 0) + 1;
+      });
+      const staffNoteTbody = document.getElementById('staffNoteTable');
+      if (staffNoteTbody) {
+        staffNoteTbody.innerHTML = '';
+        Object.entries(staffNoteMap).forEach(([s,cnt]) => {
+          staffNoteTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${s}</td><td>${cnt}</td></tr>`);
+        });
+        if (!Object.keys(staffNoteMap).length) staffNoteTbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#6b7c93;">No notes yet</td></tr>';
+      }
+    });
+
+    // Staff attendance from biometricAttendance
+    onSnapshot(query(collection(db, 'biometricAttendance'), orderBy('createdAt','desc')), snap => {
+      const staffAttMap = {};
+      snap.forEach(d => {
+        const a = d.data();
+        const s = a.staffName || 'Staff';
+        if (!staffAttMap[s]) staffAttMap[s] = { present:0, absent:0 };
+        if (a.checkIn) staffAttMap[s].present++;
+      });
+      const attTbody = document.getElementById('staffAttTable');
+      if (attTbody) {
+        attTbody.innerHTML = '';
+        Object.entries(staffAttMap).forEach(([s,v]) => {
+          const total = v.present + v.absent;
+          const pct   = total > 0 ? Math.round((v.present/total)*100) : 0;
+          attTbody.insertAdjacentHTML('beforeend',
+            `<tr><td>${s}</td><td>${v.present}</td><td>${v.absent}</td><td>${pct}%</td></tr>`);
+        });
+        if (!Object.keys(staffAttMap).length) attTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7c93;">No attendance data yet</td></tr>';
+      }
+    });
+
+    // Session feedback ratings
+    onSnapshot(collection(db, 'sessionFeedback'), snap => {
+      let totalRating = 0, count = 0;
+      snap.forEach(d => {
+        const r = d.data().treatmentRating;
+        if (r) { totalRating += r; count++; }
+      });
+      const avg = count > 0 ? (totalRating/count).toFixed(1) : '—';
+      document.querySelectorAll('.stat-avg-rating').forEach(el => el.textContent = '⭐ ' + avg);
+      document.querySelectorAll('.stat-feedback-count').forEach(el => el.textContent = count);
+    });
   </script></body>
 <script>
 function toggleSidebar(){

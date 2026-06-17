@@ -88,15 +88,15 @@ exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
         if (intent === "greeting") {
           reply = `Hello ${name}! 👋 Welcome to *Ayushman PhysioFIT* 🏥\n\nHow can we help you today?\n\n1️⃣ Book Appointment\n2️⃣ Our Services\n3️⃣ Contact & Location\n4️⃣ Home Physio Visit\n\nReply with a number or type your query.`;
         } else if (intent === "appointment" || intent === "book_appointment") {
-          reply = `✅ *Appointment Request Received!*\n\nDear ${name}, your request has been noted.\n\nOur team will confirm your appointment shortly.\n\nPlease share:\n📅 Preferred Date\n⏰ Preferred Time\n🩺 Your Condition\n\nOr book directly: https://ayushman-physiofit-218ae.web.app`;
+          reply = `✅ *Appointment Request Received!*\n\nDear ${name}, your request has been noted.\n\nOur team will confirm your appointment shortly.\n\nPlease share:\n📅 Preferred Date\n⏰ Preferred Time\n🩺 Your Condition\n\nOr book directly: https://ayushman-physiofit-5b6ad.web.app`;
         } else if (intent === "home_visit" || intent === "home_visit_info") {
-          reply = `🏠 *Home Physio Visit*\n\nWe provide home physiotherapy services!\n\n📍 Available in Vijayawada & NTR District\n⏰ Mon–Sat: 9AM–9PM\n\nTo book a home visit, please share:\n- Your Name\n- Address\n- Condition\n- Preferred Date & Time\n\nOr visit: https://ayushman-physiofit-218ae.web.app/#online-classes`;
+          reply = `🏠 *Home Physio Visit*\n\nWe provide home physiotherapy services!\n\n📍 Available in Vijayawada & NTR District\n⏰ Mon–Sat: 9AM–9PM\n\nTo book a home visit, please share:\n- Your Name\n- Address\n- Condition\n- Preferred Date & Time\n\nOr visit: https://ayushman-physiofit-5b6ad.web.app/#online-classes`;
         } else if (intent === "services") {
-          reply = `🏥 *Our Services:*\n\n✅ Ortho & Sports Physiotherapy\n✅ Neurology Rehabilitation\n✅ Cardio Pulmonary\n✅ Women & Pediatric Physio\n✅ Post Surgery Recovery\n✅ General Fitness (Online Classes)\n✅ Home Physio Visit\n\nFor more: https://ayushman-physiofit-218ae.web.app/#services`;
+          reply = `🏥 *Our Services:*\n\n✅ Ortho & Sports Physiotherapy\n✅ Neurology Rehabilitation\n✅ Cardio Pulmonary\n✅ Women & Pediatric Physio\n✅ Post Surgery Recovery\n✅ General Fitness (Online Classes)\n✅ Home Physio Visit\n\nFor more: https://ayushman-physiofit-5b6ad.web.app/#services`;
         } else if (intent === "contact") {
-          reply = `📍 *Ayushman PhysioFIT*\n\nD. No: 41-14-1/1, SowjiRaj Homes,\nKrishnalanka, Vijayawada – 520013\n\n📞 6302478412\n🕘 Mon–Sat: 9:00 AM – 9:00 PM\n\n🌐 https://ayushman-physiofit-218ae.web.app`;
+          reply = `📍 *Ayushman PhysioFIT*\n\nD. No: 41-14-1/1, SowjiRaj Homes,\nKrishnalanka, Vijayawada – 520013\n\n📞 6302478412\n🕘 Mon–Sat: 9:00 AM – 9:00 PM\n\n🌐 https://ayushman-physiofit-5b6ad.web.app`;
         } else if (intent === "fitness") {
-          reply = `🏋️ *Online PhysioFIT Classes*\n\n📅 3 Classes/week (Mon, Wed, Fri)\n💰 ₹2,400/month\n🎥 Premium video access included\n\nEnroll now: https://ayushman-physiofit-218ae.web.app/#online-classes`;
+          reply = `🏋️ *Online PhysioFIT Classes*\n\n📅 3 Classes/week (Mon, Wed, Fri)\n💰 ₹2,400/month\n🎥 Premium video access included\n\nEnroll now: https://ayushman-physiofit-5b6ad.web.app/#online-classes`;
         } else {
           reply = `Thank you for contacting *Ayushman PhysioFIT* 🏥\n\nOur team will get back to you shortly.\n\nReply with:\n1️⃣ Book Appointment\n2️⃣ Our Services\n3️⃣ Contact & Location\n4️⃣ Home Physio Visit`;
         }
