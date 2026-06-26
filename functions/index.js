@@ -5,9 +5,9 @@ const axios = require("axios");
 admin.initializeApp();
 const db = admin.firestore();
 
-const VERIFY_TOKEN   = "ayushman_physiofit_2026";
-const WHATSAPP_TOKEN = "EAAWHPvzPZCZBcBRuKunu9F0v7Cqpik4QPOpftH48ZB0mc6UnEPsOf6PqgsMKDuQV5sBZB53QoJxdTSRPyjTcFGCYaiTeD9iFcw9PU4ZANBjTBqe6ZCCm8j9XqImyj24CIFPZCGFFGZBwLoAyVVK5MZAU2FKHfHyukGcwcnxQLeeU4ZCv1kM7Nsp0V6iEft59eMTihHA4AghgXhOI05elgrHQZBUXZC7jFFJns0XP65OXX8xYSfn0pHmft5B7iKLSrWi8ukY8VVMyYRxMYmZCZBtRijdHDs";
-const PHONE_NUMBER_ID = "1104497396082962";
+const VERIFY_TOKEN    = process.env.VERIFY_TOKEN    || "ayushman_physiofit_webhook";
+const WHATSAPP_TOKEN  = process.env.WHATSAPP_TOKEN  || "";
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID || "";
 
 // ── WEBHOOK ───────────────────────────────────────────────────────────────────
 exports.whatsappWebhook = functions.https.onRequest(async (req, res) => {
