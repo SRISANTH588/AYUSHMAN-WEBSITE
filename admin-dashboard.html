@@ -480,9 +480,9 @@
       <div class="section-card">
         <h2>📥 All Home Physio Visit Requests</h2>
         <table>
-          <thead><tr><th>Patient</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Doctor</th><th>Address</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Patient</th><th>Phone</th><th>Condition</th><th>Date</th><th>Time</th><th>Doctor</th><th>Address</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="hvAdminTable">
-            <tr><td colspan="9" style="text-align:center;color:#6b7c93;">No requests yet</td></tr>
+            <tr><td colspan="10" style="text-align:center;color:#6b7c93;">No requests yet</td></tr>
           </tbody>
         </table>
       </div>
@@ -1183,10 +1183,16 @@ function showSection(name, el) {
       const tbody = document.getElementById('hvAdminTable');
       if (!tbody) return;
       tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#6b7c93;">No home physio visits yet</td></tr>'; return; }
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#6b7c93;">No home physio visits yet</td></tr>'; return; }
       snap.forEach(d => {
         const h = d.data();
-        tbody.insertAdjacentHTML('beforeend', `<tr><td>${h.name||''}</td><td>${h.phone||''}</td><td>${h.condition||''}</td><td>${h.date||''}</td><td>${h.time||''}</td><td>${h.doctor||''}</td><td>${(h.address||'').substring(0,20)}...</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" onclick="notifyPatientAdmin('${h.phone}','${h.name}','${h.date}','${h.time}','${h.doctor}')">\ud83d\udcac Patient</button></td></tr>`);
+        const isWA = h.source === 'whatsapp';
+        const dateVal = h.date || (h.datetime ? h.datetime.split(',')[0] : '');
+        const timeVal = h.time || (h.datetime ? h.datetime.split(',').slice(1).join(',').trim() : '');
+        const sourceBadge = isWA
+          ? `<span style="background:#d4edda;color:#155724;padding:3px 8px;border-radius:20px;font-size:0.72rem;font-weight:700;">💬 WhatsApp</span>`
+          : `<span style="background:#e8f4ff;color:#1a4b8c;padding:3px 8px;border-radius:20px;font-size:0.72rem;font-weight:700;">🌐 Online</span>`;
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${h.name||''}</td><td>${h.phone||''}</td><td>${h.condition||''}</td><td>${dateVal}</td><td>${timeVal}</td><td>${h.doctor||'Any Available'}</td><td>${(h.address||'').substring(0,20)}...</td><td>${sourceBadge}</td><td><span class="badge confirmed">Confirmed</span></td><td><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" onclick="notifyPatientAdmin('${h.phone}','${h.name}','${dateVal}','${timeVal}','${h.doctor||''}')">💬 Patient</button></td></tr>`);
       });
       document.getElementById('hvTotal') && (document.getElementById('hvTotal').textContent = snap.size);
       document.getElementById('hvConfirmed') && (document.getElementById('hvConfirmed').textContent = snap.size);
@@ -1637,7 +1643,7 @@ _Ayushman PhysioFIT Rehabilitation Centre_
             <td style="text-align:center;font-size:1.4rem;" title="${f.treatmentLabel||''}">${ SMILEY_MAP[f.treatmentRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.treatmentLabel||''}</span></td>
             <td style="text-align:center;font-size:1.4rem;" title="${f.conditionLabel||''}">${ SMILEY_MAP[f.conditionRating]||'—' } <span style="font-size:0.72rem;color:#6b7c93;display:block;">${f.conditionLabel||''}</span></td>
             <td style="font-size:0.82rem;color:#6b7c93;">${date}</td>
-            <td><div style="display:flex;gap:6px;align-items:center;"><input type="text" id="dfb-${d.id}" value="${f.doctorNote||\'\'}" placeholder="Add note..." style="padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;width:140px;"/><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" data-id="${d.id}" data-phone="${f.patientPhone||\'\'}" data-name="${f.patientName||\'\'}" data-session="${f.sessionNo||0}" onclick="saveDoctorNote(this.dataset.id,this.dataset.phone,this.dataset.name,this.dataset.session)">Save</button></div></td>
+            <td><div style="display:flex;gap:6px;align-items:center;"><input type="text" id="dfb-${d.id}" value="${f.doctorNote||''}" placeholder="Add note..." style="padding:5px 8px;border:1.5px solid #dce8f5;border-radius:8px;font-family:Poppins,sans-serif;font-size:0.8rem;width:140px;"/><button class="btn-primary" style="padding:5px 10px;font-size:0.75rem;" data-id="${d.id}" data-phone="${f.patientPhone||''}" data-name="${f.patientName||''}" data-session="${f.sessionNo||0}" onclick="saveDoctorNote(this.dataset.id,this.dataset.phone,this.dataset.name,this.dataset.session)">Save</button></div></td>
           </tr>`);
       });
     });
