@@ -17,7 +17,7 @@
 <body>
 
   <!-- BACKGROUND MUSIC -->
-  <audio id="bgMusic" src="Short Meditation Music - 3 Minute Relaxation, Calming.mp3" loop preload="auto"></audio>
+  <audio id="bgMusic" src="Short Meditation Music - 3 Minute Relaxation, Calming.mp3" loop preload="auto" muted></audio>
 
   <!-- PAGE LOADER -->
   <div id="pageLoader">
@@ -729,20 +729,17 @@
     // Autoplay background music on first interaction
     const bgMusic = document.getElementById('bgMusic');
     bgMusic.volume = 0.3;
+    let musicStarted = false;
     function startMusic() {
-      bgMusic.play().catch(() => {});
-      document.removeEventListener('click', startMusic);
-      document.removeEventListener('touchstart', startMusic);
-      document.removeEventListener('scroll', startMusic);
-      document.removeEventListener('keydown', startMusic);
-      document.removeEventListener('mousemove', startMusic);
+      if (musicStarted) return;
+      bgMusic.muted = false;
+      bgMusic.play().then(() => {
+        musicStarted = true;
+        ['click','touchstart','scroll','keydown'].forEach(ev => document.removeEventListener(ev, startMusic));
+      }).catch(() => {});
     }
-    bgMusic.play().catch(() => {
-      document.addEventListener('click', startMusic);
-      document.addEventListener('touchstart', startMusic);
-      document.addEventListener('scroll', startMusic);
-      document.addEventListener('keydown', startMusic);
-      document.addEventListener('mousemove', startMusic);
+    bgMusic.play().then(() => { musicStarted = true; }).catch(() => {
+      ['click','touchstart','scroll','keydown'].forEach(ev => document.addEventListener(ev, startMusic));
     });
 
     window.addEventListener('load', () => {
