@@ -103,16 +103,7 @@ body {
 .btn-nav:hover { background: var(--green-dark) !important; }
 
 /* HERO */
-.hero {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0d2d5e 0%, #1a4b8c 50%, #2e7dd1 100%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 120px 60px 80px;
-  position: relative;
-  overflow: hidden;
-}
+
 .hero-logo-bg {
   position: absolute;
   right: 8%;
@@ -860,13 +851,6 @@ html { scroll-behavior: smooth; }
 .hero-content .sub { animation: fadeInUp 0.9s ease 0.2s both; }
 .hero-btns { animation: fadeInUp 0.9s ease 0.3s both; }
 .tagline { animation: fadeInUp 0.8s ease both; }
-
-/* ANIMATED HERO BACKGROUND */
-.hero {
-  background: linear-gradient(135deg, #0d2d5e, #1a4b8c, #2e7dd1, #1a4b8c);
-  background-size: 300% 300%;
-  animation: gradientShift 8s ease infinite;
-}
 
 /* NAVBAR ENHANCEMENTS */
 .navbar {
@@ -1659,6 +1643,18 @@ img.loaded { opacity: 1; }
 @media (max-width: 900px) { .btn-nav-login { padding: 7px 18px; font-size: 0.82rem; } }
 
 /* ── PREMIUM HERO ──────────────────────────── */
+
+/* Base */
+.hero {
+  min-height: 100vh;
+  background: #fdf6e3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 140px 60px 100px;
+  position: relative;
+  overflow: hidden;
+}
 
 /* Hero left images */
 .hero-right-img {
