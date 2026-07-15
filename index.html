@@ -732,10 +732,16 @@
       bgMusic.play().catch(() => {});
       document.removeEventListener('click', startMusic);
       document.removeEventListener('touchstart', startMusic);
+      document.removeEventListener('scroll', startMusic);
+      document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('mousemove', startMusic);
     }
     bgMusic.play().catch(() => {
       document.addEventListener('click', startMusic);
       document.addEventListener('touchstart', startMusic);
+      document.addEventListener('scroll', startMusic);
+      document.addEventListener('keydown', startMusic);
+      document.addEventListener('mousemove', startMusic);
     });
 
     window.addEventListener('load', () => {

@@ -1778,6 +1778,7 @@ img.loaded { opacity: 1; }
   position: relative;
   z-index: 1;
   max-width: 680px;
+  padding-top: 60px;
 }
 
 .tagline {
