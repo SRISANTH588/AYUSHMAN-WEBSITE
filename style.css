@@ -1660,18 +1660,6 @@ img.loaded { opacity: 1; }
 
 /* ── PREMIUM HERO ──────────────────────────── */
 
-/* Base */
-.hero {
-  min-height: 100vh;
-  background: #fdf6e3;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 140px 60px 100px;
-  position: relative;
-  overflow: hidden;
-}
-
 /* Hero left images */
 .hero-right-img {
   position: absolute;
