@@ -15,6 +15,9 @@
 </head>
 <body>
 
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bgMusic" src="Short Meditation Music - 3 Minute Relaxation, Calming.mp3" loop preload="auto"></audio>
+
   <!-- PAGE LOADER -->
   <div id="pageLoader">
     <div class="loader-logo">✚ Ayushman PhysioFIT</div>
@@ -721,6 +724,19 @@
   <!-- CORE JS -->
   <script>
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+    // Autoplay background music on first interaction
+    const bgMusic = document.getElementById('bgMusic');
+    bgMusic.volume = 0.3;
+    function startMusic() {
+      bgMusic.play().catch(() => {});
+      document.removeEventListener('click', startMusic);
+      document.removeEventListener('touchstart', startMusic);
+    }
+    bgMusic.play().catch(() => {
+      document.addEventListener('click', startMusic);
+      document.addEventListener('touchstart', startMusic);
+    });
 
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('pageLoader').classList.add('hidden'), 800);
