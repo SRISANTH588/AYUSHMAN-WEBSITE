@@ -126,6 +126,28 @@
 
   <hr style="border:none;border-top:2px solid #c8956c;margin:0;"/>
 
+  <!-- DOCTORS SECTION -->
+  <section class="reveal" id="doctors-section" style="background:#f0f7ff;padding:60px 24px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <h2 style="font-size:2rem;font-weight:900;color:#1a4b8c;font-family:'Poppins',sans-serif;">Meet Our Doctors</h2>
+      <p style="color:#6b7c93;font-size:1rem;">Expert physiotherapists dedicated to your recovery</p>
+    </div>
+    <div id="doctorsGrid" style="display:flex;flex-wrap:wrap;gap:28px;justify-content:center;max-width:1100px;margin:0 auto;"></div>
+  </section>
+
+  <hr style="border:none;border-top:2px solid #c8956c;margin:0;"/>
+
+  <!-- TESTIMONIALS SECTION -->
+  <section class="reveal" id="testimonials-section" style="background:#fdf6e3;padding:60px 24px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <h2 style="font-size:2rem;font-weight:900;color:#7b4a2a;font-family:'Poppins',sans-serif;">What Our Patients Say</h2>
+      <p style="color:#6b7c93;font-size:1rem;">Real stories from real patients</p>
+    </div>
+    <div id="testimonialsGrid" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:1100px;margin:0 auto;"></div>
+  </section>
+
+  <hr style="border:none;border-top:2px solid #c8956c;margin:0;"/>
+
   <!-- ONLINE CLASSES -->
   <section class="online-classes reveal" id="online-classes">
     <h2>Online Physio Services</h2>
@@ -462,8 +484,69 @@
   <!-- FIREBASE -->
   <script type="module">
     import { db, storage } from './firebase.js';
-    import { collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc, getDoc }
+    import { collection, addDoc, getDocs, query, where, serverTimestamp, updateDoc, doc, getDoc, orderBy }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    // Load Services
+    (async () => {
+      const grid = document.getElementById('serviceGrid');
+      try {
+        const snap = await getDocs(query(collection(db, 'services'), orderBy('order')));
+        if (!snap.empty) {
+          snap.forEach(d => {
+            const s = d.data();
+            grid.insertAdjacentHTML('beforeend', `
+              <a href="${s.link||'#'}" class="svc-card" style="text-decoration:none;">
+                <div class="svc-icon">${s.icon||'🏥'}</div>
+                <div class="svc-title">${s.title||''}</div>
+                <div class="svc-desc">${s.desc||''}</div>
+              </a>`);
+          });
+        }
+      } catch(e) { console.error('Services load error:', e); }
+    })();
+
+    // Load Doctors
+    (async () => {
+      const grid = document.getElementById('doctorsGrid');
+      try {
+        const snap = await getDocs(query(collection(db, 'doctors'), orderBy('order')));
+        if (!snap.empty) {
+          snap.forEach(d => {
+            const dr = d.data();
+            grid.insertAdjacentHTML('beforeend', `
+              <div style="background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(26,75,140,0.10);padding:32px 28px;text-align:center;width:280px;">
+                <img src="${dr.photo||'images/logo.png'}" alt="${dr.name||''}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:16px;border:3px solid #1a4b8c;"/>
+                <div style="font-size:1.1rem;font-weight:800;color:#1a4b8c;font-family:'Poppins',sans-serif;">${dr.name||''}</div>
+                <div style="font-size:0.85rem;color:#2e7dd1;font-weight:600;margin:4px 0 8px;">${dr.qualification||''}</div>
+                <div style="font-size:0.82rem;color:#6b7c93;">${dr.specialization||''}</div>
+                ${dr.experience ? `<div style="margin-top:10px;font-size:0.8rem;background:#f0f7ff;color:#1a4b8c;padding:4px 14px;border-radius:20px;display:inline-block;font-weight:600;">${dr.experience}</div>` : ''}
+              </div>`);
+          });
+        }
+      } catch(e) { console.error('Doctors load error:', e); }
+    })();
+
+    // Load Testimonials
+    (async () => {
+      const grid = document.getElementById('testimonialsGrid');
+      try {
+        const snap = await getDocs(query(collection(db, 'testimonials'), orderBy('createdAt', 'desc')));
+        if (!snap.empty) {
+          snap.forEach(d => {
+            const t = d.data();
+            const stars = '⭐'.repeat(Math.min(t.rating||5, 5));
+            grid.insertAdjacentHTML('beforeend', `
+              <div style="background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(123,74,42,0.10);padding:28px 24px;max-width:320px;">
+                <div style="font-size:1.1rem;margin-bottom:8px;">${stars}</div>
+                <p style="font-size:0.9rem;color:#1a2a3a;line-height:1.7;font-style:italic;margin-bottom:16px;">&ldquo;${t.message||''}&rdquo;</p>
+                <div style="font-weight:700;color:#7b4a2a;font-size:0.88rem;">${t.name||'Patient'}</div>
+                <div style="font-size:0.78rem;color:#6b7c93;">${t.condition||''}</div>
+              </div>`);
+          });
+        }
+      } catch(e) { console.error('Testimonials load error:', e); }
+    })();
     import { ref, uploadBytesResumable, getDownloadURL }
       from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js';
 
