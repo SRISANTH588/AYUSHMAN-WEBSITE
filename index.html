@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" href="images/logo.png"/>
   <title>Ayushman PhysioFIT – Rehabilitation Centre</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="images/image8.png" as="image"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="mobile.css"/>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -65,9 +66,9 @@
   <section class="hero" id="home">
 
     <!-- Hero left images -->
-    <img src="images/image8.png" alt="Ayushman PhysioFIT" class="hero-right-img"/>
-    <img src="images/image9.png" alt="Ayushman PhysioFIT" class="hero-right-img2"/>
-    <img src="images/image10.png" alt="Ayushman PhysioFIT" class="hero-right-img3"/>
+    <img src="images/image8.png" alt="Ayushman PhysioFIT" class="hero-right-img" fetchpriority="high"/>
+    <img src="images/image9.png" alt="Ayushman PhysioFIT" class="hero-right-img2" fetchpriority="high"/>
+    <img src="images/image10.png" alt="Ayushman PhysioFIT" class="hero-right-img3" fetchpriority="high"/>
 
     <!-- Orbs -->
     <div class="hero-orb orb-1"></div>
@@ -116,13 +117,13 @@
       <h2 style="display:inline-block;font-size:2.4rem;font-weight:900;color:#7b4a2a;font-family:'Poppins',sans-serif;letter-spacing:-0.5px;line-height:1.3;">Healing takes time, but every session brings you closer</h2>
     </div>
     <div class="side-images-row" style="display:flex;gap:16px;width:100%;max-width:100%;margin:0 auto 28px;box-sizing:border-box;">
-      <img src="images/page2.png" alt="Best Services" style="width:calc(50% - 8px);height:700px;object-fit:cover;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.18);flex-shrink:0;min-width:0;border:3px solid rgba(255,255,255,0.8);outline:1px solid rgba(0,0,0,0.06);"/>
-      <img src="images/side2.png" alt="Services" style="width:calc(50% - 8px);height:700px;object-fit:cover;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.18);flex-shrink:0;min-width:0;border:3px solid rgba(255,255,255,0.8);outline:1px solid rgba(0,0,0,0.06);"/>
+      <img src="images/page2_opt.jpg" alt="Best Services" loading="lazy" style="width:calc(50% - 8px);height:700px;object-fit:cover;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.18);flex-shrink:0;min-width:0;border:3px solid rgba(255,255,255,0.8);outline:1px solid rgba(0,0,0,0.06);"/>
+      <img src="images/side2_opt.jpg" alt="Services" loading="lazy" style="width:calc(50% - 8px);height:700px;object-fit:cover;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.18);flex-shrink:0;min-width:0;border:3px solid rgba(255,255,255,0.8);outline:1px solid rgba(0,0,0,0.06);"/>
     </div>
     <!-- SERVICE CARDS GRID — add cards here later -->
     <hr style="border:none;border-top:2px solid #c8956c;margin:32px 0;"/>
     <h2 style="text-align:center;font-size:2rem;font-weight:800;color:#7b4a2a;font-family:'Poppins',sans-serif;margin:0 0 24px;">OUR SERVICES FOR</h2>
-    <img src="images/ourservices.png" alt="Our Services" style="width:100%;height:auto;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15);display:block;margin-bottom:28px;"/>
+    <img src="images/ourservices_opt.jpg" alt="Our Services" loading="lazy" style="width:100%;height:auto;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.15);display:block;margin-bottom:28px;"/>
     <div class="svc-cards-grid" id="serviceGrid">
     </div>
   </section>
@@ -272,7 +273,7 @@
             <p>Join our expert-led physiotherapy fitness program</p>
           </div>
         </div>
-        <img src="images/family.png" alt="Online PhysioFIT Classes" style="width:65%;border-radius:12px;margin:12px auto;object-fit:cover;display:block;"/>
+        <img src="images/family_opt.jpg" alt="Online PhysioFIT Classes" loading="lazy" style="width:65%;border-radius:12px;margin:12px auto;object-fit:cover;display:block;"/>
         <ul class="oc-info-list">
           <li>🎯 Personalized for your condition &amp; fitness level</li>
           <li>📅 3 Classes per week (Mon / Wed / Fri)</li>
